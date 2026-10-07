@@ -62,7 +62,7 @@ const CHROME =
  */
 let DEMO = { token: 'harness-token', refresh: 'harness-refresh', email: 'maya.byrne@example.com' };
 try {
-  DEMO = { ...DEMO, ...JSON.parse(readFileSync(join(HERE, '.demo.json'), 'utf8')) };
+  DEMO = { ...DEMO, ...JSON.parse(readFileSync(join(HERE, process.env.HARNESS_DEMO ?? '.demo.json'), 'utf8')) };
 } catch {
   /* stub run */
 }

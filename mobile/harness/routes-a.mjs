@@ -13,7 +13,7 @@ import { fileURLToPath } from 'node:url';
 
 let demo = null;
 try {
-  demo = JSON.parse(readFileSync(fileURLToPath(new URL('.demo.json', import.meta.url)), 'utf8'));
+  demo = JSON.parse(readFileSync(fileURLToPath(new URL(process.env.HARNESS_DEMO ?? '.demo.json', import.meta.url)), 'utf8'));
 } catch {
   demo = null;
 }

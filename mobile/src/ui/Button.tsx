@@ -53,7 +53,7 @@ export function Button({ title, onPress, kind = 'primary', icon, loading, disabl
   const content = (
     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 9, paddingHorizontal: small ? 14 : 18, height }}>
       {loading ? <ActivityIndicator color={p.fg} /> : icon}
-      <T style={{ fontFamily: font.semibold, fontSize: small ? 14 : 16.5, color: off && kind !== 'ghost' ? (kind === 'outline' ? c.faint : p.fg) : p.fg }} numberOfLines={1}>
+      <T style={{ fontFamily: font.semibold, fontSize: small ? 14 : 16.5, color: off && kind !== 'ghost' ? (kind === 'outline' ? c.faint : p.fg) : p.fg, flexShrink: 1 }} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7}>
         {title}
       </T>
     </View>

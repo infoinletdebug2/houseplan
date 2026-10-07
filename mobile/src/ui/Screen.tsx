@@ -114,7 +114,7 @@ export function Header({ title, back = true, onBack, right, close, transparent, 
     <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: space.sm, paddingTop: insets.top + space.xxs, paddingBottom: space.xxs, backgroundColor: transparent ? 'transparent' : c.ground }}>
       <View style={{ width: 64 }}>{back ? <IconButton glass={light} icon={<Icon size={24} color={light ? '#F5F2EC' : c.ink} strokeWidth={1.8} />} label={close ? 'Close' : 'Back'} onPress={goBack} /> : null}</View>
       <View style={{ flex: 1, alignItems: 'center' }}>
-        <T v="title" numberOfLines={1} accessibilityRole="header">
+        <T v="title" numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7} accessibilityRole="header">
           {title ?? ''}
         </T>
       </View>

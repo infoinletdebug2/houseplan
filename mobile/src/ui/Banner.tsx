@@ -28,7 +28,7 @@ export function ToggleRow({ label, hint, value, onChange, disabled, testID }: { 
         </T>
         {hint ? <T v="small">{hint}</T> : null}
       </View>
-      <Switch testID={testID} value={value} disabled={disabled} onValueChange={onChange} trackColor={{ true: c.primary, false: c.line }} thumbColor="#FFFFFF" accessibilityLabel={label} />
+      <Switch testID={testID} value={value} disabled={disabled} onValueChange={onChange} trackColor={{ true: c.primary, false: c.line }} thumbColor="#FFFFFF" ios_backgroundColor={c.line} {...({ activeThumbColor: "#FFFFFF", activeTrackColor: c.primary } as object)} accessibilityLabel={label} />
     </View>
   );
 }

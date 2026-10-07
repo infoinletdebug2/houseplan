@@ -17,7 +17,7 @@ import { fileURLToPath } from 'node:url';
 
 let routes = [];
 if (process.env.HARNESS_LIVE === '1') {
-  const demo = JSON.parse(readFileSync(fileURLToPath(new URL('.demo.json', import.meta.url)), 'utf8'));
+  const demo = JSON.parse(readFileSync(fileURLToPath(new URL(process.env.HARNESS_DEMO ?? '.demo.json', import.meta.url)), 'utf8'));
   const API = `${process.env.HARNESS_LIVE_API ?? 'http://localhost:8812'}/api/v1`;
   const get = async (path) => {
     const res = await fetch(`${API}${path}`, { headers: { authorization: `Bearer ${demo.token}` } });

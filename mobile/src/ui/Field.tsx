@@ -186,7 +186,7 @@ export function PickerField({ label, value, placeholder, onPress, error, icon }:
       >
         <T style={{ fontFamily: font.medium, fontSize: 12, color: c.muted }}>{label}</T>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 4 }}>
-          <T v="body" color={value ? c.ink : c.faint} style={{ flex: 1 }} numberOfLines={1}>
+          <T v="body" color={value ? c.ink : c.faint} style={{ flex: 1 }} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7}>
             {value || placeholder || 'Choose'}
           </T>
           {icon}
