@@ -735,7 +735,7 @@ BEGIN
                   WHERE ca.commitment_id = k.commitment_id AND ca.category_id = k.category_id AND cr.status = 'posted' AND ca.credit_effect IS DISTINCT FROM 'reduce_obligation'), 0) AS invoiced
       FROM (
         SELECT DISTINCT m.id AS commitment_id, x.category_id FROM hp__commitment m
-        JOIN (SELECT commitment_id, category_id FROM hp__commitment_allocation UNION SELECT commitment_id, category_id FROM hp__commitment_adjustment) x ON x.commitment_id = m.id
+        JOIN (SELECT commitment_id, category_id FROM hp__commitment_allocation UNION SELECT commitment_id, category_id FROM hp__commitment_adjustment UNION SELECT ca.commitment_id, ca.category_id FROM hp__cost_allocation ca JOIN hp__cost_record cr ON cr.id = ca.cost_record_id WHERE ca.commitment_id IS NOT NULL AND cr.status = 'posted') x ON x.commitment_id = m.id
         WHERE m.project_id = pid AND m.status = 'active'
       ) k
     ) x GROUP BY x.category_id
@@ -754,7 +754,7 @@ BEGIN
     coalesce(sum(coalesce(a.amt, 0)), 0)::bigint AS a_total,
     coalesce(sum(coalesce(o.remaining, 0)), 0)::bigint AS c_total,
     coalesce(sum(u.amt) FILTER (WHERE c.inclusion = 'included'), 0)::bigint AS u_total,
-    count(*) FILTER (WHERE c.inclusion = 'included' AND (u.amt IS NULL OR NOT coalesce(u.confirmed, false)))::int AS u_missing,
+    count(*) FILTER (WHERE c.inclusion = 'included' AND u.amt IS NULL)::int AS u_missing,
     count(*) FILTER (WHERE c.inclusion = 'undecided')::int AS undecided,
     coalesce(sum(o.over), 0)::bigint AS over_total
   INTO cats, a_total, c_total, u_total, u_missing, undecided, over_total
