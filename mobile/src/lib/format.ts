@@ -165,6 +165,17 @@ export function firstName(name: string | null | undefined): string {
   return (name ?? '').trim().split(/\s+/)[0] || 'there';
 }
 
+/** "Good morning" / "Good afternoon" / "Good evening" by the phone's clock. */
+export function greeting(now = new Date()): string {
+  const h = now.getHours();
+  return h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
+}
+
+/** "Wednesday, October 7" for the home eyebrow. */
+export function longDate(now = new Date()): string {
+  return now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+}
+
 export function percent(n: number, dp = 0): string {
   return `${n.toFixed(dp)}%`;
 }
