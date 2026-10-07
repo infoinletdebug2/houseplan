@@ -6,10 +6,11 @@ const { getDefaultConfig } = require('expo/metro-config');
 
 const config = getDefaultConfig(__dirname);
 
+// [\\/] matches both separators: on Windows Metro sees backslash paths.
 config.resolver.blockList = [
-  /[\/]harness[\/]\.chrome-[^\/]*[\/].*/,
-  /[\/]harness[\/]shots[^\/]*[\/].*/,
-  /[\/]dist-[^\/]*[\/].*/,
+  /[\\/]harness[\\/]\.chrome[^\\/]*[\\/].*/,
+  /[\\/]harness[\\/]shots[^\\/]*[\\/].*/,
+  /[\\/]dist-[^\\/]*[\\/].*/,
 ];
 
 module.exports = config;
