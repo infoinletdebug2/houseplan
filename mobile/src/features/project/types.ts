@@ -263,6 +263,9 @@ export interface Rate {
   expired: boolean;
   archived_at: string | null;
   version: number;
+  /** Set by the picker after an explicit yes (country-wide figure, expired rate). */
+  accept_country_benchmark?: boolean;
+  stale_override?: boolean;
 }
 
 export interface Benchmarks {
