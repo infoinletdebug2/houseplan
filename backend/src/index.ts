@@ -36,6 +36,26 @@ app.onError(handleError);
 app.use('*', async (c, next) => {
   const id = requestId(c);
   await next();
+  // The platform's auth middleware answers 401/429 in its own shape; the app branches on OUR envelope.
+  if ((c.res.status === 401 || c.res.status === 429) && c.res.headers.get('content-type')?.includes('application/json')) {
+    const raw = (await c.res.clone().json().catch(() => null)) as { error?: { request_id?: string } } | null;
+    if (raw?.error && !raw.error.request_id) {
+      const expired = c.res.status === 401;
+      c.res = c.json(
+        {
+          error: {
+            code: expired ? 'AUTH_TOKEN_EXPIRED' : 'RATE_LIMIT_EXCEEDED',
+            message: expired ? 'Sign in again to continue.' : 'Too many attempts. Wait a moment and try again.',
+            fields: {},
+            request_id: id,
+            retryable: !expired,
+          },
+        },
+        c.res.status as 401,
+      );
+      if (!expired) c.header('Retry-After', '60');
+    }
+  }
   c.header('x-request-id', id);
 });
 
