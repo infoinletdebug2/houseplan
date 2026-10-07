@@ -6,14 +6,8 @@
     "orientation": "portrait",
     "scheme": "houseplan",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
     "backgroundColor": "#FBF4EA",
     "icon": "./assets/icon.png",
-    "splash": {
-      "image": "./assets/splash-icon.png",
-      "backgroundColor": "#2A1E17",
-      "resizeMode": "contain"
-    },
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.xenition.houseplan",
@@ -31,7 +25,6 @@
     "android": {
       "package": "com.xenition.houseplan",
       "versionCode": 1,
-      "edgeToEdgeEnabled": true,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#2A1E17"

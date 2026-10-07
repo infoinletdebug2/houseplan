@@ -1,8 +1,16 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Linking, Platform } from 'react-native';
-import * as StoreReview from 'expo-store-review';
 import { api } from '../api/client';
-import { ANDROID_PACKAGE, APP_VERSION, APPLE_APP_ID } from '../config';
+import { ANDROID_PACKAGE, APP_VERSION, APPLE_APP_ID, IS_EXPO_GO } from '../config';
+
+type StoreReviewModule = typeof import('expo-store-review');
+let storeReview: Promise<StoreReviewModule | null> | undefined;
+/** Loaded lazily and never in Expo Go (blueprint F1): a native module that throws at import blanks the app. */
+function loadStoreReview(): Promise<StoreReviewModule | null> {
+  if (IS_EXPO_GO || Platform.OS === 'web') return Promise.resolve(null);
+  storeReview ??= import('expo-store-review').then((m) => m, () => null);
+  return storeReview;
+}
 import { installationId } from './installation';
 
 /**
@@ -89,6 +97,8 @@ export async function noteSuccess(moment: SuccessMoment): Promise<void> {
 }
 
 async function ask(moment: SuccessMoment): Promise<void> {
+  const StoreReview = await loadStoreReview();
+  if (!StoreReview) return;
   try {
     if (!(await StoreReview.isAvailableAsync())) return;
   } catch {
