@@ -83,7 +83,7 @@ export const PRIVACY: LegalDoc = {
         'Xenition, our platform provider, hosts the app servers, database, file storage, authentication, email, push notifications and the AI gateway, under our instructions.',
         'Apple and Google process sign-in (if you use them), payments and push notification delivery under their own policies.',
         'Meta receives advertising measurement events only if you allow them.',
-        'The AI model provider reached through Xenition receives the minimised Advisor context described above, only after you opt in, and is asked not to retain it.',
+        'The AI model provider reached through Xenition receives the minimised Advisor context described above, only after you opt in. We do not currently have a contractual zero-retention guarantee from that provider, so it may keep the request for its own operational and abuse-monitoring purposes under its terms. That is why the context leaves out your address, contacts, notes and files.',
         'We do not sell personal data or share it for others to use for their own purposes. Data may be processed in countries other than yours; our providers use recognised safeguards for international transfers.',
       ],
     },
