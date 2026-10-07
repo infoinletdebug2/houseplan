@@ -1034,6 +1034,24 @@ ON CONFLICT (code) DO NOTHING`,
 )`,
   ],
   ['ops_benchmark_retired_by', `ALTER TABLE hp__benchmark_rate ADD COLUMN IF NOT EXISTS retired_by_batch uuid`],
+  [
+    'acct_ai_reserve_fn',
+    `CREATE OR REPLACE FUNCTION hp_ai_reserve(p jsonb) RETURNS jsonb LANGUAGE plpgsql AS $fn$
+DECLARE used int; lim int := (p->>'limit')::int;
+BEGIN
+  -- one reservation at a time per user: lock, then count with a fresh snapshot (BRD 6.11: no concurrent bypass)
+  PERFORM pg_advisory_xact_lock(hashtext('hp_ai:' || (p->>'user_id')));
+  SELECT count(*) INTO used FROM hp__ai_quota
+   WHERE user_id = p->>'user_id' AND created_at > now() - interval '30 days'
+     AND (status = 'consumed' OR (status = 'reserved' AND expires_at > now()));
+  IF used >= lim THEN
+    RETURN jsonb_build_object('reserved', false, 'used', used);
+  END IF;
+  INSERT INTO hp__ai_quota (id, user_id, request_id, status, expires_at)
+  VALUES (gen_random_uuid(), p->>'user_id', (p->>'request_id')::uuid, 'reserved', now() + interval '10 minutes');
+  RETURN jsonb_build_object('reserved', true, 'used', used + 1);
+END $fn$`,
+  ],
 ];
 
 export const APP_MIGRATIONS: Migration[] = [
