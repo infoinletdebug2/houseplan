@@ -1007,6 +1007,14 @@ ON CONFLICT (code) DO NOTHING`,
 )`,
   ],
   /* ── additions (never edit an applied statement above; append here) ── */
+  [
+    'profile_entitlement_cache',
+    `ALTER TABLE hp__profile
+  ADD COLUMN IF NOT EXISTS entitlement_status text,
+  ADD COLUMN IF NOT EXISTS entitlement_expires_at timestamptz,
+  ADD COLUMN IF NOT EXISTS entitlement_verified_at timestamptz,
+  ADD COLUMN IF NOT EXISTS entitlement_snapshot jsonb`,
+  ],
 ];
 
 export const APP_MIGRATIONS: Migration[] = [
