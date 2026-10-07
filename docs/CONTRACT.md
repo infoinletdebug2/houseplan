@@ -261,3 +261,15 @@ Base: `https://houseplan.xenition.com/api/v1`. The worker, this document and the
 ## 15. Website (same worker)
 
 `/` landing · `/privacy` · `/terms` · `/support` (form → `POST /api/v1/support`) · `/delete-account` · `/admin` console · `/.well-known/*` app links.
+
+## 16. As built (differences found while implementing)
+
+- **Idempotent replays** return the original status code (201 for creates) with `meta.replayed: true`.
+- **Rate picks** (preview, calculations, lines) also accept `accept_country_benchmark: true` and `stale_override: true`. Errors: `BENCHMARK_MISMATCH` 422, `COUNTRY_BENCHMARK_NEEDS_ACCEPTANCE` 422, `RATE_EXPIRED` 422, `UNIT_MISMATCH` 422, `ZERO_COST_REASON_REQUIRED` 400, `CONFIRMATION_REQUIRED` 400, `REVISION_NOT_FROZEN` 409, `SCENARIO_REVISION` 409, `ALREADY_ADOPTED` 409.
+- **Calculations** filled from a room store `input.room_surface`; tax-inclusive entry is `input.prices_include_tax: true`, originals kept as `*_entered_gross`.
+- **Lines:** PATCH `calculation_id: null` detaches a line from its calculation; a new manual price drops the rate link.
+- **Scenarios:** `status` is `draft` | `saved` | `adopted`; compare also returns `scenario` and `against`; adopt answers 201.
+- **Project summary** `cash_still_needed_minor` comes from the latest confirmed forecast snapshot (null when none).
+- **DRAFT_EXISTS** carries the draft id in `fields.draft_revision_id`.
+- **Rooms, openings, private rates:** changes return `meta.stale_lines`.
+- **Website:** static pages answer `307` to the trailing-slash form (`/admin` → `/admin/`).
