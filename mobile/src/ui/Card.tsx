@@ -144,7 +144,7 @@ export function KV({ label, value, last }: { label: string; value: React.ReactNo
   const c = useColors();
   return (
     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 11, borderBottomWidth: last ? 0 : 1, borderBottomColor: c.line, gap: space.md }}>
-      <T v="body" color={c.muted} style={{ fontSize: 14.5 }}>
+      <T v="body" color={c.muted} style={{ fontSize: 14.5, flexShrink: 1, minWidth: 0 }}>
         {label}
       </T>
       {typeof value === 'string' ? (

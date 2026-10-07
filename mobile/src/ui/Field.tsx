@@ -1,5 +1,5 @@
 import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react';
-import { Platform, Pressable, TextInput, View, type KeyboardTypeOptions, type StyleProp, type TextInputProps, type ViewStyle } from 'react-native';
+import { Platform, Pressable, TextInput, View, useWindowDimensions, type KeyboardTypeOptions, type StyleProp, type TextInputProps, type ViewStyle } from 'react-native';
 import { Eye, EyeOff } from 'lucide-react-native';
 import { font, radius, useColors } from '../theme/tokens';
 import { T } from './Text';
@@ -31,6 +31,9 @@ export const Field = forwardRef<TextInput, FieldProps>(function Field({ label, e
   const c = useColors();
   const [focused, setFocused] = useState(false);
   const [hidden, setHidden] = useState(true);
+  // Larger system text must never make the label and the value collide: the
+  // compact icon field grows with the font scale (capped like every input).
+  const scale = Math.min(Math.max(useWindowDimensions().fontScale || 1, 1), INPUT_MAX_SCALE);
   const inner = useRef<TextInput>(null);
   useImperativeHandle(ref, () => inner.current as TextInput);
   const border = error ? c.danger : focused ? c.primary : suggested ? c.warn : c.line;
@@ -54,6 +57,7 @@ export const Field = forwardRef<TextInput, FieldProps>(function Field({ label, e
         input.onBlur?.(e);
       }}
       accessibilityLabel={label}
+      maxFontSizeMultiplier={INPUT_MAX_SCALE}
       style={[
         {
           flex: 1,
@@ -107,7 +111,7 @@ export const Field = forwardRef<TextInput, FieldProps>(function Field({ label, e
           (except the eye), so a tap always lands on this field's input and nothing
           shifts under the finger while the keyboard opens.
         */}
-        <View style={{ height: 64, borderRadius: radius.input + 2, borderWidth: 1.5, borderColor: border, backgroundColor: c.surface, overflow: 'hidden' }}>
+        <View style={{ height: Math.round(64 * scale), borderRadius: radius.input + 2, borderWidth: 1.5, borderColor: border, backgroundColor: c.surface, overflow: 'hidden' }}>
           {textInput({
             position: 'absolute',
             top: 0,
@@ -118,15 +122,15 @@ export const Field = forwardRef<TextInput, FieldProps>(function Field({ label, e
             flex: undefined,
             paddingLeft: left,
             paddingRight: secure ? 48 : 14,
-            paddingTop: 24,
-            paddingBottom: 8,
+            paddingTop: Math.round(24 * scale),
+            paddingBottom: Math.round(8 * scale),
             ...(Platform.OS === 'android' ? { textAlignVertical: 'top' } : null),
           })}
           <View pointerEvents="none" style={{ position: 'absolute', left: 14, top: 0, bottom: 0, width: 22, alignItems: 'center', justifyContent: 'center' }}>
             {icon}
           </View>
-          <View pointerEvents="none" style={resting ? { position: 'absolute', left, right: 14, top: 0, bottom: 0, justifyContent: 'center' } : { position: 'absolute', left, right: 14, top: 9 }}>
-            <T style={resting ? { fontFamily: font.body, fontSize: 16, lineHeight: 22, color: c.muted } : { fontFamily: font.medium, fontSize: 12, lineHeight: 15, color: labelColor }} numberOfLines={1}>
+          <View pointerEvents="none" style={resting ? { position: 'absolute', left, right: 14, top: 0, bottom: 0, justifyContent: 'center' } : { position: 'absolute', left, right: 14, top: Math.round(9 * scale) }}>
+            <T style={resting ? { fontFamily: font.body, fontSize: 16, lineHeight: 22, color: c.muted } : { fontFamily: font.medium, fontSize: 12, lineHeight: 15, color: labelColor }} numberOfLines={1} maxFontSizeMultiplier={INPUT_MAX_SCALE}>
               {label}
             </T>
           </View>
@@ -162,6 +166,9 @@ export const Field = forwardRef<TextInput, FieldProps>(function Field({ label, e
     </View>
   );
 });
+
+/** Inputs and the labels drawn over them scale with system text up to this much. */
+export const INPUT_MAX_SCALE = 1.4;
 
 export const decimalPad: KeyboardTypeOptions = 'decimal-pad';
 export const numberPad: KeyboardTypeOptions = 'number-pad';

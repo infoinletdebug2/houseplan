@@ -281,11 +281,11 @@ export function SplitMeter({ total, allocated, currency }: { total: string | nul
   const over = (t >= 0n && left < 0n) || (t < 0n && left > 0n);
   return (
     <View style={{ gap: 6, padding: space.md, borderRadius: radius.tile, backgroundColor: done ? c.okTint : over ? c.dangerTint : c.warnTint }} accessibilityLiveRegion="polite">
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' }}>
-        <T style={{ fontFamily: font.semibold, fontSize: 14, color: done ? c.ok : over ? c.danger : c.scheme === 'dark' ? c.warn : '#7A5212' }}>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline', gap: space.sm }}>
+        <T style={{ flex: 1, minWidth: 0, fontFamily: font.semibold, fontSize: 14, color: done ? c.ok : over ? c.danger : c.scheme === 'dark' ? c.warn : '#7A5212' }}>
           {done ? 'Fully split' : over ? 'Split is more than the amount' : 'Left to split'}
         </T>
-        <T style={{ fontFamily: font.display, fontSize: 20, color: c.ink }} num>
+        <T style={{ flexShrink: 0, fontFamily: font.display, fontSize: 20, color: c.ink }} num>
           {money(abs(left).toString(), currency)}
         </T>
       </View>

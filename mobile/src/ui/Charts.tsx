@@ -40,9 +40,9 @@ export function Meter({
     <View style={[{ gap: 6 }, style]} accessibilityRole="progressbar" accessibilityValue={{ min: 0, max: Math.round(max), now: Math.round(Math.min(value, max)) }} accessibilityLabel={label}>
       {label || valueLabel ? (
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline', gap: 8 }}>
-          {label ? <T v="caption">{label}</T> : <View />}
+          {label ? <T v="caption" style={{ flex: 1, minWidth: 0 }}>{label}</T> : <View />}
           {valueLabel ? (
-            <T style={{ fontFamily: font.semibold, fontSize: 13, color: c.ink }} num>
+            <T style={{ fontFamily: font.semibold, fontSize: 13, color: c.ink, flexShrink: 0, textAlign: 'right' }} num>
               {valueLabel}
               {maxLabel ? <T style={{ fontFamily: font.body, fontSize: 13, color: c.muted }}> of {maxLabel}</T> : null}
             </T>

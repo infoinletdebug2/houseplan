@@ -110,7 +110,8 @@ export function SourceBadge({ source, label, style }: { source: Source; label?: 
         {
           alignSelf: 'flex-start',
           paddingHorizontal: 10,
-          height: 26,
+          minHeight: 26,
+          paddingVertical: 3,
           justifyContent: 'center',
           borderRadius: 13,
           backgroundColor: bg,

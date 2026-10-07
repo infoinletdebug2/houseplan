@@ -88,10 +88,10 @@ export function Attachments({ projectId, target, targetId, kind, readOnly, title
   const files = q.data ?? [];
   return (
     <View style={{ gap: space.sm }}>
-      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-        <T v="h3">{title}</T>
+      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: space.sm }}>
+        <T v="h3" style={{ flex: 1, minWidth: 0 }}>{title}</T>
         {!readOnly && files.length < 10 ? (
-          <T v="smallStrong" color={c.goldInk} onPress={() => setOpen(true)} accessibilityRole="button" suppressHighlighting>
+          <T v="smallStrong" color={c.goldInk} onPress={() => setOpen(true)} accessibilityRole="button" suppressHighlighting style={{ flexShrink: 0, paddingVertical: 10 }}>
             {busy ? 'Adding…' : 'Add a file ›'}
           </T>
         ) : null}

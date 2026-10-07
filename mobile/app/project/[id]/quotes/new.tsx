@@ -173,16 +173,16 @@ export default function NewQuote() {
       <Button title="Add a line" kind="outline" icon={<Plus size={18} color={c.ink} />} onPress={() => setLines((ls) => [...ls, blank(ls[ls.length - 1]?.category_id ?? null)])} />
 
       <Card style={{ gap: 6 }}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-          <T v="small">Net</T>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', gap: space.sm }}>
+          <T v="small" style={{ flex: 1 }}>Net</T>
           <T v="smallStrong" num>{money(totals.net, cur)}</T>
         </View>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-          <T v="small">Tax</T>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', gap: space.sm }}>
+          <T v="small" style={{ flex: 1 }}>Tax</T>
           <T v="smallStrong" num>{money(totals.tax, cur)}</T>
         </View>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-          <T v="bodyStrong">Quoted total</T>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline', gap: space.sm }}>
+          <T v="bodyStrong" style={{ flex: 1 }}>Quoted total</T>
           <T v="money" num>{money(totals.gross, cur)}</T>
         </View>
       </Card>

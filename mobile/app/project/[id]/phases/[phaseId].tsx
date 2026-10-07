@@ -95,8 +95,8 @@ export default function PhaseScreen() {
             ))}
           </TileGrid>
           <Card style={{ gap: space.sm }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-              <T v="label">Progress (your estimate)</T>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: space.sm }}>
+              <T v="label" style={{ flex: 1, minWidth: 0 }}>Progress (your estimate)</T>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm }}>
                 <Stepper icon={<Minus size={20} color={c.ink} />} label="Less progress" onPress={() => step(-5)} />
                 <T style={{ fontFamily: font.display, fontSize: 28, minWidth: 64, textAlign: 'center', color: c.ink }} num>

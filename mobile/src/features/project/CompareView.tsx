@@ -26,7 +26,7 @@ export function CompareView({ diff, currency, leftTitle, rightTitle, savingsLabe
           <TotalCard title={rightTitle} value={diff.to.total_with_reserve_minor} currency={currency} tint={c.scheme === 'dark' ? '#1A2522' : '#E6EEEA'} missing={diff.to.missing_line_count} />
         </View>
         <View style={{ alignItems: 'center', marginTop: -16 }}>
-          <View style={{ paddingHorizontal: 18, height: 38, borderRadius: 19, justifyContent: 'center', backgroundColor: delta === null ? c.ground2 : cheaper ? c.primary : delta === '0' ? c.brand : c.danger }}>
+          <View style={{ paddingHorizontal: 18, minHeight: 38, paddingVertical: 6, borderRadius: 19, justifyContent: 'center', backgroundColor: delta === null ? c.ground2 : cheaper ? c.primary : delta === '0' ? c.brand : c.danger }}>
             <T style={{ fontFamily: font.semibold, fontSize: 16, color: delta === null ? c.ink : '#FFFFFF' }} num>
               {delta === null ? 'Not comparable yet' : delta === '0' ? 'Same total' : money(delta, currency, { signed: true, cents: false })}
             </T>

@@ -5,7 +5,7 @@ import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
-import { BarChart3, Calculator, FileText, CircleUserRound, LogOut, LifeBuoy, Settings2, Trash2 } from 'lucide-react-native';
+import { BarChart3, Calculator, FileText, CircleUserRound, LogOut, LifeBuoy, Settings2, Trash2, Sparkles } from 'lucide-react-native';
 import { T } from '../src/ui/Text';
 import { Button } from '../src/ui/Button';
 import { Sheet, SheetOption, useToast } from '../src/ui/Sheet';
@@ -121,6 +121,8 @@ export default function Paywall() {
   const mPrice = monthly?.price ?? LIST_PRICES.monthly;
   const listOnly = !yearly || !monthly;
   const perMonth = yearly?.amount ? monthEquivalent(yearly.amount, yearly.currency) : null;
+  // Blueprint B4: a saving label only when it is TRUE for the prices on screen.
+  const saving = savingPercent(yearly?.amount ?? parseLabel(LIST_PRICES.yearly), monthly?.amount ?? parseLabel(LIST_PRICES.monthly));
 
   return (
     <View style={{ flex: 1, backgroundColor: c.ground }} testID="paywall">
@@ -138,6 +140,10 @@ export default function Paywall() {
 
       <View style={{ flex: 1, paddingHorizontal: 20, marginTop: -18, justifyContent: 'space-between', paddingBottom: insets.bottom + 10 }}>
         <View style={{ gap: compact ? 10 : 14 }}>
+          <View style={{ alignSelf: 'flex-start', flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 10, paddingVertical: 5, borderRadius: 999, backgroundColor: c.primaryTint }}>
+            <Sparkles size={13} color={c.goldInk} />
+            <T style={{ fontFamily: font.semibold, fontSize: 12.5, color: c.goldInk }}>HousePlan Pro · everything included</T>
+          </View>
           <T accessibilityRole="header" style={{ fontFamily: font.display, fontSize: compact ? 30 : 34, lineHeight: compact ? 34 : 38, letterSpacing: -0.6, color: c.brand }}>
             Every cost of your house, in one plan
           </T>
@@ -151,7 +157,7 @@ export default function Paywall() {
 
         <View style={{ gap: 10 }}>
           <View style={{ flexDirection: 'row', gap: 10 }} accessibilityRole="radiogroup">
-            <PlanCard selected={period === 'yearly'} onPress={() => setPeriod('yearly')} title="Yearly" price={yPrice} per="/ year" sub={perMonth ? `${perMonth} a month, billed yearly` : 'Billed yearly'} badge="Best value" testID="plan-yearly" />
+            <PlanCard selected={period === 'yearly'} onPress={() => setPeriod('yearly')} title="Yearly" price={yPrice} per="/ year" sub={perMonth ? `${perMonth} a month, billed yearly` : 'Billed yearly'} badge={saving ? `Save ${saving}%` : "Best value"} testID="plan-yearly" />
             <PlanCard selected={period === 'monthly'} onPress={() => setPeriod('monthly')} title="Monthly" price={mPrice} per="/ month" sub="Billed monthly" testID="plan-monthly" />
           </View>
           {listOnly ? (
@@ -274,4 +280,17 @@ function LinkText({ title, onPress, testID }: { title: string; onPress: () => vo
       <T style={{ fontFamily: font.semibold, fontSize: 13.5, color: c.primary }}>{title}</T>
     </Pressable>
   );
+}
+
+/** "$99.99" → 99.99; anything unreadable → null. */
+function parseLabel(label: string): number | null {
+  const n = Number(label.replace(/[^0-9.]/g, ''));
+  return Number.isFinite(n) && n > 0 ? n : null;
+}
+
+/** Yearly against twelve months, rounded down so the claim is never overstated. */
+function savingPercent(yearly: number | null | undefined, monthly: number | null | undefined): number | null {
+  if (!yearly || !monthly) return null;
+  const pct = Math.floor((1 - yearly / (monthly * 12)) * 100);
+  return pct >= 5 ? pct : null;
 }
