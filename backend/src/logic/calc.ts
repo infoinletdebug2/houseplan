@@ -189,6 +189,18 @@ export interface CalcResult {
 interface Ctx {
   currency: string;
   minorDigits: number;
+  /** Display units for assumption text only; every stored value stays SI. */
+  unitSystem?: 'metric' | 'imperial';
+}
+
+/** A length for people to read, in the project's units (values stay metres). */
+function len(m: Dec, ctx: Ctx): string {
+  return ctx.unitSystem === 'imperial' ? `${m.mul(FT_PER_M).toFixed(2)} ft` : `${m.toFixed(3)} m`;
+}
+
+/** Paint coverage per litre per coat, in the project's units. */
+function coverageText(m2PerLitre: Dec, ctx: Ctx): string {
+  return ctx.unitSystem === 'imperial' ? `${m2PerLitre.mul('10.763910416709722').toFixed(1)} ft² per litre` : `${m2PerLitre.toFixed(3)} m² per litre`;
 }
 
 function finish(
@@ -304,7 +316,7 @@ function paint(input: Record<string, unknown>, ctx: Ctx): CalcResult {
   const cans = litres.div(can).ceil();
   const purchased = can.mul(D(cans));
   const price = maybe(input, 'can_price_net', { min: 0 });
-  const assumptions = [`Coverage ${coverage.toFixed(3)} m² per litre per coat, from the product you entered.`, `${coats.toFixed(0)} coats; waste ${waste.toFixed(2)}% on paint only.`];
+  const assumptions = [`Coverage ${coverageText(coverage, ctx)} per coat, from the product you entered.`, `${coats.toFixed(0)} coats; waste ${waste.toFixed(2)}% on paint only.`];
   const { labour, needLabour } = labourFor(input, { net: surface, purchased: surface }, assumptions, 'area');
   const prep = maybe(input, 'preparation_net', { min: 0 });
   return finish(
@@ -336,7 +348,7 @@ function skirting(input: Record<string, unknown>, ctx: Ctx): CalcResult {
   const pieces = required.mul(D(1).add(waste.div(100))).div(stock).ceil();
   const purchased = stock.mul(D(pieces));
   const price = maybe(input, 'piece_price_net', { min: 0 });
-  const assumptions = [`Door openings (${doors.toFixed(3)} m) are left out of the length.`, `Waste ${waste.toFixed(2)}% on material only.`];
+  const assumptions = [`Door openings (${len(doors, ctx)}) are left out of the length.`, `Waste ${waste.toFixed(2)}% on material only.`];
   const { labour, needLabour } = labourFor(input, { net: required, purchased }, assumptions, 'length');
   const prep = maybe(input, 'preparation_net', { min: 0 });
   return finish(
@@ -391,7 +403,7 @@ function wallpaper(input: Record<string, unknown>, ctx: Ctx): CalcResult {
     strips += g.strips;
   }
   const price = maybe(input, 'roll_price_net', { min: 0 });
-  const assumptions = ['Straight match only. Windows are not deducted as reusable strips.', `Each strip has ${trim.toFixed(3)} m trim allowance.`];
+  const assumptions = ['Straight match only. Windows are not deducted as reusable strips.', `Each strip has ${len(trim, ctx)} trim allowance.`];
   const { labour, needLabour } = labourFor(input, { net: area, purchased: area }, assumptions, 'area');
   const prep = maybe(input, 'preparation_net', { min: 0 });
   return finish(

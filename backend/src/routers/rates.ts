@@ -295,7 +295,7 @@ export async function prepare(c: Context, p: ProjectCtx, b: Record<string, unkno
       }
     }
   }
-  const result = runCalculator(code, input, { currency: p.currency, minorDigits: p.minorDigits });
+  const result = runCalculator(code, input, { currency: p.currency, minorDigits: p.minorDigits, unitSystem: p.unitSystem });
   return {
     code,
     input,

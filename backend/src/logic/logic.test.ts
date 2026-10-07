@@ -138,3 +138,17 @@ describe('line pricing (BRD 6.6)', () => {
     expect(priceLine('2', '1500.5', 0n, '10', 0)).toEqual({ net_minor: '3001', tax_minor: '300', gross_minor: '3301' });
   });
 });
+
+describe('assumption text follows the project units (values stay SI)', () => {
+  it('imperial paint coverage and skirting doors read in feet', () => {
+    const paint = runCalculator('paint', { net_surface_m2: '80', coats: '2', coverage_m2_per_litre: '10', can_size_litres: '5', labour_basis: 'none' }, { ...EUR, unitSystem: 'imperial' });
+    expect(paint.assumptions[0]).toContain('107.6 ft² per litre');
+    expect(paint.quantities.litres_required).toBe('16');
+    const sk = runCalculator('skirting', { perimeter_m: '18', door_widths_m: '0.9', stock_length_m: '2.4', labour_basis: 'none' }, { ...EUR, unitSystem: 'imperial' });
+    expect(sk.assumptions[0]).toContain('2.95 ft');
+  });
+  it('metric stays metric', () => {
+    const sk = runCalculator('skirting', { perimeter_m: '18', door_widths_m: '0.9', stock_length_m: '2.4', labour_basis: 'none' }, EUR);
+    expect(sk.assumptions[0]).toContain('0.9 m');
+  });
+});
