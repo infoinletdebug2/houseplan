@@ -23,7 +23,32 @@ const WEB = `http://localhost:${process.env.HARNESS_WEB_PORT ?? 8093}`;
 const PORT = Number(process.env.HARNESS_CDP_PORT ?? 9233);
 
 /** A phone, not a desktop. The layout only means anything at this width. */
-const VIEWPORT = { width: 393, height: 852, deviceScaleFactor: 2 };
+// HARNESS_WIDTH / HARNESS_HEIGHT: shoot a small Android (e.g. 340x740) to catch overlaps.
+const VIEWPORT = { width: Number(process.env.HARNESS_WIDTH ?? 393), height: Number(process.env.HARNESS_HEIGHT ?? 852), deviceScaleFactor: 2 };
+// HARNESS_TEXT_SCALE=1.3 approximates a phone's larger system text: RN Web ignores fontScale,
+// so every font-size and line-height in the page's style sheets is multiplied before the shot.
+const TEXT_SCALE = Number(process.env.HARNESS_TEXT_SCALE ?? 1);
+
+/** Runs in the page: multiplies every px font-size and line-height (style sheets and inline styles). */
+function growText(k) {
+  const grow = (v) => v.replace(/([0-9.]+)px/g, (_, n) => `${(Number(n) * k).toFixed(2)}px`);
+  const fix = (style) => {
+    for (const prop of ['font-size', 'line-height']) {
+      const v = style.getPropertyValue(prop);
+      if (v && v.includes('px')) style.setProperty(prop, grow(v));
+    }
+  };
+  for (const sheet of document.styleSheets) {
+    let rules;
+    try {
+      rules = sheet.cssRules;
+    } catch {
+      continue;
+    }
+    for (const r of rules) if (r.style) fix(r.style);
+  }
+  for (const el of document.querySelectorAll('[style]')) fix(el.style);
+}
 
 const CHROME =
   process.env.CHROME_PATH ??
@@ -231,6 +256,10 @@ async function main() {
     }
     // Then a beat for the fonts and the one orchestrated entrance.
     await wait(screen.settle ?? 900);
+    if (TEXT_SCALE !== 1) {
+      await page('Runtime.evaluate', { expression: `(${growText.toString()})(${TEXT_SCALE})` });
+      await wait(400);
+    }
 
     /**
      * Did the APP render, or did something else?

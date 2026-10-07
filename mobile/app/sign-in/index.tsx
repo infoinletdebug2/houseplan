@@ -78,7 +78,7 @@ export default function SignIn() {
 
         <View style={{ paddingHorizontal: 22, marginTop: -64, gap: space.md }}>
           <View style={{ gap: 8 }}>
-            <T style={{ fontFamily: font.semibold, fontSize: 12, letterSpacing: 1.4, color: '#F5A270' }}>WELCOME</T>
+            <T style={{ fontFamily: font.semibold, fontSize: 14, color: '#F5A270' }}>Welcome</T>
             <T accessibilityRole="header" style={{ fontFamily: font.display, fontSize: 38, lineHeight: 42, color: '#FBF4EA', letterSpacing: -0.6 }}>
               Every cost of your{'\n'}house, in one plan.
             </T>

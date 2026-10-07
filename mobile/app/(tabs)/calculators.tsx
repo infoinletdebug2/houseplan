@@ -49,9 +49,12 @@ export default function CalculatorsTab() {
             </>
           )}
         </Gate>
+        {/* Blueprint C3: an empty screen offers ONE action, so the rate book waits for the first project. */}
+        {list.length > 0 ? (
         <Section>
           <ChoiceRow label="Your rate book" value="Prices you have saved, with their dates and sources" icon={(col) => <BookOpen size={18} color={col} />} meaning="estimate" onPress={() => router.push('/rates' as never)} last />
         </Section>
+        ) : null}
       </View>
       <PickerSheet visible={sheet} onClose={() => setSheet(false)} title="Which project?" options={list.map((p) => ({ value: p.id, label: p.name, hint: `${p.currency} · ${p.unit_system === 'imperial' ? 'feet' : 'metres'}` }))} value={projectId} onPick={setPicked} />
     </Screen>

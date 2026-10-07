@@ -275,7 +275,7 @@ export function PhotoBand({ image, eyebrow, title, height = 260, children, right
       {right ? <View style={{ position: 'absolute', top: 54, right: 16 }}>{right}</View> : null}
       <View style={{ position: 'absolute', left: 20, right: 20, bottom: 18, gap: 4 }}>
         {eyebrow ? (
-          <T style={{ fontFamily: font.semibold, fontSize: 12, letterSpacing: 1.6, color: 'rgba(255,255,255,0.85)' }}>{eyebrow.toUpperCase()}</T>
+          <T style={{ fontFamily: font.semibold, fontSize: 14, color: 'rgba(255,255,255,0.88)' }}>{eyebrow}</T>
         ) : null}
         <T style={{ fontFamily: font.display, fontSize: 32, lineHeight: 37, color: '#FFFFFF' }} numberOfLines={2} accessibilityRole="header">
           {title}
