@@ -44,7 +44,7 @@ export function TapeMeasure({ metres, units, onChange, label, style, header = tr
   const value = metres !== null && Number.isFinite(metres) && metres > 0 ? metres : 0;
   const step = units === 'metric' ? 0.01 : IN / 4;
   // Pixels per metre: a 1 m window on metric, a 3 ft window on imperial.
-  const ppm = units === 'metric' ? width / 1.0 : width / (3 * FT);
+  const ppm = units === 'metric' ? width / 1.0 : width / (2 * FT);
   const start = useRef(0);
   const lastStep = useRef(0);
   const live = useRef(value);
@@ -107,11 +107,11 @@ export function TapeMeasure({ metres, units, onChange, label, style, header = tr
       const half = k % 2 === 0;
       if (!inchMark && ppm * IN / 4 < 3) continue;
       ticks.push(<Line key={`t${k}`} x1={x} y1={10} x2={x} y2={10 + (inchMark ? 24 : half ? 15 : 9)} stroke="#2A1E17" strokeWidth={inchMark ? 1.5 : 1} />);
-      if (inchMark) {
+      if (inchMark && ((k / 4) % 2 === 0 || (k / 4) % 12 === 0)) {
         const inches = k / 4;
         const foot = inches % 12 === 0;
         ticks.push(
-          <SvgText key={`l${k}`} x={x + 2} y={foot ? 58 : 50} fontSize={foot ? 13 : 10} fontWeight={foot ? '700' : '500'} fill={foot ? '#B04E1C' : '#2A1E17'}>
+          <SvgText key={`l${k}`} x={x + 2} y={foot ? 58 : 50} fontSize={foot ? 13 : 11} fontWeight={foot ? '700' : '500'} fill={foot ? '#B04E1C' : '#2A1E17'}>
             {foot ? `${inches / 12} ft` : String(inches % 12)}
           </SvgText>,
         );
@@ -163,20 +163,22 @@ export function TapeMeasure({ metres, units, onChange, label, style, header = tr
           <Polygon points={`${mid - 7},0 ${mid + 7},0 ${mid},9`} fill="#C4561F" />
           <Polygon points={`${mid - 7},${H} ${mid + 7},${H} ${mid},${H - 9}`} fill="#C4561F" />
         </Svg>
-        {!header ? (
-          <View pointerEvents="none" style={{ position: 'absolute', top: H - 30, left: 0, right: 0, alignItems: 'center' }}>
-            <View style={{ paddingHorizontal: 9, paddingVertical: 3, borderRadius: 999, backgroundColor: '#2A1E17' }}>
-              <T style={{ fontFamily: font.semibold, fontSize: 12.5, color: '#FBF4EA' }} num maxFontSizeMultiplier={1.2}>
+      </View>
+      {onChange || !header ? (
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+          {!header ? (
+            <View style={{ paddingHorizontal: 10, paddingVertical: 4, borderRadius: 999, backgroundColor: c.scheme === 'dark' ? '#F3E3D1' : '#2A1E17' }}>
+              <T style={{ fontFamily: font.semibold, fontSize: 13, color: c.scheme === 'dark' ? '#1F1611' : '#FBF4EA' }} num maxFontSizeMultiplier={1.2}>
                 {lengthReadout(metres, units)}
               </T>
             </View>
-          </View>
-        ) : null}
-      </View>
-      {onChange ? (
-        <T v="small" style={{ fontSize: 12.5 }}>
-          {header ? 'Type it below, or slide the tape' : 'Or slide the tape'}: {units === 'metric' ? '1 cm' : '¼ in'} a notch.
-        </T>
+          ) : null}
+          {onChange ? (
+            <T v="small" style={{ fontSize: 12.5, flex: 1 }}>
+              {header ? 'Type it below, or slide the tape' : 'Or slide the tape'}: {units === 'metric' ? '1 cm' : '¼ in'} a notch.
+            </T>
+          ) : null}
+        </View>
       ) : null}
     </View>
   );

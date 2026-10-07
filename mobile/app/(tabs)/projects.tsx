@@ -69,10 +69,10 @@ export default function Projects() {
         showsVerticalScrollIndicator={false}
       >
         <View style={{ height: heroH }}>
-          <Image source={IMAGES[featured ? coverImage(featured) : 'home-header']} style={{ width: '100%', height: '100%' }} contentFit="cover" contentPosition={{ top: '30%', left: '50%' }} />
+          <Image source={IMAGES['home-header']} style={{ width: '100%', height: '100%' }} contentFit="cover" contentPosition={{ top: '40%', left: '50%' }} />
           <LinearGradient
-            colors={['rgba(31,22,17,0.6)', 'rgba(31,22,17,0)', 'rgba(31,22,17,0)', 'rgba(31,22,17,0.9)', '#1F1611']}
-            locations={[0, 0.28, 0.46, 0.84, 1]}
+            colors={['rgba(31,22,17,0.6)', 'rgba(31,22,17,0)', 'rgba(31,22,17,0.05)', 'rgba(31,22,17,0.72)', 'rgba(31,22,17,0.93)', '#1F1611']}
+            locations={[0, 0.24, 0.4, 0.6, 0.82, 1]}
             style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
           />
           <View style={{ position: 'absolute', top: insets.top + 8, left: GUTTER, right: 12, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -212,7 +212,7 @@ function SummaryCard({ project: p, lines, onPress }: { project: Project; lines: 
           </View>
         </View>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-          <T style={{ flex: 1, fontFamily: font.display, fontSize: 42, lineHeight: 48, letterSpacing: -1, color: hero === null ? c.faint : c.ink }} num numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.55} maxFontSizeMultiplier={1.2}>
+          <T style={{ flex: 1, fontFamily: font.display, fontSize: hero === null ? 30 : 42, lineHeight: hero === null ? 36 : 48, letterSpacing: hero === null ? -0.4 : -1, color: hero === null ? c.muted : c.ink }} num numberOfLines={hero === null ? 2 : 1} adjustsFontSizeToFit={hero !== null} minimumFontScale={0.55} maxFontSizeMultiplier={1.2}>
             {money(hero, p.currency, { empty: 'Not priced yet', cents: false })}
           </T>
           {lines ? <CompletenessRing done={Math.max(0, lines - missing)} total={lines} size={58} /> : null}
@@ -227,8 +227,8 @@ function SummaryCard({ project: p, lines, onPress }: { project: Project; lines: 
         </View>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', columnGap: 18, rowGap: 6 }}>
           <Mini color={c.primary} label="Paid" value={moneyShort(paid, p.currency)} />
-          <Mini color={c.brand} label="Known estimate" value={total === null ? 'Not priced' : moneyShort(total, p.currency)} />
-          <Mini color={c.faint} label="Unpriced" value={String(missing)} />
+          {cash !== null && total !== null ? <Mini color={c.brand} label="Known estimate" value={moneyShort(total, p.currency)} /> : null}
+          <Mini color={c.faint} label="Updated" value={day(p.updated_at)} />
         </View>
       </View>
     </Pressable>

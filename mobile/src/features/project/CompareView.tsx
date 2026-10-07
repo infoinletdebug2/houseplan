@@ -106,12 +106,12 @@ function TotalCard({ title, value, currency, tint, missing, highlight }: { title
   const c = useColors();
   return (
     <View style={{ flex: 1, minHeight: 132, borderRadius: radius.card, padding: 16, paddingBottom: 24, backgroundColor: tint, gap: 6 }}>
+      <View style={{ alignItems: 'center', paddingBottom: 6, borderBottomWidth: 1, borderBottomColor: c.scheme === 'dark' ? 'rgba(243,227,209,0.15)' : 'rgba(42,30,23,0.12)', marginBottom: 2 }}>
+        <HouseSketch highlight={highlight} width={112} />
+      </View>
       <T style={{ fontFamily: font.displayBold, fontSize: 18, lineHeight: 22, color: c.ink }} numberOfLines={2}>
         {title}
       </T>
-      <View style={{ alignItems: 'center', paddingVertical: 4, borderBottomWidth: 1, borderBottomColor: c.scheme === 'dark' ? 'rgba(243,227,209,0.15)' : 'rgba(42,30,23,0.12)', marginBottom: 2 }}>
-        <HouseSketch highlight={highlight} width={112} />
-      </View>
       <T v="caption">Total with reserve</T>
       <T style={{ fontFamily: font.display, fontSize: 23, lineHeight: 28, color: c.ink }} num>
         {money(value, currency, { cents: false })}
