@@ -50,6 +50,8 @@ export const accountRouter = defineRouter({
       } catch {
         keys = [];
       }
+      // A tombstone (id and status only): a still-valid access token can no longer recreate a profile.
+      await sql(c, `INSERT INTO hp__profile (user_id, status) VALUES ($1::text, 'deleted') ON CONFLICT (user_id) DO UPDATE SET status = 'deleted'`, [uid]);
       const left = await deleteObjects(c, keys);
       await sql(
         c,

@@ -183,8 +183,8 @@ async function buildContext(c: Context, projectId: string, revisionId: string | 
   const calcs = await sql<{ id: string }>(c, `SELECT id FROM hp__calculation WHERE project_id = $1::uuid ORDER BY created_at DESC LIMIT 50`, [projectId]);
   let forecast: unknown = null;
   if (kind === 'forecast_summary' || kind === 'explain_estimate') {
-    const d = await sqlOne<{ r: string }>(c, `SELECT hp_dashboard($1::uuid, NULL)::text AS r`, [projectId]).catch(() => null);
-    const parsed = d?.r ? (JSON.parse(d.r) as Record<string, unknown>) : null;
+    const d = await sqlOne<{ r: unknown }>(c, `SELECT hp_dashboard($1::uuid, NULL)::text AS r`, [projectId]).catch(() => null);
+    const parsed = d?.r ? ((typeof d.r === 'string' ? JSON.parse(d.r) : d.r) as Record<string, unknown>) : null;
     forecast = parsed ? { actual_minor: parsed.actual_minor, committed_remaining_minor: parsed.committed_remaining_minor, paid_minor: parsed.paid_minor, forecast: parsed.forecast } : null;
   }
   return {
