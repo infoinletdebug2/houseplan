@@ -45,7 +45,7 @@ export function Button({ title, onPress, kind = 'primary', icon, loading, disabl
     gold: { bg: c.brand, fg: c.onBrand },
     outline: { bg: c.surface, fg: c.ink, border: c.scheme === 'dark' ? c.line : '#D6D0C3' },
     ghost: { bg: 'transparent', fg: c.primary },
-    danger: { bg: c.danger, fg: '#FFFFFF' },
+    danger: { bg: c.danger, fg: c.scheme === 'dark' ? '#1F1611' : '#FFFFFF' },
     dangerSoft: { bg: c.dangerTint, fg: c.danger },
     light: { bg: '#FFFFFF', fg: '#1F1611' },
   };

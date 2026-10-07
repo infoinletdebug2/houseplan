@@ -27,9 +27,10 @@ export function MoneyCard({
   testID?: string;
 }) {
   const c = useColors();
-  const ink = c.scheme === 'dark' ? '#17110D' : c.brand;
+  // Dark mode: a lifted espresso surface with a hairline, so the card never melts into the page.
+  const ink = c.scheme === 'dark' ? '#2A2019' : c.brand;
   return (
-    <View testID={testID} style={[{ backgroundColor: ink, borderRadius: radius.card, padding: 20, gap: 14 }, style]} accessible accessibilityLabel={`${label}: ${money(value, currency, { empty: 'not known yet' })}`}>
+    <View testID={testID} style={[{ backgroundColor: ink, borderRadius: radius.card, padding: 20, gap: 14, borderWidth: c.scheme === 'dark' ? 1 : 0, borderColor: c.line }, style]} accessible accessibilityLabel={`${label}: ${money(value, currency, { empty: 'not known yet' })}`}>
       <View style={{ gap: 4 }}>
         <T style={{ fontFamily: font.medium, fontSize: 15, color: 'rgba(255,255,255,0.82)' }}>{label}</T>
         <T style={{ fontFamily: font.display, fontSize: 44, lineHeight: 50, letterSpacing: -1, color: '#FFFFFF' }} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.6}>

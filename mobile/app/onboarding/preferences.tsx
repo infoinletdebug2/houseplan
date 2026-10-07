@@ -124,7 +124,7 @@ export default function OnboardingPreferences() {
 function PreviewCard({ name, country, currency, units, tz, tax }: { name: string; country: string; currency: string; units: UnitSystem; tz: string; tax: 'exclusive' | 'inclusive' }) {
   const c = useColors();
   return (
-    <View style={{ backgroundColor: c.brand, borderRadius: radius.card, padding: 18, gap: 14 }} accessible accessibilityLabel={`${name}'s plan, ${country}, ${currency}, ${units}, ${tz}`}>
+    <View style={{ backgroundColor: c.scheme === 'dark' ? '#2A2019' : c.brand, borderWidth: c.scheme === 'dark' ? 1 : 0, borderColor: c.line, borderRadius: radius.card, padding: 18, gap: 14 }} accessible accessibilityLabel={`${name}'s plan, ${country}, ${currency}, ${units}, ${tz}`}>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
         <View style={{ width: 46, height: 46, borderRadius: 14, backgroundColor: 'rgba(255,255,255,0.1)', alignItems: 'center', justifyContent: 'center' }}>
           <Mark size={28} tone="light" />
