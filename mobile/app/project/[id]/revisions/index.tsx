@@ -28,10 +28,13 @@ export default function Revisions() {
   const c = useColors();
   const project = useProject(id);
   const revs = useRevisions(id);
-  const [menu, setMenu] = useState<Revision | null>(null);
+  const [menuPick, setMenu] = useState<Revision | null>(null);
   const [baseline, setBaseline] = useState<Revision | null>(null);
   const [busy, setBusy] = useState(false);
   const list = (revs.data?.revisions ?? []).filter((r) => r.kind === 'current');
+  // The menu reads the LIVE row: a card tapped while cached data was showing (a draft that has since been saved)
+  // must offer the saved revision's actions, not the stale ones.
+  const menu = menuPick ? (list.find((r) => r.id === menuPick.id) ?? menuPick) : null;
   const ptr = revs.data?.pointers;
   const cur = project.data?.currency ?? 'USD';
 

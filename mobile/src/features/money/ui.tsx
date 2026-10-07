@@ -29,9 +29,11 @@ export function Gate<T>({ q, rows = 4, height = 76, children }: { q: UseQueryRes
   const router = useRouter();
   const online = useOnline();
   const needsPlan = q.error instanceof ApiError && q.error.needsEntitlement;
+  const unverified = q.error instanceof ApiError && q.error.needsVerification;
   useEffect(() => {
-    if (needsPlan) router.replace('/paywall');
-  }, [needsPlan, router]);
+    if (unverified) router.replace('/verify-email');
+    else if (needsPlan) router.replace('/paywall');
+  }, [needsPlan, unverified, router]);
   if (q.data !== undefined) {
     return (
       <>
@@ -40,7 +42,7 @@ export function Gate<T>({ q, rows = 4, height = 76, children }: { q: UseQueryRes
       </>
     );
   }
-  if (q.error && !needsPlan) return <ErrorState error={q.error} onRetry={() => void q.refetch()} />;
+  if (q.error && !needsPlan && !unverified) return <ErrorState error={q.error} onRetry={() => void q.refetch()} />;
   return <SkeletonList rows={rows} height={height} />;
 }
 

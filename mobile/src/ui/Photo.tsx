@@ -10,6 +10,7 @@ import { font, space, useColors } from '../theme/tokens';
 import { newIdempotencyKey as newId } from '../api/client';
 import { T } from './Text';
 import { Sheet, SheetOption } from './Sheet';
+import { useReduceMotion } from '../lib/motion';
 
 export interface CapturedPhoto {
   id: string;
@@ -69,8 +70,9 @@ export function AttachmentImage({ id, style, contentFit = 'cover' }: { id: strin
 
 /** Full-screen viewer for one server photo. */
 export function PhotoViewer({ id, visible, onClose }: { id: string | null; visible: boolean; onClose: () => void }) {
+  const reduce = useReduceMotion();
   return (
-    <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose} statusBarTranslucent>
+    <Modal visible={visible} transparent animationType={reduce ? "none" : "fade"} onRequestClose={onClose} statusBarTranslucent>
       <Pressable style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.94)', justifyContent: 'center' }} onPress={onClose} accessibilityLabel="Close photo">
         {id ? <AttachmentImage id={id} style={{ width: '100%', height: '78%' }} contentFit="contain" /> : null}
         <View style={{ position: 'absolute', top: 54, right: 20 }}>

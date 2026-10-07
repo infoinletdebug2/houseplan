@@ -19,6 +19,7 @@ import { useAuth } from '../../src/auth/context';
 import { ago } from '../../src/lib/format';
 import { radius, space, useColors } from '../../src/theme/tokens';
 import { StatusPill, WarnNote } from '../../src/features/money/ui';
+import { Gate } from '../../src/features/project/ui';
 import { useSubmit } from '../../src/features/money/data';
 import { ADVICE_KINDS, kindLabel } from '../../src/features/money/advice';
 import type { Advice, AdviceKind, Quota } from '../../src/features/money/types';
@@ -90,6 +91,7 @@ export default function AdvisorTab() {
 
         {q && !q.enabled ? <WarnNote>The advisor is switched off right now. Every calculation and comparison still works.</WarnNote> : null}
 
+        <Gate query={projects} rows={3}>
         {projects.data && projects.data.length === 0 ? (
           <EmptyState compact title="Start a project first" body="The advisor explains a project's estimate and forecast." action="Start a project" onAction={() => router.push('/project/new' as never)} />
         ) : !consent ? (
@@ -119,6 +121,7 @@ export default function AdvisorTab() {
             <Button title={q && q.remaining === 0 ? 'No questions left this month' : 'Ask the advisor'} disabled={!projectId || (q ? q.remaining === 0 || !q.enabled : false)} blockedReason={q && q.remaining === 0 ? 'You have used this month’s advisor questions.' : 'Choose a project.'} onPress={() => void go()} loading={ask.busy} testID="advisor-ask" />
           </>
         )}
+        </Gate>
 
         {consent && history.data?.length ? (
           <View style={{ gap: space.sm }}>

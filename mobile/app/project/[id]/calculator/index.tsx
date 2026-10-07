@@ -6,7 +6,7 @@ import { T } from '../../../../src/ui/Text';
 import { day, money } from '../../../../src/lib/format';
 import { space, useColors } from '../../../../src/theme/tokens';
 import { useCalculations, useProject } from '../../../../src/features/project/api';
-import { ProjectChip } from '../../../../src/features/project/ui';
+import { Gate, ProjectChip } from '../../../../src/features/project/ui';
 import { CalculatorCatalogue } from '../../../../src/features/project/Catalogue';
 import { CALC_SPECS } from '../../../../src/features/project/calculators';
 import { Pill } from '../../../../src/ui/Chips';
@@ -25,6 +25,7 @@ export default function ProjectCalculators() {
         Quantities from your rooms, prices from your rate book. Add any result to the estimate or the purchase list.
       </T>
       <CalculatorCatalogue onPick={(code) => router.push(`/project/${id}/calculator/${code}` as never)} />
+      <Gate query={calcs} rows={2}>
       {calcs.data && calcs.data.length ? (
         <View style={{ gap: space.sm }}>
           <SectionHeader title="Saved calculations" />
@@ -48,6 +49,7 @@ export default function ProjectCalculators() {
           </Card>
         </View>
       ) : null}
+      </Gate>
     </Screen>
   );
 }

@@ -164,13 +164,18 @@ function CategoryBlock({ cat, currency, open, onToggle, last, onLine, onAdd }: {
           </T>
           {cat.inclusion !== 'included' ? <Pill label={INCLUSION_LABEL[cat.inclusion]} tone={cat.inclusion === 'undecided' ? 'review' : 'grey'} style={{ marginTop: 2 }} /> : null}
         </View>
-        <T style={{ fontFamily: font.display, fontSize: 19, color: cat.inclusion === 'excluded' ? c.faint : cat.missing && cat.subtotal_gross_minor === '0' ? c.warn : c.ink }} num>
-          {cat.missing && cat.subtotal_gross_minor === '0' ? 'Not priced' : money(cat.subtotal_gross_minor, currency, { cents: false })}
+        {/* BRD 6.2: an unknown cost is never shown as zero. No lines yet → a dash; only unpriced lines → "Not priced". */}
+        <T
+          style={{ fontFamily: font.display, fontSize: 19, color: cat.inclusion === 'excluded' || cat.lines.length === 0 ? c.faint : cat.missing && cat.subtotal_gross_minor === '0' ? c.warn : c.ink }}
+          num
+          accessibilityLabel={cat.lines.length === 0 ? 'No lines yet' : undefined}
+        >
+          {cat.lines.length === 0 ? '—' : cat.missing && cat.subtotal_gross_minor === '0' ? 'Not priced' : money(cat.subtotal_gross_minor, currency, { cents: false })}
         </T>
         <Chevron size={18} color={c.faint} />
       </Pressable>
       {open ? (
-        <View style={{ backgroundColor: c.scheme === 'dark' ? '#161D1B' : '#F7F3EC', borderTopWidth: 1, borderTopColor: c.line }}>
+        <View style={{ backgroundColor: c.ground2, borderTopWidth: 1, borderTopColor: c.line }}>
           {cat.lines.map((l, i) => (
             <LineRow key={l.id} line={l} currency={currency} onPress={onLine ? () => onLine(l.id) : undefined} last={i === cat.lines.length - 1 && !onAdd} />
           ))}

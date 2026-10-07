@@ -28,7 +28,8 @@ import { ApiError } from '../../api/client';
 import { font, radius, space, useColors } from '../../theme/tokens';
 import { useAccent, type Meaning } from '../../theme/accent';
 import { T } from '../../ui/Text';
-import { ErrorState, SkeletonList } from '../../ui/States';
+import { ErrorState, OfflineBanner, SkeletonList } from '../../ui/States';
+import { useOnline } from '../../api/persist';
 import { SourceBadge } from '../../ui/Money';
 import { Pill } from '../../ui/Chips';
 import { Sheet, SheetOption } from '../../ui/Sheet';
@@ -86,10 +87,13 @@ export function CategoryDisc({ code, size = 40 }: { code: string; size?: number 
 export function Gate({ query, children, rows = 4 }: { query: { isLoading: boolean; error: unknown; refetch: () => unknown; data?: unknown }; children: React.ReactNode; rows?: number }) {
   const router = useRouter();
   const err = query.error;
+  const online = useOnline();
   const entitlement = err instanceof ApiError && err.needsEntitlement;
+  const unverified = err instanceof ApiError && err.needsVerification;
   useEffect(() => {
-    if (entitlement) router.replace('/paywall');
-  }, [entitlement, router]);
+    if (unverified) router.replace('/verify-email');
+    else if (entitlement) router.replace('/paywall');
+  }, [entitlement, unverified, router]);
   if (query.isLoading && !query.data) return <SkeletonList rows={rows} height={72} />;
   if (err && !query.data) {
     if (err instanceof ApiError && err.status === 404) {
@@ -97,7 +101,12 @@ export function Gate({ query, children, rows = 4 }: { query: { isLoading: boolea
     }
     return <ErrorState error={err} onRetry={() => void query.refetch()} />;
   }
-  return <>{children}</>;
+  return (
+    <>
+      {!online ? <OfflineBanner /> : null}
+      {children}
+    </>
+  );
 }
 
 /* ── labels ───────────────────────────────────────────────────────────── */

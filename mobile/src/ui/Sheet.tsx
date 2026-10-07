@@ -5,14 +5,16 @@ import { CircleCheck, CircleAlert, Info } from 'lucide-react-native';
 import * as Haptics from 'expo-haptics';
 import { font, space, useColors } from '../theme/tokens';
 import { T } from './Text';
+import { useReduceMotion } from '../lib/motion';
 import { Button } from './Button';
 
 /** A bottom sheet: grabber, serif title, dims what is behind it. */
 export function Sheet({ visible, onClose, title, subtitle, children, scroll }: { visible: boolean; onClose: () => void; title?: string; subtitle?: string; children: React.ReactNode; scroll?: boolean }) {
   const insets = useSafeAreaInsets();
+  const reduce = useReduceMotion();
   const c = useColors();
   return (
-    <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose} statusBarTranslucent>
+    <Modal visible={visible} transparent animationType={reduce ? "none" : "slide"} onRequestClose={onClose} statusBarTranslucent>
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
         <Pressable style={{ flex: 1, backgroundColor: c.overlay }} onPress={onClose} accessibilityLabel="Close" />
         <View style={{ backgroundColor: c.ground, borderTopLeftRadius: 28, borderTopRightRadius: 28, paddingHorizontal: 20, paddingTop: 10, paddingBottom: insets.bottom + space.lg }}>
@@ -119,6 +121,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   const c = useColors();
   const [toast, setToast] = useState<{ message: string; tone: ToastTone; key: number } | null>(null);
   const opacity = useRef(new RNAnimated.Value(0)).current;
+  const reduce = useReduceMotion();
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const show = useCallback(
@@ -127,12 +130,12 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
       setToast({ message, tone, key: Date.now() });
       if (tone === 'ok') void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => undefined);
       if (tone === 'error') void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error).catch(() => undefined);
-      RNAnimated.timing(opacity, { toValue: 1, duration: 180, useNativeDriver: true }).start();
+      RNAnimated.timing(opacity, { toValue: 1, duration: reduce ? 0 : 180, useNativeDriver: true }).start();
       timer.current = setTimeout(() => {
-        RNAnimated.timing(opacity, { toValue: 0, duration: 220, useNativeDriver: true }).start(() => setToast(null));
+        RNAnimated.timing(opacity, { toValue: 0, duration: reduce ? 0 : 220, useNativeDriver: true }).start(() => setToast(null));
       }, tone === 'error' ? 4200 : 2600);
     },
-    [opacity],
+    [opacity, reduce],
   );
 
   useEffect(() => () => {
