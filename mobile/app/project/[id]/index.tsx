@@ -145,7 +145,7 @@ function Figures({ d, onForecast, onEstimate }: { d: Dashboard; onForecast: () =
             ? 'You have paid more than the forecast so far: a cash credit.'
             : f.complete
               ? 'Forecast to finish minus what you have paid.'
-              : `Forecast is incomplete: ${f.missing_inputs} ${f.missing_inputs === 1 ? 'category has' : 'categories have'} no remaining-work figure.`;
+              : incompleteReason(f.missing_inputs, d.undecided_categories);
   const lines = est?.line_count ?? 0;
   const priced = Math.max(0, lines - (est?.missing_line_count ?? 0));
   const target = d.target_budget_minor;
@@ -242,6 +242,14 @@ function Figures({ d, onForecast, onEstimate }: { d: Dashboard; onForecast: () =
       ) : null}
     </View>
   );
+}
+
+/** Why a confirmed forecast is incomplete, naming the real cause: missing remaining-work figures and/or undecided categories. */
+function incompleteReason(missing: number, undecided: number): string {
+  const parts: string[] = [];
+  if (missing > 0) parts.push(`${missing} ${missing === 1 ? 'category has' : 'categories have'} no remaining-work figure`);
+  if (undecided > 0) parts.push(`${undecided} ${undecided === 1 ? 'category is' : 'categories are'} still undecided`);
+  return parts.length ? `Forecast is incomplete: ${parts.join(' and ')}.` : 'Forecast is incomplete.';
 }
 
 function NextAction({ title, onPress, last }: { title: string; onPress: () => void; last?: boolean }) {
