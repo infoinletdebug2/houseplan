@@ -19,7 +19,7 @@ import { font, space, useColors } from '../theme/tokens';
 /**
  * The shape every auth form shares (blueprint C3: mark, photo, one display
  * line, then the form — and it must scroll): a cinematic photo under the
- * status bar fading into spruce ink, and a plaster sheet that rides up over it.
+ * status bar fading into espresso ink, and a cream sheet that rides up over it.
  */
 export function AuthShell({ image, eyebrow, title, subtitle, children, footer }: { image: ImageKey; eyebrow: string; title: string; subtitle?: string; children: React.ReactNode; footer?: React.ReactNode }) {
   const router = useRouter();
@@ -30,22 +30,22 @@ export function AuthShell({ image, eyebrow, title, subtitle, children, footer }:
   const scroll = useRef<ScrollView>(null);
   useRevealFocused(scroll);
   return (
-    <View style={{ flex: 1, backgroundColor: '#10241F' }}>
+    <View style={{ flex: 1, backgroundColor: '#1F1611' }}>
       <KeyboardArea>
       <ScrollView ref={scroll} keyboardShouldPersistTaps="handled" keyboardDismissMode="interactive" bounces={false} showsVerticalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1 }}>
         <View style={{ height: photo }}>
           <Image source={IMAGES[image]} style={{ position: 'absolute', width: '100%', height: '100%' }} contentFit="cover" contentPosition={{ top: '40%', left: '50%' }} transition={200} />
-          <LinearGradient colors={['rgba(16,36,31,0.7)', 'rgba(16,36,31,0.05)', 'rgba(16,36,31,0.85)']} locations={[0, 0.38, 1]} style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }} />
+          <LinearGradient colors={['rgba(31,22,17,0.7)', 'rgba(31,22,17,0.05)', 'rgba(31,22,17,0.85)']} locations={[0, 0.38, 1]} style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }} />
           <View style={{ position: 'absolute', top: insets.top + 6, left: 12, right: 20, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
             {router.canGoBack() ? <IconButton glass icon={<ChevronLeft size={22} color="#FFFFFF" />} label="Back" onPress={() => router.back()} /> : <View style={{ width: 44 }} />}
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
               <Mark size={24} tone="light" />
-              <T style={{ fontFamily: font.displayBold, fontSize: 17, color: '#F4EFE7' }}>HousePlan</T>
+              <T style={{ fontFamily: font.displayBold, fontSize: 17, color: '#FBF4EA' }}>HousePlan</T>
             </View>
           </View>
           <View style={{ position: 'absolute', left: 22, bottom: 46 }}>
-            <View style={{ alignSelf: 'flex-start', paddingHorizontal: 11, height: 26, borderRadius: 13, backgroundColor: 'rgba(127,209,188,0.16)', borderWidth: 1, borderColor: 'rgba(127,209,188,0.45)', justifyContent: 'center' }}>
-              <T style={{ fontFamily: font.semibold, fontSize: 12, color: '#BFE6DA' }}>{eyebrow}</T>
+            <View style={{ alignSelf: 'flex-start', paddingHorizontal: 11, height: 26, borderRadius: 13, backgroundColor: 'rgba(245,162,112,0.16)', borderWidth: 1, borderColor: 'rgba(245,162,112,0.45)', justifyContent: 'center' }}>
+              <T style={{ fontFamily: font.semibold, fontSize: 12, color: '#F6C9AE' }}>{eyebrow}</T>
             </View>
           </View>
         </View>

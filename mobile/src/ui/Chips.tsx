@@ -14,7 +14,7 @@ export function Pill({ label, tone = 'grey', icon, style }: { label: string; ton
     blue: [c.primaryTint, c.scheme === 'dark' ? c.gold2 : c.primary],
     ok: [c.okTint, c.ok],
     grey: [c.ground2, c.muted],
-    light: ['rgba(255,255,255,0.92)', '#10241F'],
+    light: ['rgba(255,255,255,0.92)', '#1F1611'],
   };
   const [bg, fg] = map[tone]!;
   return (
@@ -75,7 +75,7 @@ export function ChipRow({ children, style }: { children: React.ReactNode; style?
   return <View style={[{ flexDirection: 'row', flexWrap: 'wrap', gap: space.xs }, style]}>{children}</View>;
 }
 
-/** A segmented control. `strong` fills the selected segment teal. */
+/** A segmented control. `strong` fills the selected segment orange. */
 export function Segmented<T extends string>({
   options,
   value,

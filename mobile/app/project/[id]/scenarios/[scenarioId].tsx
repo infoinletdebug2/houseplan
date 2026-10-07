@@ -86,7 +86,7 @@ export default function CompareScenario() {
           <>
             <CompareView diff={d} currency={project.data.currency} leftTitle={against === 'baseline' ? 'Baseline' : 'Current'} rightTitle={s.title} savingsLabel={d.savings_label} />
             {s.tradeoffs.length ? (
-              <Card style={{ gap: 10, backgroundColor: c.scheme === 'dark' ? '#1E2421' : '#EFE8DD' }}>
+              <Card style={{ gap: 10, backgroundColor: c.scheme === 'dark' ? '#241C16' : '#F4E9DA' }}>
                 <T v="h3">The tradeoffs</T>
                 {s.tradeoffs.map((t, i) => (
                   <View key={i} style={{ flexDirection: 'row', gap: 10, alignItems: 'center' }}>

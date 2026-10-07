@@ -19,7 +19,7 @@ import { BudgetPreview, ChainPreview, ComparePreview, FinishPreview, RoomPreview
  * A real pager: a horizontal ScrollView with `pagingEnabled`, every slide
  * mounted, the index from the scroll position, so a swipe never blinks while
  * a photo decodes. Each slide: a cinematic photo over the top ~56% fading into
- * spruce ink, a live sample card riding the photo's lower edge (plays ONCE;
+ * espresso ink, a live sample card riding the photo's lower edge (plays ONCE;
  * Reduce Motion shows the final state), an eyebrow chip, a serif headline and
  * at most two lines of body.
  *
@@ -28,10 +28,10 @@ import { BudgetPreview, ChainPreview, ComparePreview, FinishPreview, RoomPreview
  * `?slide=N` (1-based) opens a given slide for store screenshots and the harness.
  */
 
-const INK = '#10241F';
-const PLASTER = '#F4EFE7';
-const MUTED = '#A9BDB6';
-const MINT = '#7FD1BC';
+const INK = '#1F1611';
+const CREAM = '#FBF4EA';
+const MUTED = '#C9B6A4';
+const MINT = '#F5A270';
 
 type Slide = { key: string; image: ImageKey; chip: string; icon: (c: string) => React.ReactNode; headline: string; sub: string; note?: string };
 
@@ -105,7 +105,7 @@ export default function Discover() {
   const dots = (
     <View style={{ flexDirection: 'row', gap: 7 }} accessibilityRole="adjustable" accessibilityLabel={`Slide ${index + 1} of ${ALL.length}`}>
       {ALL.map((s, i) => (
-        <View key={s.key} style={{ width: i === index ? 22 : 7, height: 7, borderRadius: 4, backgroundColor: i === index ? MINT : 'rgba(244,239,231,0.28)' }} />
+        <View key={s.key} style={{ width: i === index ? 22 : 7, height: 7, borderRadius: 4, backgroundColor: i === index ? MINT : 'rgba(251,244,234,0.28)' }} />
       ))}
     </View>
   );
@@ -156,7 +156,7 @@ export default function Discover() {
             >
               <T style={{ fontFamily: font.semibold, fontSize: 17, color: INK }}>Get started</T>
             </Pressable>
-            <T style={{ fontFamily: font.semibold, fontSize: 15, color: PLASTER, textAlign: 'center', paddingVertical: 4 }} onPress={() => router.push('/sign-in')} accessibilityRole="button" suppressHighlighting>
+            <T style={{ fontFamily: font.semibold, fontSize: 15, color: CREAM, textAlign: 'center', paddingVertical: 4 }} onPress={() => router.push('/sign-in')} accessibilityRole="button" suppressHighlighting>
               I already have an account
             </T>
           </>
@@ -188,17 +188,17 @@ function SlideView({ slide, i, width, height, photoH, topInset, bottomInset, act
     <View style={{ width, height, backgroundColor: INK }}>
       <View style={{ position: 'absolute', top: 0, left: 0, right: 0, height: photoH }}>
         <Image source={IMAGES[slide.image]} style={{ width: '100%', height: '100%' }} contentFit="cover" contentPosition={{ top: '20%', left: '50%' }} transition={0} />
-        <LinearGradient colors={['rgba(16,36,31,0.6)', 'rgba(16,36,31,0)', 'rgba(16,36,31,0.15)', INK]} locations={[0, 0.24, 0.6, 1]} style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }} />
+        <LinearGradient colors={['rgba(31,22,17,0.6)', 'rgba(31,22,17,0)', 'rgba(31,22,17,0.15)', INK]} locations={[0, 0.24, 0.6, 1]} style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }} />
       </View>
       <View style={[{ position: 'absolute', left: 20, right: 20, gap: 14 }, closing ? { bottom: bottomInset + CLOSING_CONTROLS } : { top: cardTop }]}>
         {closing ? <IncludedCard /> : card}
         <View style={{ flexDirection: 'row' }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 11, paddingVertical: 6, borderRadius: 999, backgroundColor: 'rgba(127,209,188,0.12)', borderWidth: 1, borderColor: 'rgba(127,209,188,0.3)' }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 11, paddingVertical: 6, borderRadius: 999, backgroundColor: 'rgba(245,162,112,0.12)', borderWidth: 1, borderColor: 'rgba(245,162,112,0.3)' }}>
             {slide.icon(MINT)}
             <T style={{ fontFamily: font.semibold, fontSize: 12.5, color: MINT }}>{slide.chip}</T>
           </View>
         </View>
-        <T style={{ fontFamily: font.display, fontSize: 36, lineHeight: 40, letterSpacing: -0.6, color: PLASTER }} accessibilityRole="header" maxFontSizeMultiplier={1.3}>
+        <T style={{ fontFamily: font.display, fontSize: 36, lineHeight: 40, letterSpacing: -0.6, color: CREAM }} accessibilityRole="header" maxFontSizeMultiplier={1.3}>
           {slide.headline}
         </T>
         <T style={{ fontFamily: font.body, fontSize: 15.5, lineHeight: 22, color: MUTED, marginTop: -4 }} numberOfLines={2} maxFontSizeMultiplier={1.4}>
@@ -219,14 +219,14 @@ const CLOSING_CONTROLS = 150;
 function IncludedCard() {
   const row = (text: string) => (
     <View key={text} style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-      <View style={{ width: 26, height: 26, borderRadius: 13, backgroundColor: 'rgba(127,209,188,0.16)', alignItems: 'center', justifyContent: 'center' }}>
+      <View style={{ width: 26, height: 26, borderRadius: 13, backgroundColor: 'rgba(245,162,112,0.16)', alignItems: 'center', justifyContent: 'center' }}>
         <Check size={15} color={MINT} strokeWidth={2.6} />
       </View>
-      <T style={{ fontFamily: font.medium, fontSize: 14.5, color: PLASTER, flex: 1 }}>{text}</T>
+      <T style={{ fontFamily: font.medium, fontSize: 14.5, color: CREAM, flex: 1 }}>{text}</T>
     </View>
   );
   return (
-    <View style={{ backgroundColor: 'rgba(23,51,46,0.94)', borderRadius: 22, padding: 18, gap: 12, borderWidth: 1, borderColor: 'rgba(127,209,188,0.3)' }}>
+    <View style={{ backgroundColor: 'rgba(42,30,23,0.94)', borderRadius: 22, padding: 18, gap: 12, borderWidth: 1, borderColor: 'rgba(245,162,112,0.3)' }}>
       {row('A whole-house budget, every category')}
       {row('Flooring, paint, tile and skirting maths')}
       {row('Saved revisions and side-by-side choices')}

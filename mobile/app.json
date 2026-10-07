@@ -7,11 +7,11 @@
     "scheme": "houseplan",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-    "backgroundColor": "#F4EFE7",
+    "backgroundColor": "#FBF4EA",
     "icon": "./assets/icon.png",
     "splash": {
       "image": "./assets/splash-icon.png",
-      "backgroundColor": "#17332E",
+      "backgroundColor": "#2A1E17",
       "resizeMode": "contain"
     },
     "ios": {
@@ -34,7 +34,7 @@
       "edgeToEdgeEnabled": true,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#17332E"
+        "backgroundColor": "#2A1E17"
       },
       "permissions": [
         "POST_NOTIFICATIONS"
@@ -55,7 +55,7 @@
       [
         "expo-notifications",
         {
-          "color": "#2C7A69",
+          "color": "#C4561F",
           "defaultChannel": "default"
         }
       ],
@@ -71,10 +71,10 @@
         {
           "image": "./assets/splash-icon.png",
           "imageWidth": 160,
-          "backgroundColor": "#17332E",
+          "backgroundColor": "#2A1E17",
           "dark": {
             "image": "./assets/splash-icon.png",
-            "backgroundColor": "#0B1A17"
+            "backgroundColor": "#110C09"
           }
         }
       ]

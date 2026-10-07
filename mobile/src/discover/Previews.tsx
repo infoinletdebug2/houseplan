@@ -61,10 +61,10 @@ const usd = (n: number) => `$${Math.round(n).toLocaleString('en-US')}`;
 export function BudgetPreview({ t }: { t: number }) {
   const c = useColors();
   const rows = [
-    { label: 'Structure', value: 182000, tone: '#2E5A51' },
-    { label: 'Roof', value: 48000, tone: '#5E8A78' },
-    { label: 'Kitchen', value: 36000, tone: '#8DAF9C' },
-    { label: 'Flooring', value: 24000, tone: '#B5CCBD' },
+    { label: 'Structure', value: 182000, tone: '#C4561F' },
+    { label: 'Roof', value: 48000, tone: '#E08A4F' },
+    { label: 'Kitchen', value: 36000, tone: '#C99A45' },
+    { label: 'Flooring', value: 24000, tone: '#F2C3A2' },
   ];
   const max = 200000;
   return (
@@ -127,8 +127,8 @@ export function FinishPreview({ t }: { t: number }) {
       </View>
       <View style={{ height: 12, borderRadius: 6, backgroundColor: c.ground2, flexDirection: 'row', overflow: 'hidden' }}>
         <View style={{ width: `${50 * t}%`, backgroundColor: c.brand }} />
-        <View style={{ width: `${20 * t}%`, backgroundColor: '#5E8A78' }} />
-        <View style={{ width: `${25 * t}%`, backgroundColor: '#B5CCBD' }} />
+        <View style={{ width: `${20 * t}%`, backgroundColor: '#A9825F' }} />
+        <View style={{ width: `${25 * t}%`, backgroundColor: '#E3CDB8' }} />
       </View>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
         {[

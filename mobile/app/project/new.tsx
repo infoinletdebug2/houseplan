@@ -316,7 +316,7 @@ function Summary({ d }: { d: Draft }) {
   const c = useColors();
   const scope = (v: Draft['land']) => (v === 'included' ? 'in' : v === 'excluded' ? 'out' : 'not decided');
   return (
-    <View style={{ backgroundColor: c.scheme === 'dark' ? '#0F1E1B' : c.brand, borderRadius: radius.card, padding: 18, gap: 6 }}>
+    <View style={{ backgroundColor: c.scheme === 'dark' ? '#17110D' : c.brand, borderRadius: radius.card, padding: 18, gap: 6 }}>
       <T style={{ fontFamily: font.display, fontSize: 22, lineHeight: 27, color: '#FFFFFF' }}>{d.name.trim() || 'Your project'}</T>
       <T style={{ fontFamily: font.body, fontSize: 14, lineHeight: 20, color: 'rgba(255,255,255,0.8)' }}>
         {d.type ? TYPE_LABEL[d.type] : 'Project'} · {countryName(d.country)} · {d.currency} · {d.units === 'imperial' ? 'feet' : 'metres'} · {d.storeys} {d.storeys === 1 ? 'storey' : 'storeys'}

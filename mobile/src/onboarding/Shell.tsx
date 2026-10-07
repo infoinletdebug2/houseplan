@@ -82,7 +82,7 @@ export function StepShell({
         {hero ? (
           <View style={{ height: 168, borderRadius: 24, overflow: 'hidden', backgroundColor: c.brand, marginTop: -space.sm }}>
             <Image source={IMAGES[hero]} style={{ width: '100%', height: '100%' }} contentFit="cover" contentPosition={{ top: '40%', left: '50%' }} transition={200} />
-            <LinearGradient colors={['rgba(16,36,31,0)', 'rgba(16,36,31,0.3)']} style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }} />
+            <LinearGradient colors={['rgba(31,22,17,0)', 'rgba(31,22,17,0.3)']} style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }} />
           </View>
         ) : null}
         <View style={{ gap: 8 }}>

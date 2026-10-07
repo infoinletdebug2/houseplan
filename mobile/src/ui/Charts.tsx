@@ -58,7 +58,7 @@ export function Meter({
 }
 
 /**
- * A difference against a centre line (board 05): teal to the left for
+ * A difference against a centre line (board 05): cobalt to the left for
  * cheaper, rose to the right for more expensive. The amount is always
  * written beside it; the bar never carries meaning alone.
  */

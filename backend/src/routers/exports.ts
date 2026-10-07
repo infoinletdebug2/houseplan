@@ -305,22 +305,22 @@ export function renderHtml(s: Snapshot): string {
 <style>
   @page { size: A4; margin: 16mm 14mm; }
   * { box-sizing: border-box; }
-  body { font-family: -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #17231F; font-size: 11pt; line-height: 1.45; margin: 0; padding: 18px; background: #fff; }
-  h1 { font-family: Georgia, 'Times New Roman', serif; font-size: 24pt; color: #17332E; margin: 2px 0 6px; }
-  h2 { font-family: Georgia, 'Times New Roman', serif; font-size: 14pt; color: #17332E; margin: 18px 0 6px; }
-  .eyebrow { color: #2C7A69; font-weight: 600; margin: 0; }
-  .meta, .muted { color: #5F6B66; font-size: 9.5pt; margin: 2px 0; }
+  body { font-family: -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #2A1E17; font-size: 11pt; line-height: 1.45; margin: 0; padding: 18px; background: #fff; }
+  h1 { font-family: Georgia, 'Times New Roman', serif; font-size: 24pt; color: #2A1E17; margin: 2px 0 6px; }
+  h2 { font-family: Georgia, 'Times New Roman', serif; font-size: 14pt; color: #2A1E17; margin: 18px 0 6px; }
+  .eyebrow { color: #C4561F; font-weight: 600; margin: 0; }
+  .meta, .muted { color: #7A6A5D; font-size: 9.5pt; margin: 2px 0; }
   table { width: 100%; border-collapse: collapse; margin: 4px 0 8px; }
-  td, th { padding: 5px 6px; border-bottom: 1px solid #E4DDD1; vertical-align: top; text-align: left; }
-  th { font-size: 9pt; color: #5F6B66; font-weight: 600; }
+  td, th { padding: 5px 6px; border-bottom: 1px solid #EADFCF; vertical-align: top; text-align: left; }
+  th { font-size: 9pt; color: #7A6A5D; font-weight: 600; }
   .n { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
   tr.strong td { font-weight: 700; }
-  tr.cat td { background: #F4EFE7; font-weight: 600; }
+  tr.cat td { background: #FBF4EA; font-weight: 600; }
   td.l { padding-left: 16px; }
-  .warn { background: #FBEFD9; border-radius: 10px; padding: 8px 12px; }
+  .warn { background: #FBF0D2; border-radius: 10px; padding: 8px 12px; }
   .warn h2 { margin-top: 0; }
   .flag, .flagtext { color: #8A5A12; }
-  .ok { color: #2F6A4C; }
+  .ok { color: #2F5D8A; }
   .small { font-size: 9.5pt; }
   section { break-inside: avoid-page; }
   table.lines tr { break-inside: avoid; }

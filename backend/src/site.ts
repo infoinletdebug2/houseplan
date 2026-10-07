@@ -19,25 +19,25 @@ const DESCRIPTION = 'Know the likely cost of your house, understand the cost of 
 
 /** The mark: a roof line over a plan grid. */
 const MARK = (size = 30) =>
-  `<svg viewBox="0 0 32 32" width="${size}" height="${size}" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#17332E"/><path d="M7 15.5 16 8l9 7.5" fill="none" stroke="#F4EFE7" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 14.5V24h12v-9.5" fill="none" stroke="#F4EFE7" stroke-width="2" stroke-linejoin="round"/><path d="M16 24v-5.5M10 19h12" stroke="#4FB39B" stroke-width="1.6" stroke-linecap="round"/></svg>`;
+  `<svg viewBox="0 0 32 32" width="${size}" height="${size}" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#2A1E17"/><path d="M7 15.5 16 8l9 7.5" fill="none" stroke="#FBF4EA" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 14.5V24h12v-9.5" fill="none" stroke="#FBF4EA" stroke-width="2" stroke-linejoin="round"/><path d="M16 24v-5.5M10 19h12" stroke="#F08A4B" stroke-width="1.6" stroke-linecap="round"/></svg>`;
 
 /** The signature element: a 5 m × 4 m room drawn as a blueprint, with dimension lines, a door swing and a window. */
 const FLOOR_PLAN = `<svg class="plan" viewBox="0 0 420 340" role="img" aria-label="A drawing of a five by four metre room with a door and a window">
   <defs><pattern id="hp-grid" width="14" height="14" patternUnits="userSpaceOnUse"><path d="M14 0H0V14" fill="none" stroke="currentColor" stroke-opacity=".09" stroke-width="1"/></pattern>
-  <marker id="hp-tick" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 2 10 5 0 8z" fill="#17332E"/></marker></defs>
-  <rect width="420" height="340" fill="url(#hp-grid)" style="color:#17332E"/>
-  <line x1="70" y1="40" x2="350" y2="40" stroke="#17332E" stroke-width="1.2" marker-start="url(#hp-tick)" marker-end="url(#hp-tick)"/>
-  <line x1="70" y1="32" x2="70" y2="48" stroke="#17332E"/><line x1="350" y1="32" x2="350" y2="48" stroke="#17332E"/>
-  <rect x="200" y="30" width="22" height="20" fill="#F4EFE7"/><text x="211" y="45" text-anchor="middle" font-family="Inter,sans-serif" font-size="14" fill="#17332E">5 m</text>
-  <line x1="384" y1="66" x2="384" y2="290" stroke="#17332E" stroke-width="1.2" marker-start="url(#hp-tick)" marker-end="url(#hp-tick)"/>
-  <line x1="376" y1="66" x2="392" y2="66" stroke="#17332E"/><line x1="376" y1="290" x2="392" y2="290" stroke="#17332E"/>
-  <text x="400" y="182" font-family="Inter,sans-serif" font-size="14" fill="#17332E" transform="rotate(90 400 182)" text-anchor="middle">4 m</text>
-  <rect x="70" y="66" width="280" height="224" fill="#FBF8F3" stroke="#17332E" stroke-width="7"/>
-  <g stroke="#17332E" stroke-opacity=".12" stroke-width="1">${Array.from({ length: 7 }, (_, i) => `<line x1="74" y1="${96 + i * 28}" x2="346" y2="${96 + i * 28}"/>`).join('')}</g>
-  <rect x="346" y="130" width="8" height="80" fill="#FBF8F3" stroke="#17332E" stroke-width="1.5"/><line x1="350" y1="130" x2="350" y2="210" stroke="#17332E" stroke-width="1"/>
-  <rect x="110" y="286" width="46" height="8" fill="#FBF8F3"/><path d="M112 290V244A44 44 0 0 1 156 288" fill="none" stroke="#17332E" stroke-width="1.4"/>
-  <rect x="150" y="150" width="120" height="56" rx="12" fill="#17332E"/><text x="210" y="174" text-anchor="middle" font-family="Inter,sans-serif" font-size="12" fill="#CFE3DC">Net floor area</text>
-  <text x="210" y="196" text-anchor="middle" font-family="Newsreader,Georgia,serif" font-size="20" font-weight="600" fill="#F4EFE7">20 m²</text>
+  <marker id="hp-tick" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 2 10 5 0 8z" fill="#2A1E17"/></marker></defs>
+  <rect width="420" height="340" fill="url(#hp-grid)" style="color:#2A1E17"/>
+  <line x1="70" y1="40" x2="350" y2="40" stroke="#2A1E17" stroke-width="1.2" marker-start="url(#hp-tick)" marker-end="url(#hp-tick)"/>
+  <line x1="70" y1="32" x2="70" y2="48" stroke="#2A1E17"/><line x1="350" y1="32" x2="350" y2="48" stroke="#2A1E17"/>
+  <rect x="200" y="30" width="22" height="20" fill="#FBF4EA"/><text x="211" y="45" text-anchor="middle" font-family="Inter,sans-serif" font-size="14" fill="#2A1E17">5 m</text>
+  <line x1="384" y1="66" x2="384" y2="290" stroke="#2A1E17" stroke-width="1.2" marker-start="url(#hp-tick)" marker-end="url(#hp-tick)"/>
+  <line x1="376" y1="66" x2="392" y2="66" stroke="#2A1E17"/><line x1="376" y1="290" x2="392" y2="290" stroke="#2A1E17"/>
+  <text x="400" y="182" font-family="Inter,sans-serif" font-size="14" fill="#2A1E17" transform="rotate(90 400 182)" text-anchor="middle">4 m</text>
+  <rect x="70" y="66" width="280" height="224" fill="#FFFBF5" stroke="#2A1E17" stroke-width="7"/>
+  <g stroke="#2A1E17" stroke-opacity=".12" stroke-width="1">${Array.from({ length: 7 }, (_, i) => `<line x1="74" y1="${96 + i * 28}" x2="346" y2="${96 + i * 28}"/>`).join('')}</g>
+  <rect x="346" y="130" width="8" height="80" fill="#FFFBF5" stroke="#2A1E17" stroke-width="1.5"/><line x1="350" y1="130" x2="350" y2="210" stroke="#2A1E17" stroke-width="1"/>
+  <rect x="110" y="286" width="46" height="8" fill="#FFFBF5"/><path d="M112 290V244A44 44 0 0 1 156 288" fill="none" stroke="#2A1E17" stroke-width="1.4"/>
+  <rect x="150" y="150" width="120" height="56" rx="12" fill="#2A1E17"/><text x="210" y="174" text-anchor="middle" font-family="Inter,sans-serif" font-size="12" fill="#F3E3D1">Net floor area</text>
+  <text x="210" y="196" text-anchor="middle" font-family="Newsreader,Georgia,serif" font-size="20" font-weight="600" fill="#FBF4EA">20 m²</text>
 </svg>`;
 
 const ICON: Record<string, string> = {
@@ -52,8 +52,8 @@ const icon = (name: string, color: string) =>
   `<span class="disc" style="background:${color}1f;color:${color}"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ICON[name]}</svg></span>`;
 
 const CSS = `
-:root{--ground:#F4EFE7;--surface:#FBF8F3;--line:#E4DDD1;--brand:#17332E;--ink:#10241F;--accent:#2C7A69;--text:#17231F;--muted:#5F6B66;--amber:#B7791F;--amberBg:#FBEFD9;--rose:#B5545C}
-@media (prefers-color-scheme:dark){:root{--ground:#121816;--surface:#1A2220;--line:#2A3431;--brand:#CFE3DC;--text:#E9EEEC;--muted:#9AA6A1;--accent:#4FB39B;--amberBg:#3A2E18}}
+:root{--ground:#FBF4EA;--surface:#FFFBF5;--line:#EADFCF;--brand:#2A1E17;--ink:#1F1611;--accent:#C4561F;--text:#2A1E17;--muted:#7A6A5D;--amber:#B7791F;--amberBg:#FBF0D2;--rose:#B5545C}
+@media (prefers-color-scheme:dark){:root{--ground:#121816;--surface:#1A2220;--line:#2A3431;--brand:#F3E3D1;--text:#E9EEEC;--muted:#9AA6A1;--accent:#F08A4B;--amberBg:#3A2E18}}
 *{box-sizing:border-box}html{scroll-behavior:smooth}
 body{margin:0;background:var(--ground);color:var(--text);font:16px/1.65 Inter,system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 a{color:inherit}h1,h2,h3{font-family:Newsreader,Georgia,serif;font-weight:600;margin:0;letter-spacing:-.015em;color:var(--brand)}
@@ -72,10 +72,10 @@ p{margin:0}.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:28px;padding:22px}
 .plan{width:100%;height:auto;display:block;border-radius:18px}
 .result{display:grid;grid-template-columns:1fr auto auto;gap:10px 14px;margin-top:16px;font-size:15px;align-items:center}
-.result b{font-variant-numeric:tabular-nums}.badge{font-size:12px;padding:4px 10px;border-radius:999px;background:#2C7A6914;color:var(--accent);justify-self:end}
+.result b{font-variant-numeric:tabular-nums}.badge{font-size:12px;padding:4px 10px;border-radius:999px;background:#C4561F14;color:var(--accent);justify-self:end}
 .sample{font-size:12px;color:var(--muted);margin-top:10px}
-.money{background:#17332E;color:#F4EFE7;border-radius:28px;padding:30px;display:grid;grid-template-columns:1.2fr 2fr;gap:28px;align-items:center}
-.money .hero-n{font:600 52px/1 Newsreader,Georgia,serif}.money small{display:block;color:#CFE3DC;font-size:14px;margin-bottom:6px}
+.money{background:#2A1E17;color:#FBF4EA;border-radius:28px;padding:30px;display:grid;grid-template-columns:1.2fr 2fr;gap:28px;align-items:center}
+.money .hero-n{font:600 52px/1 Newsreader,Georgia,serif}.money small{display:block;color:#F3E3D1;font-size:14px;margin-bottom:6px}
 .money .four{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;border-left:1px solid #ffffff22;padding-left:24px}
 .money .four b{display:block;font:600 22px Newsreader,Georgia,serif;margin-top:4px}
 section{padding:64px 0}section h2{font-size:clamp(30px,4vw,46px);line-height:1.08;max-width:760px}
@@ -106,7 +106,7 @@ ol.steps li{margin:8px 0}
 
 function shell(title: string, description: string, body: string, extraHead = ''): string {
   return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>${esc(title)}</title><meta name="description" content="${esc(description)}"><meta name="theme-color" content="#17332E">
+<title>${esc(title)}</title><meta name="description" content="${esc(description)}"><meta name="theme-color" content="#2A1E17">
 <link rel="icon" href="data:image/svg+xml,${encodeURIComponent(MARK(32))}">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:opsz,wght@6..72,600&display=swap" rel="stylesheet">
@@ -141,11 +141,11 @@ function landing(): string {
   <h2>Every cost of the house, with nothing quietly left at zero.</h2>
   <div class="grid3">
     <div class="tile">${icon('budget', '#C99A45')}<h3>The whole-house budget</h3><p>Nineteen categories from land and permits to landscaping. Each one is included, excluded or still undecided, and unpriced lines stay visible.</p></div>
-    <div class="tile">${icon('rooms', '#7F9A7A')}<h3>Measured, not guessed</h3><p>Draw each room from its dimensions. Calculators turn floors, walls and doorways into packs, cans and lengths, using the products you choose.</p></div>
+    <div class="tile">${icon('rooms', '#8E5A7E')}<h3>Measured, not guessed</h3><p>Draw each room from its dimensions. Calculators turn floors, walls and doorways into packs, cans and lengths, using the products you choose.</p></div>
     <div class="tile">${icon('compare', '#5F7896')}<h3>Compare before you buy</h3><p>Copy a saved estimate, swap oak for vinyl, and see the difference by category, with the trade-offs written down.</p></div>
     <div class="tile">${icon('quote', '#5F7896')}<h3>Quotes to commitments</h3><p>Enter supplier quotes, compare them line by line, and accept all or part. Deposits, invoices and payments stay separate.</p></div>
-    <div class="tile">${icon('finish', '#C9785F')}<h3>Cost to finish</h3><p>Actual spending, remaining commitments and the work not yet ordered add up to an honest forecast and the cash still needed.</p></div>
-    <div class="tile">${icon('lock', '#3F5E57')}<h3>Private by default</h3><p>Your projects are yours. No sharing, no selling, no address on exports unless you ask. Export or delete everything any time.</p></div>
+    <div class="tile">${icon('finish', '#C4561F')}<h3>Cost to finish</h3><p>Actual spending, remaining commitments and the work not yet ordered add up to an honest forecast and the cash still needed.</p></div>
+    <div class="tile">${icon('lock', '#6B5243')}<h3>Private by default</h3><p>Your projects are yours. No sharing, no selling, no address on exports unless you ask. Export or delete everything any time.</p></div>
   </div>
   <div class="card" style="margin-top:22px"><h3 style="font-size:22px">Budget completeness</h3><div class="meter"><i></i><em></em></div><p class="warn">Known subtotal · 3 unpriced lines · 2 undecided categories (sample)</p></div>
 </div></section>

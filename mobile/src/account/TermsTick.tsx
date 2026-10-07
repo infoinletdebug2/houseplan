@@ -8,7 +8,7 @@ import { T } from '../ui/Text';
 export function TermsTick({ checked, onChange, nudge, tone }: { checked: boolean; onChange: (v: boolean) => void; nudge?: boolean; tone?: 'light' }) {
   const c = useColors();
   const light = tone === 'light';
-  const link = light ? '#BFE6DA' : c.primary;
+  const link = light ? '#F6C9AE' : c.primary;
   const router = useRouter();
   return (
     <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 10 }}>
@@ -24,14 +24,14 @@ export function TermsTick({ checked, onChange, nudge, tone }: { checked: boolean
           height: 24,
           borderRadius: 7,
           borderWidth: checked ? 0 : 2,
-          borderColor: nudge && !checked ? (light ? '#F0A58A' : c.danger) : light ? 'rgba(244,239,231,0.55)' : c.faint,
-          backgroundColor: checked ? (light ? '#7FD1BC' : c.primary) : light ? 'rgba(255,255,255,0.06)' : c.surface,
+          borderColor: nudge && !checked ? (light ? '#F0A58A' : c.danger) : light ? 'rgba(251,244,234,0.55)' : c.faint,
+          backgroundColor: checked ? (light ? '#F5A270' : c.primary) : light ? 'rgba(255,255,255,0.06)' : c.surface,
           alignItems: 'center',
           justifyContent: 'center',
           marginTop: 1,
         }}
       >
-        {checked ? <Check size={16} color={light ? '#10241F' : c.onPrimary} strokeWidth={3} /> : null}
+        {checked ? <Check size={16} color={light ? '#1F1611' : c.onPrimary} strokeWidth={3} /> : null}
       </Pressable>
       <T v="body" style={{ flex: 1, fontSize: 14, color: light ? '#C9D8D3' : undefined }} onPress={() => onChange(!checked)}>
         I agree to the{' '}

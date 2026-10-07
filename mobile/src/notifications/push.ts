@@ -69,7 +69,7 @@ export async function registerPush(): Promise<boolean> {
       await N.setNotificationChannelAsync('default', {
         name: 'HousePlan',
         importance: N.AndroidImportance.DEFAULT,
-        lightColor: '#2C7A69',
+        lightColor: '#C4561F',
       });
     }
     const token = await N.getExpoPushTokenAsync(EAS_PROJECT_ID ? { projectId: EAS_PROJECT_ID } : undefined);

@@ -172,7 +172,7 @@ function DeletedCard({ project: p }: { project: Project }) {
         kind="outline"
         small
         loading={busy}
-        icon={<RotateCcw size={16} color="#17231F" />}
+        icon={<RotateCcw size={16} color="#2A1E17" />}
         onPress={async () => {
           setBusy(true);
           try {

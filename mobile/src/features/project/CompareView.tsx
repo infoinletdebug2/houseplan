@@ -22,7 +22,7 @@ export function CompareView({ diff, currency, leftTitle, rightTitle, savingsLabe
     <View style={{ gap: space.md }}>
       <View>
         <View style={{ flexDirection: 'row', gap: 10 }}>
-          <TotalCard title={leftTitle} value={diff.from.total_with_reserve_minor} currency={currency} tint={c.scheme === 'dark' ? '#1E2421' : '#EFE8DD'} missing={diff.from.missing_line_count} />
+          <TotalCard title={leftTitle} value={diff.from.total_with_reserve_minor} currency={currency} tint={c.scheme === 'dark' ? '#241C16' : '#F4E9DA'} missing={diff.from.missing_line_count} />
           <TotalCard title={rightTitle} value={diff.to.total_with_reserve_minor} currency={currency} tint={c.scheme === 'dark' ? '#1A2522' : '#E6EEEA'} missing={diff.to.missing_line_count} />
         </View>
         <View style={{ alignItems: 'center', marginTop: -16 }}>

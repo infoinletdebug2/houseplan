@@ -5,8 +5,8 @@ import { font, radius, useColors } from '../theme/tokens';
 import { T } from './Text';
 
 /**
- * Buttons. One primary action per screen: teal, the action you press.
- * `brand` is the spruce button for committing work ("Save revision").
+ * Buttons. One primary action per screen: burnt orange, the action you press.
+ * `brand` is the espresso button for committing work ("Save revision").
  * Every button is at least 44 pt tall and says what it does.
  */
 export type ButtonKind = 'primary' | 'brand' | 'gold' | 'outline' | 'ghost' | 'danger' | 'dangerSoft' | 'light';
@@ -47,7 +47,7 @@ export function Button({ title, onPress, kind = 'primary', icon, loading, disabl
     ghost: { bg: 'transparent', fg: c.primary },
     danger: { bg: c.danger, fg: '#FFFFFF' },
     dangerSoft: { bg: c.dangerTint, fg: c.danger },
-    light: { bg: '#FFFFFF', fg: '#10241F' },
+    light: { bg: '#FFFFFF', fg: '#1F1611' },
   };
   const p = palette[kind];
   const content = (

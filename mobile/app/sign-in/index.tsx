@@ -14,10 +14,10 @@ import { AppleMark, GoogleMark } from '../../src/account/BrandMarks';
 import { TermsTick } from '../../src/account/TermsTick';
 import { useSocial } from '../../src/account/AuthShell';
 
-const INK = '#10241F';
+const INK = '#1F1611';
 
 /**
- * The front door. The finished-house photo fills the top and fades into spruce ink; the
+ * The front door. The finished-house photo fills the top and fades into espresso ink; the
  * ways in sit on the ink below. Apple first on iOS, Google first on Android,
  * email underneath — every one gated by the Terms tick, which then carries
  * into the email screen so nobody is asked twice.
@@ -66,30 +66,30 @@ export default function SignIn() {
       <ScrollView contentContainerStyle={{ paddingBottom: insets.bottom + space.lg }} bounces={false} showsVerticalScrollIndicator={false}>
         <View style={{ height: photo }}>
           <Image source={IMAGES['discover-budget']} style={{ width: '100%', height: '100%' }} contentFit="cover" contentPosition={{ top: '22%', left: '50%' }} accessibilityLabel="A timber-frame house under construction at golden hour" />
-          <LinearGradient colors={['rgba(16,36,31,0.65)', 'rgba(16,36,31,0)', 'rgba(16,36,31,0.55)', INK]} locations={[0, 0.3, 0.72, 1]} style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }} />
+          <LinearGradient colors={['rgba(31,22,17,0.65)', 'rgba(31,22,17,0)', 'rgba(31,22,17,0.55)', INK]} locations={[0, 0.3, 0.72, 1]} style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }} />
           <View style={{ position: 'absolute', top: insets.top + 6, left: 12, right: 20, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
             {router.canGoBack() ? <IconButton glass icon={<ChevronLeft size={22} color="#FFFFFF" />} label="Back" onPress={() => router.back()} /> : <View style={{ width: 44 }} />}
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
               <Mark size={26} tone="light" />
-              <T style={{ fontFamily: font.displayBold, fontSize: 18, color: '#F4EFE7' }}>HousePlan</T>
+              <T style={{ fontFamily: font.displayBold, fontSize: 18, color: '#FBF4EA' }}>HousePlan</T>
             </View>
           </View>
         </View>
 
         <View style={{ paddingHorizontal: 22, marginTop: -64, gap: space.md }}>
           <View style={{ gap: 8 }}>
-            <T style={{ fontFamily: font.semibold, fontSize: 12, letterSpacing: 1.4, color: '#7FD1BC' }}>WELCOME</T>
-            <T accessibilityRole="header" style={{ fontFamily: font.display, fontSize: 38, lineHeight: 42, color: '#F4EFE7', letterSpacing: -0.6 }}>
+            <T style={{ fontFamily: font.semibold, fontSize: 12, letterSpacing: 1.4, color: '#F5A270' }}>WELCOME</T>
+            <T accessibilityRole="header" style={{ fontFamily: font.display, fontSize: 38, lineHeight: 42, color: '#FBF4EA', letterSpacing: -0.6 }}>
               Every cost of your{'\n'}house, in one plan.
             </T>
-            <T style={{ fontFamily: font.body, fontSize: 15.5, lineHeight: 22, color: '#A9BDB6' }}>Budgets, calculators, quotes and payments for the house you are building.</T>
+            <T style={{ fontFamily: font.body, fontSize: 15.5, lineHeight: 22, color: '#C9B6A4' }}>Budgets, calculators, quotes and payments for the house you are building.</T>
           </View>
 
           <View style={{ flexDirection: 'row', gap: 8 }}>
             {[
-              { icon: <Ruler size={14} color="#7FD1BC" />, label: 'Room by room' },
-              { icon: <Calculator size={14} color="#7FD1BC" />, label: 'Exact maths' },
-              { icon: <FileText size={14} color="#7FD1BC" />, label: 'PDF exports' },
+              { icon: <Ruler size={14} color="#F5A270" />, label: 'Room by room' },
+              { icon: <Calculator size={14} color="#F5A270" />, label: 'Exact maths' },
+              { icon: <FileText size={14} color="#F5A270" />, label: 'PDF exports' },
             ].map((b) => (
               <View key={b.label} style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5, height: 34, borderRadius: 10, backgroundColor: 'rgba(255,255,255,0.06)', borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)' }}>
                 {b.icon}
@@ -125,17 +125,17 @@ export default function SignIn() {
               onPress={() => email('signup')}
               accessibilityRole="button"
               testID="email"
-              style={({ pressed }) => ({ height: 54, borderRadius: 16, borderWidth: 1, borderColor: 'rgba(127,209,188,0.55)', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10, opacity: pressed ? 0.75 : 1 })}
+              style={({ pressed }) => ({ height: 54, borderRadius: 16, borderWidth: 1, borderColor: 'rgba(245,162,112,0.55)', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10, opacity: pressed ? 0.75 : 1 })}
             >
-              <Mail size={19} color="#BFE6DA" />
-              <T style={{ fontFamily: font.semibold, fontSize: 16.5, color: '#BFE6DA' }}>Continue with email</T>
+              <Mail size={19} color="#F6C9AE" />
+              <T style={{ fontFamily: font.semibold, fontSize: 16.5, color: '#F6C9AE' }}>Continue with email</T>
             </Pressable>
           </View>
 
           <View style={{ height: 1, backgroundColor: 'rgba(255,255,255,0.1)' }} />
           <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 6 }}>
-            <T style={{ fontFamily: font.body, fontSize: 15, color: '#A9BDB6' }}>Already have an account?</T>
-            <T style={{ fontFamily: font.semibold, fontSize: 15, color: '#BFE6DA' }} onPress={() => email('signin')} accessibilityRole="button" suppressHighlighting>
+            <T style={{ fontFamily: font.body, fontSize: 15, color: '#C9B6A4' }}>Already have an account?</T>
+            <T style={{ fontFamily: font.semibold, fontSize: 15, color: '#F6C9AE' }} onPress={() => email('signin')} accessibilityRole="button" suppressHighlighting>
               Sign in
             </T>
           </View>

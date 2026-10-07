@@ -157,7 +157,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
               paddingVertical: 13,
               paddingHorizontal: 16,
               borderRadius: 16,
-              backgroundColor: toast.tone === 'error' ? c.danger : '#17332E',
+              backgroundColor: toast.tone === 'error' ? c.danger : '#2A1E17',
               shadowColor: '#000',
               shadowOpacity: 0.25,
               shadowRadius: 16,
@@ -165,7 +165,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
               elevation: 8,
             }}
           >
-            <Icon size={20} color={toast.tone === 'error' ? '#FFFFFF' : '#7FD1BC'} />
+            <Icon size={20} color={toast.tone === 'error' ? '#FFFFFF' : '#F5A270'} />
             <T style={{ fontFamily: font.medium, fontSize: 14.5, color: '#FFFFFF', flex: 1 }}>{toast.message}</T>
           </View>
         </RNAnimated.View>

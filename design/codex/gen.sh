@@ -5,9 +5,9 @@ cd "$(dirname "$0")"
 SET="$1"
 OUT="$SET"
 mkdir -p "$OUT"
-PHOTO="Photorealistic editorial photograph for a premium home-building budget app. Soft natural light, warm plaster (#F4EFE7) and pale oak tones, deep spruce green (#17332E) accents, shallow depth of field, calm and high-end. Absolutely no text, letters, numbers, logos, labels, watermarks, people, faces or hands."
-DISC="Cinematic, low-key, deep shadows; the subject sits in the upper two-thirds and the bottom third darkens smoothly toward deep spruce ink (#10241F)."
-HERO="The subject sits in the upper 60%; the lower 40% is calm and fades toward warm plaster."
+PHOTO="Photorealistic editorial photograph for a premium home-building budget app. Soft natural light, warm cream (#FBF4EA) and pale oak tones, burnt orange (#C4561F) and warm espresso accents, no green tones, shallow depth of field, calm and high-end. Absolutely no text, letters, numbers, logos, labels, watermarks, people, faces or hands."
+DISC="Cinematic, low-key, deep shadows; the subject sits in the upper two-thirds and the bottom third darkens smoothly toward deep warm espresso brown (#1F1611)."
+HERO="The subject sits in the upper 60%; the lower 40% is calm and fades toward warm cream."
 UI="Premium, distinctive, editorial product design (not a generic template): one display serif for headlines, a clean sans for body, generous spacing, 44pt touch targets, crisp legible text. Show only the phone screen, no hands, plain light-grey backdrop around it."
 while IFS=$'\t' read -r name aspect desc; do
   [ -z "$name" ] && continue

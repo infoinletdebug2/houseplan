@@ -5,7 +5,7 @@ import { money, moneyShort } from '../lib/format';
 import { T } from './Text';
 
 /**
- * The money card (board 02): one hero number on spruce, four labelled
+ * The money card (board 02): one hero number on espresso, four labelled
  * figures under it. Labels are always Estimated / Committed / Billed / Paid,
  * never an ambiguous "spent" (BRD §7). A null figure reads "Not set", never 0.
  */
@@ -27,7 +27,7 @@ export function MoneyCard({
   testID?: string;
 }) {
   const c = useColors();
-  const ink = c.scheme === 'dark' ? '#0F1E1B' : c.brand;
+  const ink = c.scheme === 'dark' ? '#17110D' : c.brand;
   return (
     <View testID={testID} style={[{ backgroundColor: ink, borderRadius: radius.card, padding: 20, gap: 14 }, style]} accessible accessibilityLabel={`${label}: ${money(value, currency, { empty: 'not known yet' })}`}>
       <View style={{ gap: 4 }}>
@@ -57,7 +57,7 @@ export function MoneyCard({
 /**
  * The honest completeness line (BRD §6.2): "Known subtotal · N unpriced
  * lines · M undecided categories". Amber while anything is missing; a calm
- * green tick only when every included category is priced and nothing is
+ * cobalt tick only when every included category is priced and nothing is
  * undecided. Never a "complete house cost" claim otherwise.
  */
 export function CompletenessBanner({ missingLines, undecided, style, compact }: { missingLines: number; undecided: number; style?: StyleProp<ViewStyle>; compact?: boolean }) {

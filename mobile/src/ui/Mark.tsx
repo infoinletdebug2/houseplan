@@ -6,13 +6,13 @@ import { T } from './Text';
 /**
  * The HousePlan mark: a house outline drawn as a plan line, with a dimension
  * tick under it, the app's signature (DESIGN-SYSTEM.md). `tone="light"` sits
- * on photos and the spruce ink.
+ * on photos and the espresso ink.
  */
 export function Mark({ size = 30, tone }: { size?: number; tone?: 'light' | 'dark' }) {
   const c = useColors();
   const light = tone === 'light' || (tone === undefined && c.scheme === 'dark');
-  const line = light ? '#F4EFE7' : '#17332E';
-  const accent = light ? '#7FD1BC' : '#2C7A69';
+  const line = light ? '#FBF4EA' : '#2A1E17';
+  const accent = light ? '#F5A270' : '#C4561F';
   return (
     <Svg width={size} height={size} viewBox="0 0 32 32" fill="none">
       <Path d="M5 15.5 16 6l11 9.5" stroke={line} strokeWidth={2.6} strokeLinecap="round" strokeLinejoin="round" />
@@ -28,7 +28,7 @@ export function Brand({ tone, size = 28, name = 'HousePlan' }: { tone?: 'light' 
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 9 }} accessibilityRole="header" accessibilityLabel={name}>
       <Mark size={size} tone={tone} />
-      <T v="title" color={tone === 'light' ? '#F4EFE7' : c.brand} style={{ fontSize: 20 }}>
+      <T v="title" color={tone === 'light' ? '#FBF4EA' : c.brand} style={{ fontSize: 20 }}>
         {name}
       </T>
     </View>

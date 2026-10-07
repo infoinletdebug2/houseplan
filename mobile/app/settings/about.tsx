@@ -16,10 +16,10 @@ export default function About() {
 
   return (
     <Screen header={<Header title="About" />} gap={space.md}>
-      <View style={{ backgroundColor: c.scheme === 'dark' ? '#0F1E1B' : c.brand, borderRadius: radius.card, paddingVertical: space.xl, paddingHorizontal: space.lg, alignItems: 'center', gap: 10 }}>
+      <View style={{ backgroundColor: c.scheme === 'dark' ? '#17110D' : c.brand, borderRadius: radius.card, paddingVertical: space.xl, paddingHorizontal: space.lg, alignItems: 'center', gap: 10 }}>
         <Brand tone="light" size={34} />
         <T style={{ fontFamily: font.displayMedium, fontSize: 16, color: 'rgba(255,255,255,0.8)', textAlign: 'center', lineHeight: 22 }}>Know the likely cost of your house, the cost of each choice, and the money still needed to finish.</T>
-        <T style={{ fontFamily: font.semibold, fontSize: 13, color: '#7FD1BC' }}>
+        <T style={{ fontFamily: font.semibold, fontSize: 13, color: '#F5A270' }}>
           Version {APP_VERSION} · build {BUILD_NUMBER}
         </T>
       </View>

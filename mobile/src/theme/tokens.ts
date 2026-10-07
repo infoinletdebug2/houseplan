@@ -3,10 +3,11 @@ import { useColorScheme } from 'react-native';
 /**
  * HousePlan's tokens (docs/DESIGN-SYSTEM.md, the six Codex boards).
  *
- * Seed: warm PLASTER ground, SPRUCE for structure and headlines, TEAL for the
- * one button you want pressed. Amber is only for pending, unpriced and stale;
- * rose only for over-budget and "more expensive". Status colours always travel
- * with a word, never alone.
+ * Seed: warm CREAM ground, ESPRESSO for structure and headlines, BURNT
+ * ORANGE for the one button you want pressed. Cobalt (not green) means good
+ * or cheaper; mustard is only for pending, unpriced and stale; rose only for
+ * over-budget and "more expensive". Status colours always travel with a
+ * word, never alone.
  */
 
 export interface Colors {
@@ -18,14 +19,14 @@ export interface Colors {
   ink: string;
   muted: string;
   faint: string;
-  /** Spruce: headlines, the money card, secondary buttons. */
+  /** Espresso: headlines, the money card, secondary buttons. */
   brand: string;
   brandTint: string;
   onBrand: string;
   onBrandSoft: string;
   /** Deep ink for discovery and photo fades. */
   night: string;
-  /** Teal: the action you press. */
+  /** Burnt orange: the action you press. */
   primary: string;
   primary2: string;
   primaryTint: string;
@@ -52,75 +53,75 @@ export interface Colors {
 
 const light: Colors = {
   scheme: 'light',
-  ground: '#F4EFE7',
-  ground2: '#ECE5D9',
-  surface: '#FBF8F3',
-  line: '#E4DDD1',
-  ink: '#17231F',
-  muted: '#5F6B66',
-  faint: '#98A29D',
-  brand: '#17332E',
-  brandTint: '#E3ECE8',
-  onBrand: '#FFFFFF',
-  onBrandSoft: '#A9C2BA',
-  night: '#10241F',
-  primary: '#2C7A69',
-  primary2: '#236454',
-  primaryTint: '#DFEEE9',
+  ground: '#FBF4EA',
+  ground2: '#F4E9DA',
+  surface: '#FFFBF5',
+  line: '#EADFCF',
+  ink: '#2A1E17',
+  muted: '#7A6A5D',
+  faint: '#A99A8C',
+  brand: '#2A1E17',
+  brandTint: '#F1E6DA',
+  onBrand: '#FFFBF5',
+  onBrandSoft: '#C9B6A4',
+  night: '#1F1611',
+  primary: '#C4561F',
+  primary2: '#A8461A',
+  primaryTint: '#FBE4D6',
   onPrimary: '#FFFFFF',
-  onPrimarySoft: '#BFE0D6',
-  gold: '#2C7A69',
-  gold2: '#7FB8A8',
-  goldInk: '#1F5A4D',
-  goldTint: '#DFEEE9',
-  warn: '#B7791F',
-  warnTint: '#FBEFD9',
-  review: '#B7791F',
-  reviewTint: '#FBEFD9',
-  ok: '#3E7D5A',
-  okTint: '#E2EFE6',
-  danger: '#B5545C',
-  dangerTint: '#F6E3E2',
-  overlay: 'rgba(16,36,31,0.45)',
-  disabled: '#CFC8BC',
-  grid: 'rgba(23,51,46,0.07)',
-  shadow: '#1B2420',
+  onPrimarySoft: '#F6C9AE',
+  gold: '#C4561F',
+  gold2: '#E9A27A',
+  goldInk: '#9A3F14',
+  goldTint: '#FBE4D6',
+  warn: '#A87410',
+  warnTint: '#FBF0D2',
+  review: '#A87410',
+  reviewTint: '#FBF0D2',
+  ok: '#2F5D8A',
+  okTint: '#E0E9F3',
+  danger: '#B4474F',
+  dangerTint: '#F7E1E1',
+  overlay: 'rgba(31,22,17,0.5)',
+  disabled: '#D8CBBB',
+  grid: 'rgba(42,30,23,0.06)',
+  shadow: '#2A1E17',
 };
 
 const dark: Colors = {
   scheme: 'dark',
-  ground: '#121816',
-  ground2: '#18201E',
-  surface: '#1A2220',
-  line: '#2A3431',
-  ink: '#E9EEEC',
-  muted: '#9AA6A1',
-  faint: '#6E7A75',
-  brand: '#CFE3DC',
-  brandTint: '#1E2B28',
-  onBrand: '#10241F',
-  onBrandSoft: '#4E6A62',
-  night: '#0B1A17',
-  primary: '#4FB39B',
-  primary2: '#6FC4AE',
-  primaryTint: '#1C302B',
-  onPrimary: '#0B1A17',
-  onPrimarySoft: '#2E5148',
-  gold: '#4FB39B',
-  gold2: '#2E5148',
-  goldInk: '#9ED6C6',
-  goldTint: '#1C302B',
-  warn: '#E2A84F',
-  warnTint: '#3A2E1A',
-  review: '#E2A84F',
-  reviewTint: '#3A2E1A',
-  ok: '#7CC49C',
-  okTint: '#1C3226',
-  danger: '#E58C93',
-  dangerTint: '#3B2427',
+  ground: '#17110D',
+  ground2: '#1E1712',
+  surface: '#241C16',
+  line: '#3A2E25',
+  ink: '#F6ECE0',
+  muted: '#B5A493',
+  faint: '#7D6E61',
+  brand: '#F3E3D1',
+  brandTint: '#2E241D',
+  onBrand: '#1F1611',
+  onBrandSoft: '#6E5C4D',
+  night: '#110C09',
+  primary: '#F08A4B',
+  primary2: '#F5A270',
+  primaryTint: '#3A2418',
+  onPrimary: '#1F1611',
+  onPrimarySoft: '#7A4527',
+  gold: '#F08A4B',
+  gold2: '#7A4527',
+  goldInk: '#F7B892',
+  goldTint: '#3A2418',
+  warn: '#E8B64C',
+  warnTint: '#3A2E14',
+  review: '#E8B64C',
+  reviewTint: '#3A2E14',
+  ok: '#8DB4DE',
+  okTint: '#1B2838',
+  danger: '#EC8E95',
+  dangerTint: '#3B2224',
   overlay: 'rgba(0,0,0,0.6)',
-  disabled: '#36423E',
-  grid: 'rgba(207,227,220,0.07)',
+  disabled: '#4A3C31',
+  grid: 'rgba(243,227,209,0.06)',
   shadow: '#000000',
 };
 
@@ -156,6 +157,6 @@ export function cardShadow(c: Colors) {
         shadowOffset: { width: 0, height: 6 },
         elevation: 2,
         borderWidth: 1,
-        borderColor: 'rgba(228,221,209,0.8)',
+        borderColor: 'rgba(234,223,207,0.9)',
       };
 }

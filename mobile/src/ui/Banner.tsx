@@ -3,12 +3,12 @@ import { Switch, View } from 'react-native';
 import { font, radius, useColors } from '../theme/tokens';
 import { T } from './Text';
 
-/** A spruce reassurance banner (privacy, security, deletion consequences in calm form). */
+/** An espresso reassurance banner (privacy, security, deletion consequences in calm form). */
 export function BrandBanner({ icon, title, body }: { icon: (color: string) => React.ReactNode; title: string; body: string }) {
   const c = useColors();
   return (
-    <View style={{ backgroundColor: c.scheme === 'dark' ? '#0F1E1B' : c.brand, borderRadius: radius.card, padding: 16, flexDirection: 'row', gap: 14, alignItems: 'center' }}>
-      <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: 'rgba(127,209,188,0.16)', alignItems: 'center', justifyContent: 'center' }}>{icon('#7FD1BC')}</View>
+    <View style={{ backgroundColor: c.scheme === 'dark' ? '#17110D' : c.brand, borderRadius: radius.card, padding: 16, flexDirection: 'row', gap: 14, alignItems: 'center' }}>
+      <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: 'rgba(245,162,112,0.16)', alignItems: 'center', justifyContent: 'center' }}>{icon('#F5A270')}</View>
       <View style={{ flex: 1, gap: 3 }}>
         <T style={{ fontFamily: font.display, fontSize: 18, lineHeight: 22, color: '#FFFFFF' }}>{title}</T>
         <T style={{ fontFamily: font.body, fontSize: 13.5, lineHeight: 19, color: 'rgba(255,255,255,0.78)' }}>{body}</T>

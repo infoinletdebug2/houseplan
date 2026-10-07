@@ -126,10 +126,10 @@ export default function Paywall() {
     <View style={{ flex: 1, backgroundColor: c.ground }} testID="paywall">
       <View style={{ height: photoH }}>
         <Image source={IMAGES['paywall-header']} style={{ width: '100%', height: '100%' }} contentFit="cover" />
-        <LinearGradient colors={['rgba(16,36,31,0.45)', 'rgba(244,239,231,0)', c.ground]} locations={[0, 0.45, 1]} style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }} />
+        <LinearGradient colors={['rgba(31,22,17,0.45)', 'rgba(251,244,234,0)', c.ground]} locations={[0, 0.45, 1]} style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }} />
         <View style={{ position: 'absolute', top: insets.top + 8, left: 18, right: 14, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
           <Brand tone="light" size={24} />
-          <Pressable onPress={() => setAccount(true)} accessibilityRole="button" accessibilityLabel="Account" testID="paywall-account" hitSlop={8} style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 12, height: 36, borderRadius: 18, backgroundColor: 'rgba(16,36,31,0.45)' }}>
+          <Pressable onPress={() => setAccount(true)} accessibilityRole="button" accessibilityLabel="Account" testID="paywall-account" hitSlop={8} style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 12, height: 36, borderRadius: 18, backgroundColor: 'rgba(31,22,17,0.45)' }}>
             <CircleUserRound size={18} color="#FFFFFF" />
             <T style={{ fontFamily: font.semibold, fontSize: 13.5, color: '#FFFFFF' }}>Account</T>
           </Pressable>
@@ -200,7 +200,7 @@ function Benefit({ meaning, icon, text }: { meaning: Meaning; icon: (c: string) 
   const [, fg] = useAccent(meaning);
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-      <View style={{ width: 34, height: 34, borderRadius: 17, backgroundColor: fg, alignItems: 'center', justifyContent: 'center' }}>{icon(c.scheme === 'dark' ? '#10241F' : '#FFFFFF')}</View>
+      <View style={{ width: 34, height: 34, borderRadius: 17, backgroundColor: fg, alignItems: 'center', justifyContent: 'center' }}>{icon(c.scheme === 'dark' ? '#1F1611' : '#FFFFFF')}</View>
       <T style={{ fontFamily: font.medium, fontSize: 15.5, color: c.ink, flex: 1 }}>{text}</T>
     </View>
   );
@@ -210,7 +210,7 @@ function Benefit({ meaning, icon, text }: { meaning: Meaning; icon: (c: string) 
 function SampleReport() {
   const c = useColors();
   const rows: Array<[string, string, string]> = [
-    ['Structure', '$182,000', '#2E5A51'],
+    ['Structure', '$182,000', '#6B5243'],
     ['Kitchen', 'Price missing', ''],
   ];
   return (

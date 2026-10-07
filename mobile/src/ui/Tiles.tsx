@@ -92,7 +92,7 @@ export function ChoiceTile({
   );
 }
 
-/** A two-column photo tile: the photo fills the top, the label sits on plaster below. */
+/** A two-column photo tile: the photo fills the top, the label sits on cream below. */
 export function PhotoTile({ image, label, hint, selected, onPress, testID, multi, columns = 2 }: { image: ImageKey; label: string; hint?: string; selected?: boolean; onPress?: () => void; testID?: string; multi?: boolean; columns?: 2 | 3 }) {
   const c = useColors();
   return (
@@ -251,7 +251,7 @@ export function ActionTile({ title, subtitle, icon, meaning, onPress, testID }: 
       onPress={onPress}
       style={({ pressed }) => ({ width: '48%', minHeight: 96, borderRadius: radius.card, backgroundColor: bg, padding: 14, gap: 10, opacity: pressed ? 0.88 : 1 })}
     >
-      <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: fg, alignItems: 'center', justifyContent: 'center' }}>{icon(c.scheme === 'dark' ? '#10241F' : '#FFFFFF')}</View>
+      <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: fg, alignItems: 'center', justifyContent: 'center' }}>{icon(c.scheme === 'dark' ? '#1F1611' : '#FFFFFF')}</View>
       <View style={{ gap: 2 }}>
         <T style={{ fontFamily: font.display, fontSize: 18, lineHeight: 22, color: c.ink }} numberOfLines={1}>
           {title}
@@ -271,7 +271,7 @@ export function PhotoBand({ image, eyebrow, title, height = 260, children, right
   return (
     <View style={{ height, overflow: 'hidden' }}>
       <Image source={IMAGES[image]} style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }} contentFit="cover" />
-      <LinearGradient colors={['rgba(16,36,31,0.55)', 'rgba(16,36,31,0)', 'rgba(16,36,31,0.82)']} locations={[0, 0.35, 1]} style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }} />
+      <LinearGradient colors={['rgba(31,22,17,0.55)', 'rgba(31,22,17,0)', 'rgba(31,22,17,0.82)']} locations={[0, 0.35, 1]} style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }} />
       {right ? <View style={{ position: 'absolute', top: 54, right: 16 }}>{right}</View> : null}
       <View style={{ position: 'absolute', left: 20, right: 20, bottom: 18, gap: 4 }}>
         {eyebrow ? (
@@ -291,7 +291,7 @@ export function DetailHero({ image, title, subtitle, height = 180 }: { image: Im
   return (
     <View style={{ height, borderRadius: radius.card, overflow: 'hidden' }}>
       <Image source={IMAGES[image]} style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }} contentFit="cover" />
-      <LinearGradient colors={['rgba(16,36,31,0)', 'rgba(16,36,31,0.85)']} locations={[0.35, 1]} style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }} />
+      <LinearGradient colors={['rgba(31,22,17,0)', 'rgba(31,22,17,0.85)']} locations={[0.35, 1]} style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }} />
       <View style={{ position: 'absolute', left: 16, right: 16, bottom: 14, gap: 2 }}>
         <T style={{ fontFamily: font.display, fontSize: 26, lineHeight: 30, color: '#FFFFFF' }} numberOfLines={2} accessibilityRole="header">
           {title}

@@ -24,7 +24,7 @@ export function useTabBarSpace(): number {
 /**
  * Our own tab bar (blueprint C3: the navigator's default clipped labels).
  * Projects · Calculators · Advisor · Settings (BRD §7). The selected tab sits
- * on a soft teal plate, as on board 02; labels never truncate.
+ * on a soft apricot plate, as on board 02; labels never truncate.
  */
 export function TabBar({ state, descriptors, navigation, icons }: BarProps & { icons: Record<string, (color: string) => React.ReactNode> }) {
   const c = useColors();
@@ -37,7 +37,7 @@ export function TabBar({ state, descriptors, navigation, icons }: BarProps & { i
         height: TAB_BAR_HEIGHT + insets.bottom,
         paddingBottom: insets.bottom,
         paddingHorizontal: 8,
-        backgroundColor: c.scheme === 'dark' ? 'rgba(26,34,32,0.98)' : 'rgba(251,248,243,0.98)',
+        backgroundColor: c.scheme === 'dark' ? 'rgba(36,28,22,0.98)' : 'rgba(255,251,245,0.98)',
         borderTopWidth: 1,
         borderTopColor: c.line,
       }}

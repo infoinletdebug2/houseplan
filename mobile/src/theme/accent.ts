@@ -11,27 +11,27 @@ export type Meaning = 'money' | 'estimate' | 'rooms' | 'documents' | 'services' 
 type Pair = [bg: string, fg: string];
 
 const light: Record<Meaning, Pair> = {
-  money: ['#F4E2DB', '#B0603F'], // terracotta: costs, payments
-  estimate: ['#F4E9D2', '#9A6F1E'], // ochre: estimate, calculators
-  rooms: ['#E3EBE1', '#4F6E4A'], // sage: rooms, structure
-  documents: ['#E1E7EF', '#435D7E'], // slate: quotes, documents
-  services: ['#DCECEB', '#2F6F6C'], // teal: services, progress
-  alerts: ['#F6E3E2', '#A2444D'], // rose
-  settings: ['#E1E9E7', '#2F4D47'], // spruce: account
-  materials: ['#EFE5DA', '#86613D'], // clay: procurement
-  neutral: ['#ECE5D9', '#5F6B66'],
+  money: ['#FBE4D6', '#B04E1C'], // burnt orange: costs, payments
+  estimate: ['#F6EAD1', '#93681A'], // ochre: estimate, calculators
+  rooms: ['#F0E3EC', '#7E4A6E'], // plum: rooms, structure
+  documents: ['#E2E8F0', '#46607F'], // slate: quotes, documents
+  services: ['#E0E9F3', '#2F5D8A'], // cobalt: services, progress
+  alerts: ['#F7E1E1', '#A13E46'], // rose
+  settings: ['#F1E6DA', '#4A3628'], // espresso: account
+  materials: ['#F2E6D8', '#8A5E36'], // clay: procurement
+  neutral: ['#F4E9DA', '#7A6A5D'],
 };
 
 const dark: Record<Meaning, Pair> = {
-  money: ['#3A2620', '#EBA58A'],
-  estimate: ['#352B18', '#E3C27F'],
-  rooms: ['#223024', '#A9C6A2'],
-  documents: ['#1F2836', '#A6BCD8'],
-  services: ['#173130', '#86CBC6'],
-  alerts: ['#3B2427', '#F09AA2'],
-  settings: ['#1E2B28', '#B6D2CA'],
-  materials: ['#33281E', '#D9B48E'],
-  neutral: ['#18201E', '#9AA6A1'],
+  money: ['#3A2418', '#F5A270'],
+  estimate: ['#352A16', '#E6C67F'],
+  rooms: ['#33212E', '#DDA9CC'],
+  documents: ['#1F2733', '#A9BFDA'],
+  services: ['#1B2838', '#8DB4DE'],
+  alerts: ['#3B2224', '#F09AA2'],
+  settings: ['#2E241D', '#E3CDB8'],
+  materials: ['#33271C', '#DDB48C'],
+  neutral: ['#1E1712', '#B5A493'],
 };
 
 export function useAccent(meaning: Meaning): Pair {
@@ -39,6 +39,6 @@ export function useAccent(meaning: Meaning): Pair {
 }
 
 /** Solid tones for bars and charts (stacked bar segments by category). */
-export const solid = ['#7F9A7A', '#C9785F', '#C99A45', '#5F7896', '#4E8F8C', '#A9825F', '#3F5E57', '#B5545C'];
+export const solid = ['#C4561F', '#C99A45', '#5F7896', '#8E5A7E', '#A9825F', '#2F5D8A', '#E9A27A', '#6B5243'];
 
 export const accents = { light, dark };

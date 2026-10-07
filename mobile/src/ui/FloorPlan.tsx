@@ -7,7 +7,7 @@ import { lengthLabel } from '../lib/format';
 
 /**
  * The signature drawing (DESIGN-SYSTEM.md, board 03): the actual room as a
- * fine spruce floor plan on a faint blueprint grid, drawn from its own
+ * fine espresso floor plan on a faint blueprint grid, drawn from its own
  * measurements. Dimension lines with arrow ticks label length and width in
  * the person's units; doors are gaps with a swing arc, windows are glazing
  * lines in the wall. `fill="planks"` shades the floor for flooring.
@@ -65,7 +65,7 @@ export function FloorPlan({
   const x = padL + (availW - w) / 2;
   const y = padT + (availH - h) / 2;
   const wall = c.brand;
-  const thin = c.scheme === 'dark' ? 'rgba(207,227,220,0.55)' : 'rgba(23,51,46,0.55)';
+  const thin = c.scheme === 'dark' ? 'rgba(243,227,209,0.55)' : 'rgba(42,30,23,0.55)';
   const wallW = 5;
 
   // Expand counts into individual openings, in metres.
@@ -158,7 +158,7 @@ export function FloorPlan({
         </Defs>
         <Rect x={0} y={0} width={VW} height={VH} fill={`url(#${idPrefix}-grid)`} />
         {fill === 'tiles' && known ? <Rect x={x} y={y} width={w} height={h} fill={`url(#${idPrefix}-grid)`} opacity={0.9} /> : null}
-        <Rect x={x} y={y} width={w} height={h} fill={c.scheme === 'dark' ? 'rgba(207,227,220,0.04)' : 'rgba(255,255,255,0.55)'} />
+        <Rect x={x} y={y} width={w} height={h} fill={c.scheme === 'dark' ? 'rgba(243,227,209,0.04)' : 'rgba(255,255,255,0.55)'} />
         {planks}
         <Rect x={x} y={y} width={w} height={h} fill="none" stroke={wall} strokeWidth={wallW} strokeDasharray={known ? undefined : '6 5'} />
         {doorEls}
