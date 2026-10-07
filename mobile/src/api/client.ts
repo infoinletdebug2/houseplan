@@ -274,6 +274,39 @@ export const api = {
   },
 };
 
+/**
+ * A multipart upload (POST /attachments). Same envelope, auth and one-refresh
+ * rule as every other call; no JSON content type so fetch sets the boundary.
+ */
+export async function upload<T>(path: string, form: FormData, retrying = false): Promise<T> {
+  const session = readSession();
+  const headers: Record<string, string> = { accept: 'application/json', 'x-timezone': TIMEZONE, 'x-app-version': APP_VERSION };
+  const installation = installationIdSync();
+  if (installation) headers['x-installation-id'] = installation;
+  if (session?.access_token) headers.authorization = `Bearer ${session.access_token}`;
+  let response: Response;
+  try {
+    response = await fetch(buildUrl(path), { method: 'POST', headers, body: form });
+  } catch {
+    throw new ApiError('NETWORK_ERROR', 'You’re offline — the file wasn’t added. Try again when you’re connected.', 0);
+  }
+  const body = (await response.json().catch(() => ({}))) as Partial<ApiSuccess<T>> & Partial<ApiFailure>;
+  if (response.ok && !body.error) return body.data as T;
+  if (response.status === 401 && !retrying) {
+    const refreshed = await refreshSession();
+    if (refreshed) return upload<T>(path, form, true);
+    writeSession(null);
+  }
+  const failure = body.error;
+  throw new ApiError(
+    failure?.code ?? 'INTERNAL_SERVER_ERROR',
+    failure?.message ?? 'The file could not be added. Try again.',
+    response.status,
+    failure?.field_errors ?? Object.entries(failure?.fields ?? {}).map(([field, message]) => ({ field, message })),
+    failure?.request_id,
+  );
+}
+
 /** A message a person can read, from anything thrown. */
 export function messageOf(error: unknown): string {
   if (error instanceof ApiError) return error.message;
