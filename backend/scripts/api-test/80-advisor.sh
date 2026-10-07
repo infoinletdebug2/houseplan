@@ -26,7 +26,8 @@ call GET "/projects/$APROJ/advice/$ADVICE" 200
 check 'd.data.status==="completed"&&typeof d.data.response.summary==="string"&&d.data.response.limitations.length>=2' 'a validated answer (or the automatic fallback) with limitations'
 check '!JSON.stringify(d.data.response).includes("Hidden Road")' 'the address never reaches the advisor'
 check 'd.data.response.suggestions.every(s=>s.verified_savings_minor===null)' 'AC21 no saving without a server-computed scenario'
-check '!/[€$£]\s?\d/.test(d.data.response.summary)||d.data.fallback' 'AC21 no invented local price in the summary'
+# The only figure this project holds is its €250,000 target: any other amount (or any price per unit) is invented.
+check 'd.data.fallback||((JSON.stringify(d.data.response).match(/[€$£]\s?[\d,]+(\.\d+)?/g)||[]).every(m=>m.replace(/[^\d.]/g,"").replace(/\.0+$/,"")==="250000")&&!/[€$£]\s?[\d,.]+\s*(per|\/)\s*(m|sq|square|ft)/i.test(JSON.stringify(d.data.response)))' 'AC21 no invented local price: only the project own figures appear'
 call GET "/projects/$APROJ/advice" 200; check 'd.data.length===1' 'history lists the request'
 call GET /advisor/quota 200; check 'd.data.used>=0&&d.data.remaining<=30' 'quota counts'
 
