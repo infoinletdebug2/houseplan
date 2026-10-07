@@ -14,6 +14,7 @@ import { space } from '../../../../src/theme/tokens';
 import { DateField, QtyField, SupplierPicker, writeMessage } from '../../../../src/features/money/ui';
 import { useProjectId, useRefreshProject, useSubmit } from '../../../../src/features/money/data';
 import type { ProcItem } from '../../../../src/features/money/types';
+import { ProjectContextCard } from '../../../../src/features/project/ContextCard';
 
 interface CalcLite {
   id: string;
@@ -68,6 +69,7 @@ export default function NewItem() {
 
   return (
     <Screen form header={<Header title="Add a material" close />} footer={<Button title="Add to the list" onPress={() => void save()} loading={submit.busy} />} gap={space.md}>
+      <ProjectContextCard projectId={pid} />
       {usable.length > 0 ? <Segmented options={[{ value: 'calc', label: 'From a calculation' }, { value: 'manual', label: 'By hand' }]} value={mode} onChange={setMode} /> : null}
       {fromCalc ? (
         <>

@@ -23,6 +23,7 @@ import { Stepper } from '../../../../src/features/project/Stepper';
 import { ROOM_TYPES, roomTypeLabel, storeyLabel } from '../../../../src/features/project/labels';
 import type { Opening, Room, RoomType } from '../../../../src/features/project/types';
 import type { UnitSystem } from '../../../../src/types';
+import { ProjectContextCard } from '../../../../src/features/project/ContextCard';
 
 /**
  * Room editor (S14). The plan redraws as you type; every input carries its
@@ -37,6 +38,7 @@ export default function RoomEditor() {
   const room = rooms.data?.find((r) => r.id === roomId) ?? null;
   return (
     <Screen header={<Header title={isNew ? 'New room' : (room?.name ?? 'Room')} />} form gap={space.lg}>
+      {isNew && id ? <ProjectContextCard projectId={id} /> : null}
       <Gate query={isNew ? project : rooms}>
         {project.data && (isNew || room) ? <Editor key={room ? `${room.id}:${room.version}` : 'new'} projectId={id!} units={project.data.unit_system} room={room} nextStorey={0} /> : null}
         {!isNew && rooms.data && !room ? <T v="body">This room is not here any more.</T> : null}

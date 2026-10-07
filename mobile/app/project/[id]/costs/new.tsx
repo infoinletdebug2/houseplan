@@ -17,6 +17,7 @@ import { space, useColors } from '../../../../src/theme/tokens';
 import { CategoryPicker, DateField, FieldNote, MoneyField, SplitMeter, SupplierPicker, WarnNote, parseMoney, writeMessage } from '../../../../src/features/money/ui';
 import { COST_TYPE_LABEL, absMinor, negMinor, sumMinor, useCategories, useCommitments, useCosts, useProjectId, useProjectLite, useRefreshProject, useSubmit } from '../../../../src/features/money/data';
 import type { Cost, CostType, CreditEffect } from '../../../../src/features/money/types';
+import { ProjectContextCard } from '../../../../src/features/project/ContextCard';
 
 interface Row {
   key: string;
@@ -156,6 +157,7 @@ export default function CostEntry() {
 
   return (
     <Screen form header={<Header title={edit ? 'Edit draft' : credit ? 'Add a credit note' : 'Add an invoice'} close />} footer={<Button title="Save draft" onPress={() => void save()} loading={submit.busy} testID="cost-save" />} gap={space.md}>
+      <ProjectContextCard projectId={pid} />
       <TileGrid>
         {(['invoice', 'expense', 'credit'] as const).map((t) => (
           <ChoiceTile key={t} label={COST_TYPE_LABEL[t]} hint={t === 'invoice' ? 'From a supplier' : t === 'expense' ? 'A receipt you paid' : 'Money off an invoice'} selected={type === t} onPress={() => { submit.fresh(); setType(t); }} />

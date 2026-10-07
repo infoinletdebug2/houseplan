@@ -17,6 +17,7 @@ import { space, useColors } from '../../../../src/theme/tokens';
 import { CategoryPicker, DateField, FieldNote, MoneyField, QtyField, SupplierPicker, writeMessage } from '../../../../src/features/money/ui';
 import { previewLine, sumMinor, useCategories, useProjectId, useProjectLite, useRefreshProject, useSubmit } from '../../../../src/features/money/data';
 import type { QuoteDetail } from '../../../../src/features/money/types';
+import { ProjectContextCard } from '../../../../src/features/project/ContextCard';
 
 interface LineDraft {
   key: string;
@@ -128,6 +129,7 @@ export default function NewQuote() {
       }
       gap={space.md}
     >
+      <ProjectContextCard projectId={pid} />
       {amend ? <FieldNote>This saves a new quote linked to the original. Anything you already accepted stays exactly as it was.</FieldNote> : null}
       <Field label="Quote name" value={title} onChangeText={(t) => { submit.fresh(); setTitle(t); }} placeholder="Kitchen fit-out" error={errors.title} maxLength={200} testID="quote-title" />
       <SupplierPicker value={supplier} onPick={setSupplier} />

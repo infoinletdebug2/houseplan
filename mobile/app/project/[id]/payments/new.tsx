@@ -15,6 +15,7 @@ import { DateField, FieldNote, MoneyField, SupplierPicker, WarnNote, parseMoney,
 import { AllocationEditor, allocationsOut } from '../../../../src/features/money/allocate';
 import { PAYMENT_METHOD_LABEL, useCommitments, useCosts, usePayments, useProjectId, useProjectLite, useRefreshProject, useSubmit } from '../../../../src/features/money/data';
 import type { Payment, PaymentMethod, PaymentType } from '../../../../src/features/money/types';
+import { ProjectContextCard } from '../../../../src/features/project/ContextCard';
 
 /**
  * S31 payment entry: cash you paid (or a refund you received). A payment
@@ -127,6 +128,7 @@ export default function NewPayment() {
   const amt = parseMoney(amount, cur);
   return (
     <Screen form header={<Header title={type === 'refund' ? 'Record a refund' : 'Record a payment'} close />} footer={<Button title={type === 'refund' ? 'Save refund' : `Save payment${amt ? ` · ${money(amt, cur)}` : ''}`} onPress={() => void save()} loading={create.busy || post.busy} testID="payment-save" />} gap={space.md}>
+      <ProjectContextCard projectId={pid} />
       <TileGrid>
         <ChoiceTile label="I paid" hint="Cash out" selected={type === 'outgoing'} onPress={() => { dirty(); setType('outgoing'); }} />
         <ChoiceTile label="Money back" hint="A refund in" selected={type === 'refund'} onPress={() => { dirty(); setType('refund'); }} />

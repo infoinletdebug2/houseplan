@@ -15,6 +15,7 @@ import { space, useColors } from '../../../../src/theme/tokens';
 import { CategoryPicker, FieldNote, MoneyField, SupplierPicker, parseMoney, writeMessage } from '../../../../src/features/money/ui';
 import { sumMinor, useCategories, useProjectId, useProjectLite, useRefreshProject, useSubmit } from '../../../../src/features/money/data';
 import type { Commitment } from '../../../../src/features/money/types';
+import { ProjectContextCard } from '../../../../src/features/project/ContextCard';
 
 let seq = 0;
 
@@ -67,6 +68,7 @@ export default function NewCommitment() {
 
   return (
     <Screen form header={<Header title="Record a commitment" close />} footer={<Button title={`Save commitment · ${money(total, cur)}`} onPress={() => void save()} loading={submit.busy} />} gap={space.md}>
+      <ProjectContextCard projectId={pid} />
       <FieldNote>For work you agreed outside the app. If you have the supplier's quote, enter it and accept it instead: the lines stay linked.</FieldNote>
       <Field label="Name" value={title} onChangeText={(t) => { submit.fresh(); setTitle(t); }} placeholder="Roofing contract" error={errors.title} maxLength={200} />
       <SupplierPicker value={supplier} onPick={setSupplier} />

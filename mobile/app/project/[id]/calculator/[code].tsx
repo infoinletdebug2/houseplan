@@ -26,6 +26,7 @@ import { awaitRate, cancelRatePick } from '../../../../src/features/project/pick
 import { Gate, unitLabel, UNITS } from '../../../../src/features/project/ui';
 import type { CalcResult, CalculatorCode, Calculation, Rate, Room } from '../../../../src/features/project/types';
 import type { UnitSystem } from '../../../../src/types';
+import { ProjectContextCard } from '../../../../src/features/project/ContextCard';
 
 /**
  * A calculator (S16 input → S17 result, board 03). Inputs in the person's
@@ -273,6 +274,7 @@ function Calc({ projectId, currency, units, code, rooms, initialRoom, openResult
       }
       gap={space.md}
     >
+      <ProjectContextCard projectId={projectId} />
       <T v="body" color={c.muted}>
         {spec.explain}
       </T>

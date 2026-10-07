@@ -20,6 +20,7 @@ import { refreshProject, useCategories, useProject, useRevision, useRooms } from
 import { awaitRate, cancelRatePick } from '../../../../src/features/project/picker';
 import { Gate, originSource, unitLabel, UNITS, num } from '../../../../src/features/project/ui';
 import type { Line, LineMode, Project, Rate, RevisionDetail } from '../../../../src/features/project/types';
+import { ProjectContextCard } from '../../../../src/features/project/ContextCard';
 
 /**
  * Line editor (S21). Four ways to cost a line — measured, a quantity, an
@@ -34,6 +35,7 @@ export default function LineEditor() {
   const line = lineId ? (detail.data?.categories.flatMap((x) => x.lines).find((l) => l.id === lineId) ?? null) : null;
   return (
     <Screen header={<Header title={lineId ? 'Edit line' : 'New line'} close />} form gap={space.md}>
+      {id ? <ProjectContextCard projectId={id} /> : null}
       <Gate query={detail}>
         {project.data && detail.data ? (
           detail.data.status !== 'draft' ? (
