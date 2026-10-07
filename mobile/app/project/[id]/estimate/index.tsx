@@ -8,6 +8,7 @@ import { Card } from '../../../../src/ui/Card';
 import { Button, IconButton, TextLink } from '../../../../src/ui/Button';
 import { CompletenessBanner } from '../../../../src/ui/Money';
 import { StackedBar } from '../../../../src/ui/Charts';
+import { CompletenessRing } from '../../../../src/ui/Instruments';
 import { EmptyState, OfflineBanner } from '../../../../src/ui/States';
 import { Pill } from '../../../../src/ui/Chips';
 import { ConfirmSheet, Sheet, useToast } from '../../../../src/ui/Sheet';
@@ -87,11 +88,14 @@ function Body({ projectId, currency, d }: { projectId: string; currency: string;
 
   return (
     <>
-      <View style={{ gap: 6 }}>
-        <T v="small">{statusLine(d)}</T>
-        <T v="hero" accessibilityRole="header">
-          {d.kind === 'scenario' ? d.title.replace(/^Scenario: /, '') : 'Estimate'}
-        </T>
+      <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 12 }}>
+        <View style={{ flex: 1, gap: 6 }}>
+          <T v="small">{statusLine(d)}</T>
+          <T v="hero" accessibilityRole="header">
+            {d.kind === 'scenario' ? d.title.replace(/^Scenario: /, '') : 'Estimate'}
+          </T>
+        </View>
+        {d.line_count > 0 ? <CompletenessRing done={Math.max(0, d.line_count - d.missing_line_count)} total={d.line_count} size={66} /> : null}
       </View>
       <View style={{ gap: 4 }}>
         <T v="caption">Known subtotal</T>
@@ -106,7 +110,7 @@ function Body({ projectId, currency, d }: { projectId: string; currency: string;
         </Pressable>
         {d.deferred_minor !== '0' ? <T v="small">{money(d.deferred_minor, currency)} deferred: delayed, not saved.</T> : null}
       </View>
-      {shares.length ? <StackedBar parts={shares} format={(n) => moneyShort(String(n), currency)} /> : null}
+      {shares.length ? <StackedBar parts={shares} height={14} format={(n) => moneyShort(String(n), currency)} /> : null}
       <CompletenessBanner missingLines={d.missing_line_count} undecided={d.unresolved_category_count} />
       {stale && editable ? (
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, padding: 12, borderRadius: radius.tile, backgroundColor: c.warnTint }}>

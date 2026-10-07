@@ -74,7 +74,7 @@ export function DivergingBar({ value, max, height = 10, style }: { value: number
           position: 'absolute',
           height,
           borderRadius: height / 2,
-          backgroundColor: cheaper ? c.primary : c.danger,
+          backgroundColor: cheaper ? c.ok : c.danger,
           opacity: cheaper ? 1 : 0.75,
           left: cheaper ? `${50 - pct}%` : '50%',
           width: `${pct}%`,
@@ -103,7 +103,7 @@ export function StackedBar({
   const total = parts.reduce((s, p) => s + Math.max(0, p.value), 0);
   return (
     <View style={[{ gap: 10 }, style]}>
-      <View style={{ flexDirection: 'row', height, borderRadius: height / 2, overflow: 'hidden', backgroundColor: c.ground2, gap: total > 0 ? 2 : 0 }} accessibilityLabel={parts.map((p) => `${p.label} ${format ? format(p.value) : p.value}`).join(', ')}>
+      <View style={{ flexDirection: 'row', height, borderRadius: height / 2, overflow: 'hidden', backgroundColor: c.ground2, gap: total > 0 ? 3 : 0 }} accessibilityLabel={parts.map((p) => `${p.label} ${format ? format(p.value) : p.value}`).join(', ')}>
         {total > 0 ? parts.filter((p) => p.value > 0).map((p) => <View key={p.label} style={{ flex: p.value, backgroundColor: p.color }} />) : null}
       </View>
       {legend ? (

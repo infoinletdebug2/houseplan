@@ -5,6 +5,7 @@ import { T } from '../../ui/Text';
 import { money } from '../../lib/format';
 import { font, radius, space, useColors } from '../../theme/tokens';
 import type { Diff } from './types';
+import { HouseSketch } from './HouseSketch';
 
 /**
  * Two totals side by side with the difference between them, then "What
@@ -23,10 +24,10 @@ export function CompareView({ diff, currency, leftTitle, rightTitle, savingsLabe
       <View>
         <View style={{ flexDirection: 'row', gap: 10 }}>
           <TotalCard title={leftTitle} value={diff.from.total_with_reserve_minor} currency={currency} tint={c.scheme === 'dark' ? '#241C16' : '#F4E9DA'} missing={diff.from.missing_line_count} />
-          <TotalCard title={rightTitle} value={diff.to.total_with_reserve_minor} currency={currency} tint={c.scheme === 'dark' ? '#1A2522' : '#E6EEEA'} missing={diff.to.missing_line_count} />
+          <TotalCard title={rightTitle} value={diff.to.total_with_reserve_minor} currency={currency} tint={c.scheme === 'dark' ? '#3A2418' : '#FBE4D6'} missing={diff.to.missing_line_count} highlight={changed.map((x) => x.code)} />
         </View>
         <View style={{ alignItems: 'center', marginTop: -16 }}>
-          <View style={{ paddingHorizontal: 18, minHeight: 38, paddingVertical: 6, borderRadius: 19, justifyContent: 'center', backgroundColor: delta === null ? c.ground2 : cheaper ? c.primary : delta === '0' ? c.brand : c.danger }}>
+          <View style={{ paddingHorizontal: 18, minHeight: 38, paddingVertical: 6, borderRadius: 19, justifyContent: 'center', backgroundColor: delta === null ? c.ground2 : cheaper ? c.ok : delta === '0' ? c.brand : c.danger }}>
             <T style={{ fontFamily: font.semibold, fontSize: 16, color: delta === null ? c.ink : '#FFFFFF' }} num>
               {delta === null ? 'Not comparable yet' : delta === '0' ? 'Same total' : money(delta, currency, { signed: true, cents: false })}
             </T>
@@ -69,7 +70,7 @@ export function CompareView({ diff, currency, leftTitle, rightTitle, savingsLabe
             <View key={x.code} style={{ flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: c.line }}>
               <View style={{ width: '44%', gap: 2 }}>
                 <T v="body">{x.name}</T>
-                <T style={{ fontFamily: font.semibold, fontSize: 16, color: d < 0 ? c.primary : d > 0 ? c.danger : c.muted }} num>
+                <T style={{ fontFamily: font.semibold, fontSize: 16, color: d < 0 ? c.ok : d > 0 ? c.danger : c.muted }} num>
                   {x.from_missing !== x.to_missing && d === 0 ? 'Pricing changed' : money(x.delta_minor, currency, { signed: true })}
                 </T>
               </View>
@@ -101,13 +102,16 @@ export function CompareView({ diff, currency, leftTitle, rightTitle, savingsLabe
   );
 }
 
-function TotalCard({ title, value, currency, tint, missing }: { title: string; value: string; currency: string; tint: string; missing: number }) {
+function TotalCard({ title, value, currency, tint, missing, highlight }: { title: string; value: string; currency: string; tint: string; missing: number; highlight?: string[] }) {
   const c = useColors();
   return (
     <View style={{ flex: 1, minHeight: 132, borderRadius: radius.card, padding: 16, paddingBottom: 24, backgroundColor: tint, gap: 6 }}>
       <T style={{ fontFamily: font.displayBold, fontSize: 18, lineHeight: 22, color: c.ink }} numberOfLines={2}>
         {title}
       </T>
+      <View style={{ alignItems: 'center', paddingVertical: 4, borderBottomWidth: 1, borderBottomColor: c.scheme === 'dark' ? 'rgba(243,227,209,0.15)' : 'rgba(42,30,23,0.12)', marginBottom: 2 }}>
+        <HouseSketch highlight={highlight} width={112} />
+      </View>
       <T v="caption">Total with reserve</T>
       <T style={{ fontFamily: font.display, fontSize: 23, lineHeight: 28, color: c.ink }} num>
         {money(value, currency, { cents: false })}
