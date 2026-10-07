@@ -31,7 +31,7 @@ import { idempotency, profileOf, requireActive, requirePaid, requireProject, req
 import { CATEGORY_CODES } from '../catalogue';
 import { D } from '../logic/decimal';
 import { extrasMinor, netFromGross, priceLine, type CalcResult } from '../logic/calc';
-import { CALCULATION_COLUMNS, CALCULATION_FROM, REVISION_COLUMNS, REVISION_FROM, calculationView, dec, loadLines, loadRevision, revisionView } from '../views';
+import { CALCULATION_COLUMNS, CALCULATION_FROM, REVISION_COLUMNS, REVISION_FROM, calculationView, dec, loadLines, loadRevision, loadRooms, revisionView } from '../views';
 import { prepare, resolveRate } from './rates';
 import { limitsOf } from './projects';
 
@@ -401,6 +401,12 @@ function tradeoffsField(v: unknown) {
 
 /* ══ the router ══════════════════════════════════════════════════════════ */
 
+/** A room's measurements now, for a person to check a typed quantity against (null when the room is gone). */
+async function currentGeometry(c: Context, projectId: string, roomId: string): Promise<Record<string, unknown> | null> {
+  const [room] = await loadRooms(c, projectId, roomId);
+  return room ? ((room as { geometry?: Record<string, unknown> }).geometry ?? null) : null;
+}
+
 export const estimatesRouter = defineRouter({
   name: 'estimates',
 
@@ -529,22 +535,35 @@ export const estimatesRouter = defineRouter({
       const p = proj(c);
       const lines = await loadLines(c, revisionId);
       const changes: Array<Record<string, unknown>> = [];
-      const calcs = await sql<Record<string, unknown>>(c, `SELECT ${CALCULATION_COLUMNS} FROM ${CALCULATION_FROM} WHERE k.project_id = $1::uuid`, [p.id]);
+      const calcs = await sql<Record<string, unknown>>(c, `SELECT ${CALCULATION_COLUMNS}, k.rate_snapshot::text AS rate_snapshot FROM ${CALCULATION_FROM} WHERE k.project_id = $1::uuid`, [p.id]);
+      // One query each, not one per line: a draft may hold 2,000 lines.
+      const rateIds = Array.from(new Set(lines.map((l) => l.user_rate_id).filter((v): v is string => typeof v === 'string')));
+      const ratePrices = new Map(
+        rateIds.length
+          ? (
+              await sql<{ id: string; p: string }>(
+                c,
+                `SELECT id, net_unit_price::text AS p FROM hp__user_rate WHERE owner_user_id = $1::text AND archived_at IS NULL AND id = ANY ($2::uuid[])`,
+                [p.ownerUserId, rateIds],
+              )
+            ).map((r) => [r.id, r.p] as const)
+          : [],
+      );
+      const roomGeometryCache = new Map<string, Record<string, unknown> | null>();
+      let clearedStale = false;
       for (const l of lines) {
         const calcRow = l.calculation_id ? calcs.find((k) => k.id === l.calculation_id) : null;
         const calc = calcRow ? calculationView(calcRow) : null;
         let rateMoved = false;
         if (!calc && l.user_rate_id && l.rate_snapshot && typeof l.rate_snapshot === 'object') {
-          const now = await sqlOne<{ p: string }>(c, `SELECT net_unit_price::text AS p FROM hp__user_rate WHERE id = $1::uuid AND owner_user_id = $2::text AND archived_at IS NULL`, [l.user_rate_id, p.ownerUserId]);
-          rateMoved = Boolean(now && dec(now.p) !== (l.rate_snapshot as Record<string, unknown>).net_unit_price);
+          const now = ratePrices.get(l.user_rate_id);
+          rateMoved = Boolean(now && dec(now) !== (l.rate_snapshot as Record<string, unknown>).net_unit_price);
         }
         const needs = l.stale || calc?.room_changed || rateMoved;
         if (!needs) continue;
         if (calc) {
-          const snap = (calcRow!.output as Record<string, unknown>) ?? {};
-          void snap;
-          const rateSnap = (await sqlOne<{ s: unknown }>(c, `SELECT rate_snapshot::text AS s FROM hp__calculation WHERE id = $1::uuid`, [calc.id]))?.s;
-          const rs = (typeof rateSnap === 'string' ? JSON.parse(rateSnap) : rateSnap) as Record<string, unknown> | null;
+          const rawSnap = calcRow!.rate_snapshot;
+          const rs = (typeof rawSnap === 'string' ? JSON.parse(rawSnap) : rawSnap) as Record<string, unknown> | null;
           let prepared: Awaited<ReturnType<typeof prepare>> | null = null;
           let problem: string | null = null;
           try {
@@ -589,16 +608,34 @@ export const estimatesRouter = defineRouter({
             await fn(c, 'hp_line_write', { op: 'update', project_id: p.id, revision_id: revisionId, line_id: l.id, expected_version: cur.version, line });
           }
         } else {
-          changes.push({ line_id: l.id, label: l.label, before_gross_minor: l.gross_minor, after_gross_minor: l.gross_minor, reason: `${l.stale_reason ?? 'Something it depends on changed'}. Check this line by hand.` });
+          // The quantity was typed by a person; nothing records which surface it came from, so
+          // it is never recomputed. The room's current measurements are shown to check against.
+          let room_geometry: Record<string, unknown> | null = null;
+          if (l.room_id) {
+            if (!roomGeometryCache.has(l.room_id)) roomGeometryCache.set(l.room_id, await currentGeometry(c, p.id, l.room_id));
+            room_geometry = roomGeometryCache.get(l.room_id) ?? null;
+          }
+          changes.push({
+            line_id: l.id,
+            label: l.label,
+            before_gross_minor: l.gross_minor,
+            after_gross_minor: l.gross_minor,
+            action: 'check_by_hand',
+            room_geometry,
+            reason: `${l.stale_reason ?? 'Something it depends on changed'}. Check this line by hand.`,
+          });
           if (accept) {
             await sql(
               c,
               `UPDATE hp__estimate_line SET stale = false, stale_reason = NULL, version = version + 1, updated_at = now() WHERE project_id = $1::uuid AND revision_id = $2::uuid AND id = $3::uuid`,
               [p.id, revisionId, l.id],
             );
+            clearedStale = true;
           }
         }
       }
+      // Clearing flags changes no money, but the draft did change: bump its version so other devices see it.
+      if (clearedStale) await sql(c, `UPDATE hp__estimate_revision SET version = version + 1, updated_at = now() WHERE project_id = $1::uuid AND id = $2::uuid AND status = 'draft'`, [p.id, revisionId]);
       if (accept && changes.length) {
         await audit(c, { project_id: p.id, action: 'revision.recalculate', entity_type: 'estimate_revision', entity_id: revisionId, summary: `Recalculated ${changes.length} lines.` });
       }

@@ -340,19 +340,27 @@ export const projectsRouter = defineRouter({
           expected: integer(ch.expected_version, 'expected_version', { required: true, min: 1 })!,
         };
       });
-      for (const ch of changes) {
-        const row = await sqlOne(
-          c,
-          `UPDATE hp__project_category SET inclusion = coalesce($3::text, inclusion), note = CASE WHEN $4::boolean THEN $5::text ELSE note END,
-             display_name = coalesce($6::text, display_name), version = version + 1, updated_at = now()
-           WHERE project_id = $1::uuid AND id = $2::uuid AND version = $7::int RETURNING id`,
-          [p.id, ch.id, ch.inclusion, ch.note !== undefined, ch.note ?? null, ch.display_name, ch.expected],
-        );
-        if (!row) {
-          const exists = await sqlOne(c, `SELECT 1 FROM hp__project_category WHERE project_id = $1::uuid AND id = $2::uuid`, [p.id, ch.id]);
-          if (!exists) throw notFound('That category is not in this project.');
-          throw versionConflict();
-        }
+      if (new Set(changes.map((ch) => ch.id)).size !== changes.length) throw invalid('Each category can appear once per change.', 'changes');
+      // All or nothing, in one statement: every row must exist in this project at the expected version.
+      const payload = JSON.stringify(
+        changes.map((ch) => ({ id: ch.id, inclusion: ch.inclusion, set_note: ch.note !== undefined, note: ch.note ?? null, display_name: ch.display_name, expected: ch.expected })),
+      );
+      const updated = await sql<{ id: string }>(
+        c,
+        `WITH ch AS (
+           SELECT * FROM jsonb_to_recordset($2::jsonb) AS x(id uuid, inclusion text, set_note boolean, note text, display_name text, expected int)),
+         ok AS (
+           SELECT count(*) = (SELECT count(*) FROM ch) AS all_ok FROM hp__project_category pc JOIN ch ON ch.id = pc.id
+           WHERE pc.project_id = $1::uuid AND pc.version = ch.expected)
+         UPDATE hp__project_category pc SET inclusion = coalesce(ch.inclusion, pc.inclusion), note = CASE WHEN ch.set_note THEN ch.note ELSE pc.note END,
+           display_name = coalesce(ch.display_name, pc.display_name), version = pc.version + 1, updated_at = now()
+         FROM ch, ok WHERE ok.all_ok AND pc.project_id = $1::uuid AND pc.id = ch.id RETURNING pc.id`,
+        [p.id, payload],
+      );
+      if (updated.length !== changes.length) {
+        const found = await sql<{ id: string }>(c, `SELECT id FROM hp__project_category WHERE project_id = $1::uuid AND id = ANY ($2::uuid[])`, [p.id, changes.map((ch) => ch.id)]);
+        if (found.length !== changes.length) throw notFound('That category is not in this project.');
+        throw versionConflict();
       }
       await recalcDrafts(c, p.id);
       await audit(c, { project_id: p.id, action: 'categories.update', entity_type: 'project', entity_id: p.id, summary: `Changed ${changes.length} scope categories.` });

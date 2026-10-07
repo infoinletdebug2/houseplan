@@ -7,6 +7,7 @@ import { entitlementOf, requireEntitlement, serverKey } from '../billing';
 import { requireActionToken } from './auth';
 import { limitsOf } from './public';
 import { BENCHMARK_REVIEW_DAYS, DOWNLOAD_TTL_SECONDS } from '../config';
+import { D } from '../logic/decimal';
 
 /**
  * Exports (BRD §6.12, CONTRACT §13).
@@ -70,12 +71,12 @@ export function csvText(v: unknown): string {
 }
 const csvNum = (v: unknown) => (v === null || v === undefined ? '' : String(v));
 
-const SQ_FT = 10.763910416709722;
-const FT = 3.280839895013123;
+const SQ_FT = '10.763910416709722';
+const FT = '3.280839895013123';
 function displayQty(q: string | null, unit: string | null, system: string): { qty: string; unit: string } {
   if (q === null || q === '') return { qty: '', unit: unit ?? '' };
-  if (system === 'imperial' && unit === 'm2') return { qty: (Number(q) * SQ_FT).toFixed(2), unit: 'ft2' };
-  if (system === 'imperial' && unit === 'm') return { qty: (Number(q) * FT).toFixed(2), unit: 'ft' };
+  if (system === 'imperial' && unit === 'm2') return { qty: D(q).mul(SQ_FT).toFixed(2), unit: 'ft2' };
+  if (system === 'imperial' && unit === 'm') return { qty: D(q).mul(FT).toFixed(2), unit: 'ft' };
   return { qty: q.replace(/(\.\d*?[1-9])0+$|\.0+$/, '$1'), unit: unit ?? '' };
 }
 

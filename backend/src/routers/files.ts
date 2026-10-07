@@ -210,11 +210,25 @@ export const filesRouter = defineRouter({
       const used = await sqlOne<{ n: string }>(c, `SELECT coalesce(sum(size_bytes), 0)::text AS n FROM hp__attachment WHERE owner_user_id = $1::text AND deleted_at IS NULL`, [uid]);
       if (Number(used?.n ?? 0) + file.size > limits.attachment_bytes_per_user) throw new AppError('LIMIT_REACHED', 'Your file storage is full (5 GB). Delete files you no longer need.', 409);
 
+      // A network retry of the same upload (same bytes, type, project and target within 15 minutes)
+      // returns the file already stored instead of a second copy.
+      const digest = await sha256Bytes(bytes);
+      const again = await sqlOne<Record<string, unknown>>(
+        c,
+        `SELECT ${COLUMNS} FROM hp__attachment a
+         WHERE a.owner_user_id = $1::text AND a.sha256 = $2::text AND a.attachment_type = $3::text AND a.deleted_at IS NULL
+           AND a.project_id IS NOT DISTINCT FROM $4::uuid AND a.created_at > now() - interval '15 minutes'
+           AND (($5::text IS NULL AND NOT EXISTS (SELECT 1 FROM hp__attachment_link l WHERE l.attachment_id = a.id))
+             OR EXISTS (SELECT 1 FROM hp__attachment_link l WHERE l.attachment_id = a.id AND l.target_type = $5::text AND l.target_id = $6::uuid))
+         ORDER BY a.created_at DESC LIMIT 1`,
+        [uid, digest, kind, projectId, target?.type ?? null, target?.id ?? null],
+      );
+      if (again) return ok(c, present(again), 200, { replayed: true });
+
       const id = uuid();
       const owner = (await sha256(`owner:${uid}`)).slice(0, 20);
       const nonce = Array.from(crypto.getRandomValues(new Uint8Array(16)), (x) => x.toString(16).padStart(2, '0')).join('');
       const key = `att/${owner}/${id}-${nonce}.bin`;
-      const digest = await sha256Bytes(bytes);
       await sdk(c).storage.upload(await seal(c, id, bytes), key, { contentType: 'application/octet-stream', bucket: fileBucket(env(c)) });
       // A display label only; downloads are named by type and id, never by this.
       const label = typeof file.name === 'string' ? file.name.replace(/[^\w .()-]+/g, '_').slice(0, 120) || null : null;
