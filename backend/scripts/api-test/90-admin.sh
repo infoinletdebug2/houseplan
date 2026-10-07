@@ -17,12 +17,12 @@ admin PATCH /admin/config 200 "{\"key\":\"apitest.flag${STAMP}\",\"value\":{\"on
 admin PATCH /admin/config 409 "{\"key\":\"apitest.flag${STAMP}\",\"value\":{\"on\":false},\"expected_version\":7}"; check 'd.error.code==="VERSION_CONFLICT"' 'stale config version is 409'
 
 echo "  reference data"
-RCODE="t${STAMP}"
+RCODE="adm${STAMP}"
 admin POST /admin/regions 201 "{\"country_code\":\"IE\",\"code\":\"$RCODE\",\"name\":\"Test county $STAMP\"}"; REGION_ID="$(js 'd.data.id')"
 admin POST /admin/regions 400 '{"country_code":"Ireland","code":"x","name":"Bad"}'
 admin GET "/admin/regions?country=IE" 200; check "d.data.some(r=>r.id===\"$REGION_ID\")" 'region listed under its country'
 admin GET /admin/catalogue 200; check 'd.data.some(i=>i.code==="floor-finish-pack")' 'catalogue seeded'
-admin POST /admin/catalogue 201 "{\"code\":\"apitest-item-${STAMP}\",\"category_code\":\"OTHER\",\"name\":\"Test item\",\"kind\":\"material\",\"unit\":\"item\"}"; ITEM_ID="$(js 'd.data.id')"
+admin POST /admin/catalogue 201 "{\"code\":\"apitest-admin-item-${STAMP}\",\"category_code\":\"OTHER\",\"name\":\"Test item\",\"kind\":\"material\",\"unit\":\"item\"}"; ITEM_ID="$(js 'd.data.id')"
 admin PATCH "/admin/catalogue/$ITEM_ID" 200 '{"active":false}'; check 'd.data.active===false' 'catalogue item deactivated'
 admin POST /admin/sources 400 '{"source_name":"No licence","obtained_at":"2026-10-01"}'
 admin POST /admin/sources 201 '{"source_name":"Api test survey (fictional)","citation_url":"https://example.com/survey","obtained_at":"2026-10-01","licence_note":"Fictional test source with permission to republish","publishable":true}'; SRC="$(js 'd.data.id')"
