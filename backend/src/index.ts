@@ -13,6 +13,7 @@ import { filesRouter } from './routers/files';
 import { advisorRouter } from './routers/advisor';
 import { exportsRouter } from './routers/exports';
 import { adminRouter } from './routers/admin';
+import { accountRouter } from './routers/account';
 import { handleError } from './errors';
 import { requestId } from './lib';
 import { site } from './site';
@@ -62,6 +63,7 @@ const api = createXenitionApi({
     advisorRouter,
     exportsRouter,
     adminRouter,
+    accountRouter,
   ],
 });
 api.onError(handleError);
