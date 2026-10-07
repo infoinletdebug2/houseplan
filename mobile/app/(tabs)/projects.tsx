@@ -133,8 +133,8 @@ function ProjectCard({ project: p }: { project: Project }) {
         <View style={{ flexDirection: 'row', gap: space.md }}>
           <View style={{ flex: 1, gap: 2 }}>
             <T v="caption">{cash !== null ? 'Cash still needed' : 'Known estimate'}</T>
-            <T style={{ fontFamily: font.display, fontSize: 24, lineHeight: 29, color: c.ink }} num numberOfLines={1} adjustsFontSizeToFit>
-              {money(cash ?? total, p.currency, { empty: 'Not priced yet' })}
+            <T style={{ fontFamily: font.display, fontSize: 24, lineHeight: 29, color: c.ink }} num numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.6}>
+              {money(cash ?? total, p.currency, { empty: 'Not priced' })}
             </T>
           </View>
           <View style={{ flex: 1, gap: 2 }}>
