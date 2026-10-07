@@ -6,7 +6,7 @@ House budget, materials and build tracker, from `docs/BRD.md`, built to the owne
 
 | Part | State | Evidence |
 |---|---|---|
-| Backend (Hono + Xenition SDK) | **Live** at https://houseplan.xenition.com | Full curl suite on production: **978 of 978 green** (`docs/api-test-prod.txt`); 28 unit tests (calculators, AC09 fixtures, advisor validation) |
+| Backend (Hono + Xenition SDK) | **Live** at https://houseplan.xenition.com | Full curl suite on production: **1,054 of 1,054 green** (`docs/api-test-prod.txt`); 28 unit tests (calculators, AC09 fixtures, advisor validation) |
 | Website, legal, admin console | **Live** (`/`, `/privacy`, `/terms`, `/support`, `/delete-account`, `/admin`) | Covered by sections 90 and 92 of the suite |
 | Mobile app (Expo) | Every screen built (S01–S41) | Rendered **in the web harness** against the worker and looked at. **Never run on a phone; no EAS build yet.** |
 | Design | Palette A, cream / espresso / burnt orange, chosen by the owner | `docs/DESIGN-SYSTEM.md`, `design/palettes/` |
