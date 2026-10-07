@@ -28,6 +28,7 @@ import {
   uuid,
   uuidField,
   versionConflict,
+  statusText,
 } from '../lib';
 import { idempotency, profileOf, requireActive, requirePaid, requireProject, requireVerified } from '../middleware';
 import { CATEGORIES, DEFAULT_CONTINGENCY_CODES, PHASES, STARTER_LINES, type Inclusion, type ProjectType } from '../catalogue';
@@ -432,7 +433,7 @@ export const projectsRouter = defineRouter({
       );
       if (!row) throw versionConflict();
       if (next.status !== cur.status) {
-        await audit(c, { project_id: proj(c).id, action: 'phase.status', entity_type: 'phase', entity_id: id, summary: `${next.name}: ${cur.status} → ${next.status}.` });
+        await audit(c, { project_id: proj(c).id, action: 'phase.status', entity_type: 'phase', entity_id: id, summary: `${next.name}: ${statusText(cur.status)} → ${statusText(next.status)}.` });
       }
       return ok(c, await loadPhase(c, id));
     });

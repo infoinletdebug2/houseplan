@@ -26,6 +26,8 @@ import {
   userId,
   uuid,
   uuidField,
+  moneyText,
+  statusText,
 } from '../lib';
 import { idempotency, profileOf, requireActive, requirePaid, requireProject, requireVerified } from '../middleware';
 import { priceLine } from '../logic/calc';
@@ -685,7 +687,7 @@ export const financeRouter = defineRouter({
         entity_type: 'commitment',
         entity_id: res.commitment_id,
         project_id: proj(c).id,
-        summary: `Quote accepted (${res.quote_status}); commitment ${res.agreed_gross_minor} ${proj(c).currency} minor`,
+        summary: `Quote ${statusText(res.quote_status)}; commitment of ${moneyText(c, res.agreed_gross_minor)}`,
         data: { quote_id: quoteId, lines, stale_reason: b.stale_reason ?? null },
       });
       return created(c, { commitment: await commitmentById(c, res.commitment_id), quote: await quoteById(c, quoteId) });
@@ -846,7 +848,7 @@ export const financeRouter = defineRouter({
         expected_version: ifMatch(c, b),
       });
       const cost = await costById(c, id);
-      await audit(c, { action: 'cost.post', entity_type: 'cost', entity_id: id, project_id: proj(c).id, summary: `${cost.type} posted: ${cost.gross_minor} ${cost.currency} minor`, data: { over_invoiced: res.over_invoiced } });
+      await audit(c, { action: 'cost.post', entity_type: 'cost', entity_id: id, project_id: proj(c).id, summary: `${cost.type === "credit" ? "Credit note" : cost.type === "expense" ? "Expense" : "Invoice"} posted: ${moneyText(c, cost.gross_minor)}`, data: { over_invoiced: res.over_invoiced } });
       return ok(c, cost, 200, { over_invoiced: res.over_invoiced ?? [] });
     });
 
@@ -931,7 +933,7 @@ export const financeRouter = defineRouter({
       const allocations = allocationsInput(b.allocations, false);
       await fn(c, 'hp_post_payment', { project_id: proj(c).id, payment_id: id, expected_version: ifMatch(c, b), allocations });
       const payment = await paymentById(c, id);
-      await audit(c, { action: 'payment.post', entity_type: 'payment', entity_id: id, project_id: proj(c).id, summary: `${payment.type} posted: ${payment.amount_minor} ${payment.currency} minor`, data: { allocations } });
+      await audit(c, { action: 'payment.post', entity_type: 'payment', entity_id: id, project_id: proj(c).id, summary: `${payment.type === "refund" ? "Refund" : "Payment"} posted: ${moneyText(c, payment.amount_minor)}`, data: { allocations } });
       return ok(c, payment);
     });
 

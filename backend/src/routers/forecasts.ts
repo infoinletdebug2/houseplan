@@ -24,6 +24,7 @@ import {
   userId,
   uuid,
   uuidField,
+  moneyText,
 } from '../lib';
 import { idempotency, requireActive, requirePaid, requireProject, requireVerified } from '../middleware';
 
@@ -275,7 +276,7 @@ export const forecastsRouter = defineRouter({
         entity_type: 'forecast',
         entity_id: id,
         project_id: proj(c).id,
-        summary: `Forecast confirmed: ${res.snapshot?.forecast?.total_minor ?? '?'} total, ${res.snapshot?.forecast?.cash_still_needed_minor ?? '?'} cash still needed`,
+        summary: `Forecast confirmed: ${moneyText(c, res.snapshot?.forecast?.total_minor)} total, ${moneyText(c, res.snapshot?.forecast?.cash_still_needed_minor)} cash still needed`,
       });
       return ok(c, await forecastDetail(c, id));
     });

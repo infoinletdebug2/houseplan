@@ -245,6 +245,34 @@ export function engineError(error: unknown): unknown {
   return error;
 }
 
+/** "12000" minor in the project's currency → "$120" / "€1,250.50", for activity text people read. */
+export function moneyText(c: Context, minorValue: unknown): string {
+  const p = proj(c);
+  const raw = String(minorValue ?? '');
+  if (!/^-?\d+$/.test(raw)) return '—';
+  const digits = p.minorDigits;
+  const neg = raw.startsWith('-');
+  const abs = (neg ? raw.slice(1) : raw).padStart(digits + 1, '0');
+  const whole = abs.slice(0, abs.length - digits) || '0';
+  const frac = digits ? abs.slice(-digits) : '';
+  const amount = Number(`${whole}.${frac || '0'}`);
+  try {
+    const text = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: p.currency,
+      currencyDisplay: 'narrowSymbol',
+      minimumFractionDigits: frac && /[1-9]/.test(frac) ? digits : 0,
+      maximumFractionDigits: digits,
+    }).format(Math.abs(amount));
+    return neg ? `-${text}` : text;
+  } catch {
+    return `${neg ? '-' : ''}${whole}${frac ? `.${frac}` : ''} ${p.currency}`;
+  }
+}
+
+/** "in_progress" → "in progress". */
+export const statusText = (s: unknown) => String(s ?? '').replace(/_/g, ' ');
+
 /* ══ audit (BRD §13: every financial, revision, billing and admin action) ══ */
 
 export async function audit(
