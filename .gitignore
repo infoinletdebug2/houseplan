@@ -35,3 +35,6 @@ mobile/harness/*.log
 design/tools/contact.jpg
 mobile/harness/.demo*.json
 mobile/dist-web*/
+design/codex/photos-v1-green/
+mobile/harness/shots-palette-*/
+design/palettes/*/
