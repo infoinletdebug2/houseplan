@@ -5,7 +5,7 @@ import { Receipt } from 'lucide-react-native';
 import { Screen, Header } from '../../../../src/ui/Screen';
 import { T } from '../../../../src/ui/Text';
 import { Card, IconSquare } from '../../../../src/ui/Card';
-import { ChoiceTile, TileGrid } from '../../../../src/ui/Tiles';
+import { Segmented } from '../../../../src/ui/Chips';
 import { EmptyState } from '../../../../src/ui/States';
 import { day, money } from '../../../../src/lib/format';
 import { space, useColors } from '../../../../src/theme/tokens';
@@ -56,16 +56,8 @@ export default function Costs() {
                 </View>
               </Card>
               {drafts ? <StatusPill label={`${drafts} draft${drafts === 1 ? '' : 's'} not posted yet`} tone="review" /> : null}
-              <TileGrid>
-                {(['all', 'invoice', 'expense', 'credit'] as const).map((t) => (
-                  <ChoiceTile key={t} label={t === 'all' ? 'All types' : COST_TYPE_LABEL[t]} selected={type === t} onPress={() => setType(t)} />
-                ))}
-              </TileGrid>
-              <TileGrid>
-                {(['all', 'draft', 'posted', 'void'] as const).map((s) => (
-                  <ChoiceTile key={s} label={s === 'all' ? 'Any status' : s === 'draft' ? 'Drafts' : s === 'posted' ? 'Posted' : 'Void'} selected={status === s} onPress={() => setStatus(s)} />
-                ))}
-              </TileGrid>
+              <Segmented options={[{ value: 'all', label: 'All' }, { value: 'invoice', label: 'Invoices' }, { value: 'expense', label: 'Expenses' }, { value: 'credit', label: 'Credits' }]} value={type} onChange={setType} />
+              <Segmented options={[{ value: 'all', label: 'Any' }, { value: 'draft', label: 'Drafts' }, { value: 'posted', label: 'Posted' }, { value: 'void', label: 'Void' }]} value={status} onChange={setStatus} />
               {list.length === 0 ? <T v="small" center style={{ paddingVertical: space.lg }}>Nothing matches these filters.</T> : null}
               {list.map((x) => (
                 <CostRow key={x.id} cost={x} currency={cur} onPress={() => router.push(`/project/${pid}/costs/${x.id}` as never)} />

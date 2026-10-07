@@ -199,12 +199,11 @@ function Summary({ f, currency, paid, actual, committed }: { f: ForecastPreview;
         label={cash < 0n ? 'Cash credit (paid more than the forecast)' : 'Cash still needed'}
         value={(cash < 0n ? -cash : cash).toString()}
         currency={currency}
-        note={`Forecast total ${money(f.total_minor, currency)}${f.complete ? '' : ' · incomplete'}`}
+        note={`Forecast total ${money(f.total_minor, currency)}${f.complete ? '' : ' (incomplete)'} · paid so far ${money(paid, currency)}`}
         figures={[
           { label: 'Billed', value: actual },
           { label: 'Committed', value: committed },
-          { label: 'To commit', value: f.uncommitted_minor },
-          { label: 'Paid', value: paid },
+          { label: 'Not yet agreed', value: f.uncommitted_minor },
         ]}
       />
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6 }}>
