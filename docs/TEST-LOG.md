@@ -65,3 +65,5 @@ How the BRD's acceptance criteria (§15) and threat tests (§13) are proven. Sec
 | Date | Where | Result |
 |---|---|---|
 | 2026-10-07 | Production, https://houseplan.xenition.com | 978 / 978 (`docs/api-test-prod.txt`), before the audit section existed |
+| 2026-10-07 | Local worker (tsx) on the real gateway, after the audit fixes | 1055 / 1056; the one failure was an over-strict advisor check (it rejected the project's own €250,000 target), since corrected; section 80 then 46 / 46 |
+| 2026-10-07 | `wrangler dev` (Workers runtime), sections 00, 10, 20, 50, 75, 85 | 491 / 491, no "global scope" errors |
