@@ -33,6 +33,12 @@ call() {
   while [ "$status" = 429 ] && [[ ",$expect," != *",429,"* ]] && [ $tries -lt 4 ]; do
     tries=$((tries + 1)); printf '    … rate limited, waiting 20s\n'; sleep 20; status="$(curl "${args[@]}")"
   done
+  # A transient gateway failure (retryable 502/503) is retried the way the app does it: the SAME
+  # request with the SAME Idempotency-Key, so a write that did land is replayed, never doubled.
+  tries=0
+  while [[ "$status" =~ ^50[23]$ ]] && [[ ",$expect," != *",$status,"* ]] && [ $tries -lt 2 ] && [ "$(js 'd&&d.error&&d.error.retryable===true')" = true ]; do
+    tries=$((tries + 1)); printf '    … gateway hiccup (%s), retrying with the same key\n' "$status"; sleep 2; status="$(curl "${args[@]}")"
+  done
   if [[ ",$expect," == *",$status,"* ]]; then
     PASS=$((PASS + 1)); printf '  \033[32m✓\033[0m %-6s %-70s %s\n' "$method" "${path:0:70}" "$status"
   else
