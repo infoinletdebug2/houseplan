@@ -117,7 +117,7 @@ function ProjectCard({ project: p }: { project: Project }) {
   const router = useRouter();
   const cash = p.summary.cash_still_needed_minor;
   const known = p.summary.estimate_gross_known_minor;
-  const total = known !== null ? (BigInt(known) + BigInt(p.summary.reserve_minor ?? '0')).toString() : null;
+  const total = known !== null && !(known === '0' && p.summary.missing_line_count > 0) ? (BigInt(known) + BigInt(p.summary.reserve_minor ?? '0')).toString() : null;
   const missing = p.summary.missing_line_count;
   const undecided = p.summary.undecided_categories;
   return (

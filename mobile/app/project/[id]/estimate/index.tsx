@@ -96,11 +96,11 @@ function Body({ projectId, currency, d }: { projectId: string; currency: string;
       <View style={{ gap: 4 }}>
         <T v="caption">Known subtotal</T>
         <T style={{ fontFamily: font.display, fontSize: 44, lineHeight: 50, letterSpacing: -1, color: c.ink }} num testID="estimate-total">
-          {money(d.gross_known_minor, currency)}
+          {money(d.gross_known_minor, currency, { cents: false })}
         </T>
         <Pressable onPress={editable ? () => setSheet('contingency') : undefined} accessibilityRole={editable ? 'button' : undefined} accessibilityLabel="Contingency reserve" style={{ flexDirection: 'row', alignItems: 'center', gap: 6, alignSelf: 'flex-start', minHeight: 32 }}>
           <T v="body" color={c.muted}>
-            + {money(d.reserve_minor, currency)} reserve ({Number(d.contingency_percent)}%) = <T v="bodyStrong">{money(d.total_with_reserve_minor, currency)}</T>
+            + {money(d.reserve_minor, currency, { cents: false })} reserve ({Number(d.contingency_percent)}%) = <T v="bodyStrong">{money(d.total_with_reserve_minor, currency, { cents: false })}</T>
           </T>
           {editable ? <SlidersHorizontal size={16} color={c.primary} /> : null}
         </Pressable>
@@ -164,8 +164,8 @@ function CategoryBlock({ cat, currency, open, onToggle, last, onLine, onAdd }: {
           </T>
           {cat.inclusion !== 'included' ? <Pill label={INCLUSION_LABEL[cat.inclusion]} tone={cat.inclusion === 'undecided' ? 'review' : 'grey'} style={{ marginTop: 2 }} /> : null}
         </View>
-        <T style={{ fontFamily: font.display, fontSize: 19, color: cat.inclusion === 'excluded' ? c.faint : c.ink }} num>
-          {money(cat.subtotal_gross_minor, currency)}
+        <T style={{ fontFamily: font.display, fontSize: 19, color: cat.inclusion === 'excluded' ? c.faint : cat.missing && cat.subtotal_gross_minor === '0' ? c.warn : c.ink }} num>
+          {cat.missing && cat.subtotal_gross_minor === '0' ? 'Not priced' : money(cat.subtotal_gross_minor, currency, { cents: false })}
         </T>
         <Chevron size={18} color={c.faint} />
       </Pressable>

@@ -28,12 +28,12 @@ export function CompareView({ diff, currency, leftTitle, rightTitle, savingsLabe
         <View style={{ alignItems: 'center', marginTop: -16 }}>
           <View style={{ paddingHorizontal: 18, height: 38, borderRadius: 19, justifyContent: 'center', backgroundColor: delta === null ? c.ground2 : cheaper ? c.primary : delta === '0' ? c.brand : c.danger }}>
             <T style={{ fontFamily: font.semibold, fontSize: 16, color: delta === null ? c.ink : '#FFFFFF' }} num>
-              {delta === null ? 'Not comparable yet' : delta === '0' ? 'Same total' : money(delta, currency, { signed: true })}
+              {delta === null ? 'Not comparable yet' : delta === '0' ? 'Same total' : money(delta, currency, { signed: true, cents: false })}
             </T>
           </View>
         </View>
       </View>
-      {savingsLabel ? (
+      {savingsLabel && diff.comparable ? (
         <T v="small" center>
           {savingsLabel}
         </T>
@@ -109,8 +109,8 @@ function TotalCard({ title, value, currency, tint, missing }: { title: string; v
         {title}
       </T>
       <T v="caption">Total with reserve</T>
-      <T style={{ fontFamily: font.display, fontSize: 25, lineHeight: 30, color: c.ink }} num numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7}>
-        {money(value, currency)}
+      <T style={{ fontFamily: font.display, fontSize: 23, lineHeight: 28, color: c.ink }} num>
+        {money(value, currency, { cents: false })}
       </T>
       {missing ? (
         <T v="caption" color={c.warn}>

@@ -50,7 +50,7 @@ function Editor({ p }: { p: Project }) {
   const c = useColors();
   const { me } = useAuth();
   const [name, setName] = useState(p.name);
-  const [budget, setBudget] = useState(fromMinor(p.target_budget_minor, p.currency));
+  const [budget, setBudget] = useState(fromMinor(p.target_budget_minor, p.currency).replace(/.0+$/, ''));
   const [area, setArea] = useState(sqmToDisplay(p.area_m2, p.unit_system));
   const [storeys, setStoreys] = useState(p.storeys);
   const [tier, setTier] = useState<FinishTier>(p.finish_tier);
@@ -61,12 +61,12 @@ function Editor({ p }: { p: Project }) {
 
   useEffect(() => setErrors({}), [name, budget, area]);
 
-  const dirty = name !== p.name || budget !== fromMinor(p.target_budget_minor, p.currency) || area !== sqmToDisplay(p.area_m2, p.unit_system) || storeys !== p.storeys || tier !== p.finish_tier || currency !== p.currency;
+  const dirty = name !== p.name || budget !== fromMinor(p.target_budget_minor, p.currency).replace(/.0+$/, '') || area !== sqmToDisplay(p.area_m2, p.unit_system) || storeys !== p.storeys || tier !== p.finish_tier || currency !== p.currency;
 
   const save = async () => {
     const body: Record<string, unknown> = { expected_version: p.version };
     if (name !== p.name) body.name = name.trim();
-    if (budget !== fromMinor(p.target_budget_minor, p.currency)) body.target_budget_minor = budget.trim() ? toMinor(budget, currency) : null;
+    if (budget !== fromMinor(p.target_budget_minor, p.currency).replace(/.0+$/, '')) body.target_budget_minor = budget.trim() ? toMinor(budget, currency) : null;
     if (area !== sqmToDisplay(p.area_m2, p.unit_system)) body.area_m2 = area.trim() ? toSquareMetres(area, p.unit_system) : null;
     if (storeys !== p.storeys) body.storeys = storeys;
     if (tier !== p.finish_tier) body.finish_tier = tier;

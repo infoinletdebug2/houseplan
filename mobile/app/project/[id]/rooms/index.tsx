@@ -72,16 +72,22 @@ function RoomCard({ room: r, units, onPress }: { room: Room; units: 'metric' | '
   return (
     <Card onPress={onPress} padded={false} style={{ overflow: 'hidden' }} accessibilityLabel={`${r.name}, ${roomTypeLabel(r.room_type)}`} testID={`room-${r.name}`}>
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <View style={{ width: 132, backgroundColor: c.ground2 }}>
-          <FloorPlan lengthM={r.length_m} widthM={r.width_m} openings={r.openings} units={units} height={112} idPrefix={`rm-${r.id.slice(0, 8)}`} />
+        <View style={{ width: 150, alignSelf: 'stretch', justifyContent: 'center', backgroundColor: c.ground2 }}>
+          {/* The drawing keeps its 340-wide viewBox: a matching height fills the thumbnail instead of shrinking it. */}
+          <FloorPlan lengthM={r.length_m} widthM={r.width_m} openings={r.openings} units={units} height={254} idPrefix={`rm-${r.id.slice(0, 8)}`} />
         </View>
         <View style={{ flex: 1, padding: space.md, gap: 4 }}>
           <T v="bodyStrong">{r.name}</T>
           <T v="small">{roomTypeLabel(r.room_type)}</T>
           {g.complete ? (
-            <T v="small" color={c.ink}>
-              Floor {areaLabel(g.floor_area_m2, units)} · walls {areaLabel(g.net_wall_area_m2, units)}
-            </T>
+            <View style={{ gap: 1 }}>
+              <T v="small" color={c.ink}>
+                Floor {areaLabel(g.floor_area_m2, units)}
+              </T>
+              <T v="small" color={c.ink}>
+                Walls {areaLabel(g.net_wall_area_m2, units)}
+              </T>
+            </View>
           ) : (
             <Pill label={g.floor_area_m2 ? 'Add the height for walls' : 'Measurements missing'} tone="review" style={{ marginTop: 4 }} />
           )}

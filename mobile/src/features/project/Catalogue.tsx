@@ -23,7 +23,7 @@ export function CalculatorCatalogue({ onPick }: { onPick: (code: CalculatorCode)
             <Image source={IMAGES[s.image]} style={{ width: 112, height: 112 }} contentFit="cover" />
             <View style={{ flex: 1, padding: 14, gap: 4, justifyContent: 'center' }}>
               <T style={{ fontFamily: font.display, fontSize: 21, lineHeight: 25, color: c.ink }}>{s.name}</T>
-              <T v="small" numberOfLines={3}>
+              <T v="small" >
                 {s.explain}
               </T>
             </View>
@@ -40,10 +40,10 @@ export function CalculatorCatalogue({ onPick }: { onPick: (code: CalculatorCode)
             <Pressable key={code} onPress={() => onPick(code)} accessibilityRole="button" accessibilityLabel={`${s.name}. ${s.explain}`} testID={`calc-${code}`} style={({ pressed }) => ({ width: '48.5%', borderRadius: radius.card, overflow: 'hidden', backgroundColor: c.surface, borderWidth: 1, borderColor: c.line, opacity: pressed ? 0.9 : 1 })}>
               <Image source={IMAGES[s.image]} style={{ width: '100%', aspectRatio: 1.5 }} contentFit="cover" />
               <View style={{ padding: 12, gap: 2, minHeight: 82 }}>
-                <T style={{ fontFamily: font.semibold, fontSize: 15.5, color: c.ink }} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.8}>
+                <T style={{ fontFamily: font.semibold, fontSize: 15.5, color: c.ink }}>
                   {s.name}
                 </T>
-                <T v="small" numberOfLines={3}>
+                <T v="small" >
                   {s.explain}
                 </T>
               </View>

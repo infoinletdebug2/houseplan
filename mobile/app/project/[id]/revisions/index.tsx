@@ -64,7 +64,7 @@ export default function Revisions() {
                 Revision {r.revision_number}
               </T>
               <T v="money" num>
-                {money(r.total_with_reserve_minor, cur)}
+                {money(r.total_with_reserve_minor, cur, { cents: false })}
               </T>
             </View>
             <T v="small">

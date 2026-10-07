@@ -69,7 +69,7 @@ function ScenarioCard({ s, currency, onPress }: { s: Scenario; currency: string;
         </T>
         {s.revision ? (
           <T v="money" num>
-            {money(s.revision.total_with_reserve_minor, currency)}
+            {money(s.revision.total_with_reserve_minor, currency, { cents: false })}
           </T>
         ) : null}
       </View>

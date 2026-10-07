@@ -17,6 +17,7 @@ import {
   Layers,
   LandPlot,
   PaintRoller,
+  Pickaxe,
   Plug,
   Shovel,
   Thermometer,
@@ -40,7 +41,7 @@ import type { Line } from './types';
 const CATEGORY_VISUAL: Record<string, { icon: LucideIcon; meaning: Meaning }> = {
   LAND: { icon: LandPlot, meaning: 'rooms' },
   FEES: { icon: FileSignature, meaning: 'documents' },
-  SITE: { icon: Shovel, meaning: 'materials' },
+  SITE: { icon: Pickaxe, meaning: 'materials' },
   FOUNDATION: { icon: Shovel, meaning: 'rooms' },
   STRUCTURE: { icon: Home, meaning: 'money' },
   ROOF: { icon: Layers, meaning: 'estimate' },

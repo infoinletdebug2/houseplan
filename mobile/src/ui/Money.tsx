@@ -33,7 +33,7 @@ export function MoneyCard({
       <View style={{ gap: 4 }}>
         <T style={{ fontFamily: font.medium, fontSize: 15, color: 'rgba(255,255,255,0.82)' }}>{label}</T>
         <T style={{ fontFamily: font.display, fontSize: 44, lineHeight: 50, letterSpacing: -1, color: '#FFFFFF' }} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.6}>
-          {money(value, currency, { empty: 'Not known yet' })}
+          {money(value, currency, { empty: 'Not known yet', cents: false })}
         </T>
         {note ? <T style={{ fontFamily: font.body, fontSize: 13, color: 'rgba(255,255,255,0.7)' }}>{note}</T> : null}
       </View>
@@ -45,7 +45,7 @@ export function MoneyCard({
               {f.label}
             </T>
             <T style={{ fontFamily: font.semibold, fontSize: 15, color: '#FFFFFF' }} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7} num>
-              {money(f.value, currency, { empty: '—' })}
+              {money(f.value, currency, { empty: '—', cents: false })}
             </T>
           </View>
         ))}

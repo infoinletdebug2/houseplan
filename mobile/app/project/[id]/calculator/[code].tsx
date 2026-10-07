@@ -35,26 +35,30 @@ import type { UnitSystem } from '../../../../src/types';
 type Basis = 'net_area' | 'purchased_area' | 'fixed' | 'none';
 
 export default function CalculatorScreen() {
-  const { id, code, room: roomParam } = useLocalSearchParams<{ id: string; code: CalculatorCode; room?: string }>();
+  const { id, code, room: roomParam, show, prefill } = useLocalSearchParams<{ id: string; code: CalculatorCode; room?: string; show?: string; prefill?: string }>();
   const spec = CALC_SPECS[code as CalculatorCode];
   const project = useProject(id);
   const rooms = useRooms(id);
   if (!spec) return <Screen header={<Header title="Calculator" />}><T v="body">That calculator does not exist.</T></Screen>;
   return (
     <Gate query={project}>
-      {project.data ? <Calc key={code} projectId={id!} currency={project.data.currency} units={project.data.unit_system} code={code as CalculatorCode} rooms={rooms.data ?? []} initialRoom={roomParam ?? null} /> : null}
+      {project.data ? <Calc key={code} projectId={id!} currency={project.data.currency} units={project.data.unit_system} code={code as CalculatorCode} rooms={rooms.data ?? []} initialRoom={roomParam ?? null} openResult={show === 'result'} prefill={prefill} /> : null}
     </Gate>
   );
 }
 
-function Calc({ projectId, currency, units, code, rooms, initialRoom }: { projectId: string; currency: string; units: UnitSystem; code: CalculatorCode; rooms: Room[]; initialRoom: string | null }) {
+function Calc({ projectId, currency, units, code, rooms, initialRoom, openResult, prefill }: { projectId: string; currency: string; units: UnitSystem; code: CalculatorCode; rooms: Room[]; initialRoom: string | null; openResult?: boolean; prefill?: string }) {
   const spec = CALC_SPECS[code];
   const router = useRouter();
   const qc = useQueryClient();
   const toast = useToast();
   const c = useColors();
   const categories = useCategories(projectId);
-  const [values, setValues] = useState<Record<string, string>>(() => Object.fromEntries(spec.fields.filter((f) => f.initial !== undefined).map((f) => [f.key, f.initial!])));
+  const [values, setValues] = useState<Record<string, string>>(() => ({
+    ...Object.fromEntries(spec.fields.filter((f) => f.initial !== undefined).map((f) => [f.key, f.initial!])),
+    // ?prefill=key:value;key:value, in the person's units (deep links, the harness)
+    ...Object.fromEntries((prefill ?? '').split(';').map((kv) => kv.split(':')).filter((kv) => kv.length === 2 && spec.fields.some((f) => f.key === kv[0]))),
+  }));
   const [roomId, setRoomId] = useState<string | null>(initialRoom);
   const [surface, setSurface] = useState(spec.surfaces[0] ?? 'floor');
   const [basis, setBasis] = useState<Basis>(spec.labour ? 'net_area' : 'none');
@@ -66,6 +70,8 @@ function Calc({ projectId, currency, units, code, rooms, initialRoom }: { projec
   const [step, setStep] = useState<'input' | 'result'>('input');
   const [result, setResult] = useState<CalcResult | null>(null);
   const [problem, setProblem] = useState<ApiError | null>(null);
+  // Field errors wait until the person asks for the result: a fresh form is not wrong.
+  const [tried, setTried] = useState(false);
   const [loading, setLoading] = useState(false);
   const [sheet, setSheet] = useState<'room' | 'unit' | 'category' | null>(null);
   const [busy, setBusy] = useState<'estimate' | 'purchase' | null>(null);
@@ -75,6 +81,14 @@ function Calc({ projectId, currency, units, code, rooms, initialRoom }: { projec
   const priceField = spec.fields.find((f) => f.price && f.per && ['pack', 'can', 'piece', 'roll', 'item'].includes(f.per) && f.key !== 'install_per_unit_net')?.key;
 
   useEffect(() => () => cancelRatePick(), []);
+  // ?show=result opens straight on the result once the worker answers (store screenshots, the harness).
+  const opened = useRef(false);
+  useEffect(() => {
+    if (openResult && result && !opened.current) {
+      opened.current = true;
+      setStep('result');
+    }
+  }, [openResult, result]);
 
   const visible = (f: FieldSpec) => {
     if (room && f.fromRoom) return false;
@@ -152,6 +166,18 @@ function Calc({ projectId, currency, units, code, rooms, initialRoom }: { projec
 
   const set = (k: string, v: string) => setValues((prev) => ({ ...prev, [k]: v }));
 
+  /** The worker names the missing field; say it with the label the person sees. */
+  const friendly = (e: ApiError | null): string | null => {
+    if (!e) return null;
+    const field = e.fieldErrors[0]?.field?.replace(/^input./, '');
+    const spec2 = spec.fields.find((f) => f.key === field);
+    if (e.code === 'CALCULATION_INPUT_MISSING' && spec2) return `Enter the ${spec2.label.toLowerCase()}.`;
+    if (e.code === 'CALCULATION_INPUT_MISSING' && field && room) return e.message;
+    return e.message.replace(/ m2/g, ' area');
+  };
+  const problemText = friendly(problem);
+  const fieldError = (key: string) => (tried && problem && (problem.fieldMessage(`input.${key}`) || problem.fieldMessage(key)) ? (problemText ?? undefined) : undefined);
+
   const label = `${spec.name}${room ? ` · ${room.name}` : ''}`;
 
   /** Save the calculation once per distinct input (a retry reuses it). */
@@ -204,7 +230,7 @@ function Calc({ projectId, currency, units, code, rooms, initialRoom }: { projec
 
   const summary = (() => {
     if (loading && !result) return 'Working it out…';
-    if (problem) return problem.message;
+    if (problem) return problemText ?? problem.message;
     if (!result) return 'Enter the measurements';
     const q = spec.quantities.find((x) => x.kind === 'whole');
     const qty = q ? `${showQuantity('whole', result.quantities[q.key], units)} ${q.label.toLowerCase().replace(' to buy', '')}` : '';
@@ -236,12 +262,12 @@ function Calc({ projectId, currency, units, code, rooms, initialRoom }: { projec
       footer={
         <View style={{ gap: 8 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, minHeight: 22 }}>
-            {problem ? <AlertCircle size={16} color={c.warn} /> : null}
-            <T v="small" color={problem ? c.warn : c.ink} style={{ flex: 1 }} numberOfLines={2}>
+            {problem && tried ? <AlertCircle size={16} color={c.warn} /> : null}
+            <T v="small" color={problem && tried ? c.warn : c.ink} style={{ flex: 1 }} numberOfLines={2}>
               {summary}
             </T>
           </View>
-          <Button title="See the result" onPress={() => setStep('result')} disabled={!result} blockedReason={problem?.message ?? 'Enter the measurements first.'} testID="calc-result" />
+          <Button title="See the result" onPress={() => (result ? setStep('result') : setTried(true))} testID="calc-result" />
         </View>
       }
       gap={space.md}
@@ -282,7 +308,7 @@ function Calc({ projectId, currency, units, code, rooms, initialRoom }: { projec
         .filter((f) => !f.price && !f.labour)
         .filter(visible)
         .map((f) => (
-          <SpecField key={f.key} f={f} value={values[f.key] ?? ''} onChange={(v) => set(f.key, v)} units={units} currency={currency} error={problem?.fieldMessage(`input.${f.key}`) ?? problem?.fieldMessage(f.key)} />
+          <SpecField key={f.key} f={f} value={values[f.key] ?? ''} onChange={(v) => set(f.key, v)} units={units} currency={currency} error={fieldError(f.key)} />
         ))}
 
       <SectionHeader title="Prices" />
@@ -309,7 +335,7 @@ function Calc({ projectId, currency, units, code, rooms, initialRoom }: { projec
         .filter((f) => f.price && !f.labour)
         .filter(visible)
         .map((f) => (
-          <SpecField key={f.key} f={f} value={values[f.key] ?? ''} onChange={(v) => set(f.key, v)} units={units} currency={currency} error={problem?.fieldMessage(`input.${f.key}`)} />
+          <SpecField key={f.key} f={f} value={values[f.key] ?? ''} onChange={(v) => set(f.key, v)} units={units} currency={currency} error={fieldError(f.key)} />
         ))}
 
       {spec.labour ? (
@@ -331,7 +357,7 @@ function Calc({ projectId, currency, units, code, rooms, initialRoom }: { projec
                 .filter((f) => f.labour)
                 .filter(visible)
                 .map((f) => (
-                  <SpecField key={f.key} f={f} value={values[f.key] ?? ''} onChange={(v) => set(f.key, v)} units={units} currency={currency} error={problem?.fieldMessage(`input.${f.key}`)} />
+                  <SpecField key={f.key} f={f} value={values[f.key] ?? ''} onChange={(v) => set(f.key, v)} units={units} currency={currency} error={fieldError(f.key)} />
                 ))}
             </>
           ) : null}
