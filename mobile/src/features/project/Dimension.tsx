@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { View } from 'react-native';
 import { Field, decimalPad } from '../../ui/Field';
 import type { UnitSystem } from '../../types';
+import { TapeMeasure } from '../../ui/Instruments';
 
 /**
  * A length entered in the person's units, held as metres (BRD §6.3: SI
@@ -70,6 +71,20 @@ export function DimensionField({
     <View style={{ flexDirection: 'row', gap: 8 }}>
       <Field label={label} value={v.a} onChangeText={(a) => update({ a, b: v.b })} keyboardType={decimalPad} suffix="ft" placeholder="—" error={error} hint={hint} style={{ flex: 1.3 }} />
       <Field label="and" value={v.b} onChangeText={(b) => update({ a: v.a, b })} keyboardType={decimalPad} suffix="in" placeholder="0" style={{ flex: 1 }} />
+    </View>
+  );
+}
+
+/**
+ * A length with a steel tape under the typed field: typing stays the source
+ * of truth, the tape shows it and can nudge it in 1 cm or ¼ in notches.
+ */
+export function TapeDimensionField(props: { label: string; metres: string | null; units: UnitSystem; onChange: (metres: string | null) => void; error?: string; hint?: string }) {
+  const value = props.metres ? Number(props.metres) : null;
+  return (
+    <View style={{ gap: 8 }}>
+      <DimensionField label={props.label} metres={props.metres} units={props.units} onChange={(m) => props.onChange(m)} error={props.error} hint={props.hint} />
+      <TapeMeasure label={props.label} metres={value} units={props.units} header={false} onChange={(m) => props.onChange(Number(m) > 0 ? m : null)} />
     </View>
   );
 }

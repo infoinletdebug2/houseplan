@@ -2,7 +2,8 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Pressable, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useQueryClient } from '@tanstack/react-query';
-import { AlertCircle, BookOpen, Package, Plus, X } from 'lucide-react-native';
+import { AlertCircle, BookOpen, Package, Plus, Ruler, X } from 'lucide-react-native';
+import { TapeMeasure } from '../../../../src/ui/Instruments';
 import { Header, Screen, SectionHeader } from '../../../../src/ui/Screen';
 import { Card, KV } from '../../../../src/ui/Card';
 import { Field, decimalPad, PickerField } from '../../../../src/ui/Field';
@@ -394,6 +395,8 @@ function Calc({ projectId, currency, units, code, rooms, initialRoom, openResult
 function SpecField({ f, value, onChange, units, currency, error }: { f: FieldSpec; value: string; onChange: (v: string) => void; units: UnitSystem; currency: string; error?: string }) {
   if (f.kind === 'text') return <Field label={f.label} value={value} onChangeText={onChange} hint={f.hint} error={error} maxLength={80} />;
   const isMoney = f.kind === 'money';
+  if (f.kind === 'length') return <TapeLengthField f={f} value={value} onChange={onChange} units={units} error={error} />;
+  if (f.kind === 'area') return <TapeAreaField f={f} value={value} onChange={onChange} units={units} error={error} />;
   return (
     <Field
       label={f.label}
@@ -406,6 +409,57 @@ function SpecField({ f, value, onChange, units, currency, error }: { f: FieldSpe
       hint={f.hint}
       error={error}
     />
+  );
+}
+
+const FT_M = 0.3048;
+/** Display units (m or ft, as typed) ↔ metres for the tape. */
+const toM = (v: string, units: UnitSystem) => {
+  const n = Number(v.replace(',', '.'));
+  return Number.isFinite(n) && n > 0 ? (units === 'imperial' ? n * FT_M : n) : null;
+};
+const fromM = (m: number, units: UnitSystem) => String(Math.round((units === 'imperial' ? m / FT_M : m) * 100) / 100);
+
+/** A length in the person's units, with a steel tape under it. */
+function TapeLengthField({ f, value, onChange, units, error }: { f: FieldSpec; value: string; onChange: (v: string) => void; units: UnitSystem; error?: string }) {
+  return (
+    <View style={{ gap: 8 }}>
+      <Field label={f.label} value={value} onChangeText={onChange} keyboardType={decimalPad} suffix={unitSuffix('length', units)} placeholder="—" hint={f.hint} error={error} />
+      <TapeMeasure label={f.label} metres={toM(value, units)} units={units} header={false} onChange={(m) => onChange(fromM(Number(m), units))} />
+    </View>
+  );
+}
+
+/** An area typed in, or measured as length × width with two tapes. */
+function TapeAreaField({ f, value, onChange, units, error }: { f: FieldSpec; value: string; onChange: (v: string) => void; units: UnitSystem; error?: string }) {
+  const c = useColors();
+  const [measure, setMeasure] = useState(false);
+  const [len, setLen] = useState<number | null>(null);
+  const [wid, setWid] = useState<number | null>(null);
+  const write = (l: number | null, w: number | null) => {
+    if (l && w) {
+      const m2 = l * w;
+      onChange(String(Math.round((units === 'imperial' ? m2 / (FT_M * FT_M) : m2) * 100) / 100));
+    }
+  };
+  return (
+    <View style={{ gap: 8 }}>
+      <Field label={f.label} value={value} onChangeText={onChange} keyboardType={decimalPad} suffix={unitSuffix('area', units)} placeholder="—" hint={f.hint} error={error} />
+      {measure ? (
+        <Card style={{ gap: space.md }}>
+          <TapeMeasure label="Length" metres={len} units={units} onChange={(m) => { const v = Number(m) || null; setLen(v); write(v, wid); }} />
+          <TapeMeasure label="Width" metres={wid} units={units} onChange={(m) => { const v = Number(m) || null; setWid(v); write(len, v); }} />
+          <T v="small">Length × width fills the area above. For other shapes, type the area yourself.</T>
+        </Card>
+      ) : (
+        <Pressable accessibilityRole="button" onPress={() => setMeasure(true)} style={{ flexDirection: 'row', alignItems: 'center', gap: 8, minHeight: 44 }}>
+          <Ruler size={18} color={c.goldInk} />
+          <T v="smallStrong" color={c.goldInk}>
+            Measure it with a tape: length × width
+          </T>
+        </Pressable>
+      )}
+    </View>
   );
 }
 

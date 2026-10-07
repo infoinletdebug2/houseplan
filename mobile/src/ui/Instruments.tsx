@@ -37,7 +37,7 @@ export function lengthReadout(metres: number | null, units: UnitSystem): string 
  * stays the source of truth; dragging the tape nudges it in 1 cm or ¼ in
  * steps with a tick of haptics. `onChange(null)` never fires from the tape.
  */
-export function TapeMeasure({ metres, units, onChange, label, style }: { metres: number | null; units: UnitSystem; onChange?: (metres: string) => void; label: string; style?: StyleProp<ViewStyle> }) {
+export function TapeMeasure({ metres, units, onChange, label, style, header = true }: { metres: number | null; units: UnitSystem; onChange?: (metres: string) => void; label: string; style?: StyleProp<ViewStyle>; header?: boolean }) {
   const c = useColors();
   const id = useId().replace(/[^a-zA-Z0-9]/g, '');
   const [width, setWidth] = useState(320);
@@ -128,12 +128,14 @@ export function TapeMeasure({ metres, units, onChange, label, style }: { metres:
         if (n >= 0) onChange((n * step).toFixed(6).replace(/\.?0+$/, '') || '0');
       }}
     >
-      <View style={{ flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between', gap: 12 }}>
-        <T v="label">{label}</T>
-        <T style={{ fontFamily: font.display, fontSize: 30, lineHeight: 34, color: metres ? c.ink : c.faint, letterSpacing: -0.5 }} num maxFontSizeMultiplier={1.3}>
-          {lengthReadout(metres, units)}
-        </T>
-      </View>
+      {header ? (
+        <View style={{ flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between', gap: 12 }}>
+          <T v="label">{label}</T>
+          <T style={{ fontFamily: font.display, fontSize: 30, lineHeight: 34, color: metres ? c.ink : c.faint, letterSpacing: -0.5 }} num maxFontSizeMultiplier={1.3}>
+            {lengthReadout(metres, units)}
+          </T>
+        </View>
+      ) : null}
       <View
         onLayout={(e: LayoutChangeEvent) => setWidth(Math.max(200, Math.round(e.nativeEvent.layout.width)))}
         style={{ height: H, borderRadius: 10, overflow: 'hidden', borderWidth: 1, borderColor: c.scheme === 'dark' ? '#5A4A3C' : '#D9B96A' }}
@@ -161,10 +163,19 @@ export function TapeMeasure({ metres, units, onChange, label, style }: { metres:
           <Polygon points={`${mid - 7},0 ${mid + 7},0 ${mid},9`} fill="#C4561F" />
           <Polygon points={`${mid - 7},${H} ${mid + 7},${H} ${mid},${H - 9}`} fill="#C4561F" />
         </Svg>
+        {!header ? (
+          <View pointerEvents="none" style={{ position: 'absolute', top: H - 30, left: 0, right: 0, alignItems: 'center' }}>
+            <View style={{ paddingHorizontal: 9, paddingVertical: 3, borderRadius: 999, backgroundColor: '#2A1E17' }}>
+              <T style={{ fontFamily: font.semibold, fontSize: 12.5, color: '#FBF4EA' }} num maxFontSizeMultiplier={1.2}>
+                {lengthReadout(metres, units)}
+              </T>
+            </View>
+          </View>
+        ) : null}
       </View>
       {onChange ? (
         <T v="small" style={{ fontSize: 12.5 }}>
-          Type it below, or slide the tape: {units === 'metric' ? '1 cm' : '¼ in'} a notch.
+          {header ? 'Type it below, or slide the tape' : 'Or slide the tape'}: {units === 'metric' ? '1 cm' : '¼ in'} a notch.
         </T>
       ) : null}
     </View>

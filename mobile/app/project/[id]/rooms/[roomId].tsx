@@ -18,7 +18,7 @@ import { areaLabel, areaUnit, lengthLabel, toSquareMetres } from '../../../../sr
 import { radius, space, useColors } from '../../../../src/theme/tokens';
 import { refreshProject, useProject, useRooms } from '../../../../src/features/project/api';
 import { Gate } from '../../../../src/features/project/ui';
-import { DimensionField } from '../../../../src/features/project/Dimension';
+import { DimensionField, TapeDimensionField } from '../../../../src/features/project/Dimension';
 import { Stepper } from '../../../../src/features/project/Stepper';
 import { ROOM_TYPES, roomTypeLabel, storeyLabel } from '../../../../src/features/project/labels';
 import type { Opening, Room, RoomType } from '../../../../src/features/project/types';
@@ -169,9 +169,9 @@ function Editor({ projectId, units, room, nextStorey }: { projectId: string; uni
       </View>
 
       <SectionHeader title="Measurements" />
-      <DimensionField label="Length" metres={L} units={units} onChange={(m) => setL(m)} error={errors.length_m} />
-      <DimensionField label="Width" metres={W} units={units} onChange={(m) => setW(m)} error={errors.width_m} />
-      <DimensionField label="Ceiling height" metres={H} units={units} onChange={(m) => setH(m)} error={errors.height_m} hint="Needed for wall and paint areas." />
+      <TapeDimensionField label="Length" metres={L} units={units} onChange={(m) => setL(m)} error={errors.length_m} />
+      <TapeDimensionField label="Width" metres={W} units={units} onChange={(m) => setW(m)} error={errors.width_m} />
+      <TapeDimensionField label="Ceiling height" metres={H} units={units} onChange={(m) => setH(m)} error={errors.height_m} hint="Needed for wall and paint areas." />
       <View style={{ gap: 8 }}>
         <T v="label" color={c.muted}>
           Where these numbers came from
