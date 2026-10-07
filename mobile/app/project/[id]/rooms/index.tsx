@@ -72,9 +72,9 @@ function RoomCard({ room: r, units, onPress }: { room: Room; units: 'metric' | '
   return (
     <Card onPress={onPress} padded={false} style={{ overflow: 'hidden' }} accessibilityLabel={`${r.name}, ${roomTypeLabel(r.room_type)}`} testID={`room-${r.name}`}>
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <View style={{ width: 150, alignSelf: 'stretch', justifyContent: 'center', backgroundColor: c.ground2 }}>
+        <View style={{ width: 150, height: 132, overflow: 'hidden', justifyContent: 'center', backgroundColor: c.ground2 }}>
           {/* The drawing keeps its 340-wide viewBox: a matching height fills the thumbnail instead of shrinking it. */}
-          <FloorPlan lengthM={r.length_m} widthM={r.width_m} openings={r.openings} units={units} height={254} idPrefix={`rm-${r.id.slice(0, 8)}`} />
+          <FloorPlan lengthM={r.length_m} widthM={r.width_m} openings={r.openings} units={units} height={254} style={{ marginVertical: -61 }} idPrefix={`rm-${r.id.slice(0, 8)}`} />
         </View>
         <View style={{ flex: 1, padding: space.md, gap: 4 }}>
           <T v="bodyStrong">{r.name}</T>

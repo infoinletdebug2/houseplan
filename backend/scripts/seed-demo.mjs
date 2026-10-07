@@ -82,6 +82,14 @@ async function main() {
   }
   await call('POST', '/me/paywall-seen', {});
 
+  // EMPTY=1: a paid account with no projects, for the empty states.
+  if (process.env.EMPTY === '1') {
+    const target = join(HERE, '..', '..', 'mobile', 'harness', '.demo-empty.json');
+    writeFileSync(target, JSON.stringify({ api: API.replace(/\/api\/v1$/, ''), email: EMAIL, password: PASSWORD, token: TOKEN, refresh: session.refresh_token, seeded_at: new Date().toISOString() }, null, 2));
+    console.log(`\nempty account ready → ${target}`);
+    return;
+  }
+
   /* ── Willow House ─────────────────────────────────────────────────── */
   const project = await call('POST', '/projects', {
     name: 'Willow House',

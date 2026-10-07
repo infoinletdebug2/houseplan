@@ -46,5 +46,12 @@ const routes = (d) => {
   ];
 };
 
+/** HARNESS_EMPTY=1 with an empty paid account in .demo.json (seed-demo.mjs EMPTY=1): the empty states. */
+const empty = [
+  { path: '/projects', name: 'a30-projects-empty', expect: ['Start your first project'] },
+  { path: '/calculators', name: 'a31-calculators-empty', expect: ['Start a project first'] },
+  { path: '/rates', name: 'a32-rates-empty', expect: ['Save your first rate'] },
+];
+
 // Only on a live run (HARNESS_ROUTES points here): the stub run must not try these ids.
-export default demo && (process.env.HARNESS_ROUTES ?? "").includes("routes-a") ? routes(demo) : [];
+export default demo && (process.env.HARNESS_ROUTES ?? "").includes("routes-a") ? (process.env.HARNESS_EMPTY === "1" ? empty : routes(demo)) : [];

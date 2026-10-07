@@ -1,7 +1,7 @@
 import { View, type StyleProp, type ViewStyle } from 'react-native';
 import { AlertCircle, CircleCheck } from 'lucide-react-native';
 import { font, radius, space, useColors } from '../theme/tokens';
-import { money } from '../lib/format';
+import { money, moneyShort } from '../lib/format';
 import { T } from './Text';
 
 /**
@@ -45,7 +45,7 @@ export function MoneyCard({
               {f.label}
             </T>
             <T style={{ fontFamily: font.semibold, fontSize: 15, color: '#FFFFFF' }} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7} num>
-              {money(f.value, currency, { empty: '—', cents: false })}
+              {f.value === null ? '—' : moneyShort(f.value, currency)}
             </T>
           </View>
         ))}
