@@ -1,0 +1,28 @@
+{
+  "name": "houseplan-backend",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "HousePlan worker: house budgets, calculators, estimate revisions, quotes, costs, payments and forecasts on @xenition/sdk.",
+  "scripts": {
+    "dev": "tsx --env-file=.dev.vars src/dev.ts",
+    "migrate": "tsx --env-file=.dev.vars src/migrate.ts",
+    "seed": "node scripts/seed-demo.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:api": "bash scripts/api-test.sh"
+  },
+  "dependencies": {
+    "@xenition/sdk": "github:xenition/node-sdk#b49275bbb91fe732cf763e6637fdeab86426e122",
+    "hono": "^4.6.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260820.1",
+    "@hono/node-server": "^1.13.7",
+    "@types/node": "^22.7.5",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.0",
+    "wrangler": "^4.0.0"
+  }
+}

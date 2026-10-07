@@ -1,0 +1,21 @@
+name = "houseplan-backend"
+main = "src/index.ts"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+# Deletion purges, export expiry, quote-expiry and budget notices (src/jobs.ts).
+# The deploy pipeline may drop this: POST /api/v1/internal/jobs/run with x-job-secret does the same.
+[triggers]
+crons = ["*/15 * * * *"]
+
+[vars]
+XENITION_API_URL = "https://api.xenition.com/v1"
+
+# Every value also has a production-correct code default in src/config.ts:
+# the Xenition deploy pipeline replaces this file and installs only XENITION_*.
+#
+# Secrets, never committed:
+#   XENITION_API_KEY        service key for app_houseplan
+#   JOB_SECRET, ADMIN_TOKEN digests stored by `npm run migrate`
+#   APPLE_KEY_ID, APPLE_ISSUER_ID, APPLE_PRIVATE_KEY · GOOGLE_CLIENT_EMAIL, GOOGLE_PRIVATE_KEY
+#   META_APP_ID, META_CAPI_ACCESS_TOKEN   (ads measurement; dormant while empty)

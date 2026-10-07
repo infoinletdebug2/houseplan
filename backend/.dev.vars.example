@@ -1,0 +1,32 @@
+# HousePlan backend: copy to .dev.vars (gitignored). EXPO_PUBLIC_* goes in mobile/.env.
+
+# platform (required): a service key minted FOR app_houseplan
+XENITION_API_KEY=
+XENITION_ANON_KEY=
+XENITION_API_URL=https://api.xenition.com/v1
+
+PORT=8797
+PUBLIC_BASE_URL=https://houseplan.xenition.com
+# operator secrets: migrate stores their SHA-256 digests in hp__operator_secret
+JOB_SECRET=
+ADMIN_TOKEN=
+
+# the plan: product ids must match mobile/.env EXPO_PUBLIC_IAP_* byte for byte
+PRO_ENTITLEMENT=houseplan_pro
+PRODUCT_MONTHLY=houseplan.pro.monthly
+PRODUCT_YEARLY=houseplan.pro.annual
+# BRD 1.3: hard paywall, no free trial. 7 turns on a server trial (no automatic charge).
+TRIAL_DAYS=0
+
+# store verification (optional in dev)
+APPLE_KEY_ID=
+APPLE_ISSUER_ID=
+APPLE_PRIVATE_KEY=
+APPLE_BUNDLE_ID=com.xenition.houseplan
+GOOGLE_PACKAGE_NAME=com.xenition.houseplan
+GOOGLE_CLIENT_EMAIL=
+GOOGLE_PRIVATE_KEY=
+
+# Meta ads measurement (Conversions API). Dormant while empty.
+META_APP_ID=
+META_CAPI_ACCESS_TOKEN=
