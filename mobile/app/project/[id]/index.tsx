@@ -22,8 +22,10 @@ import {
   Handshake,
 } from 'lucide-react-native';
 import { useQueryClient } from '@tanstack/react-query';
-import { Header, Screen, SectionHeader } from '../../../src/ui/Screen';
-import { ActionTile, DetailHero, TileGrid } from '../../../src/ui/Tiles';
+import { GUTTER, Header, Screen, SectionHeader } from '../../../src/ui/Screen';
+import { ActionTile, TileGrid } from '../../../src/ui/Tiles';
+import { BudgetDial } from '../../../src/ui/Instruments';
+import { ProjectHero } from '../../../src/features/project/Hero';
 import { MoneyCard, CompletenessBanner } from '../../../src/ui/Money';
 import { Meter } from '../../../src/ui/Charts';
 import { Card } from '../../../src/ui/Card';
@@ -32,11 +34,10 @@ import { OfflineBanner } from '../../../src/ui/States';
 import { useToast } from '../../../src/ui/Sheet';
 import { T } from '../../../src/ui/Text';
 import { api, messageOf } from '../../../src/api/client';
-import { money, day } from '../../../src/lib/format';
+import { money, moneyShort, day } from '../../../src/lib/format';
 import { font, radius, space, useColors } from '../../../src/theme/tokens';
 import { refreshProject, useDashboard, useProject } from '../../../src/features/project/api';
-import { appRoute, Gate, ProjectChip } from '../../../src/features/project/ui';
-import { coverImage, TYPE_LABEL } from '../../../src/features/project/labels';
+import { appRoute, Gate } from '../../../src/features/project/ui';
 import type { Dashboard, Project } from '../../../src/features/project/types';
 
 /**
@@ -53,7 +54,6 @@ export default function ProjectOverview() {
   const project = useProject(id);
   const dash = useDashboard(id);
   const p = project.data;
-  const c = useColors();
 
   useEffect(() => {
     if (id) void api.patch('/me', { last_project_id: id }).catch(() => undefined);
@@ -63,12 +63,9 @@ export default function ProjectOverview() {
 
   return (
     <Screen
-      header={
-        <Header
-          title=""
-          right={<IconButton label="Project settings" icon={<Settings2 size={22} color={c.ink} />} onPress={() => go('settings')} />}
-        />
-      }
+      header={p ? undefined : <Header title="" />}
+      noTopInset
+      contentStyle={p ? { paddingHorizontal: 0, paddingTop: 0 } : undefined}
       refreshing={dash.isRefetching}
       onRefresh={() => id && refreshProject(qc, id)}
       gap={space.lg}
@@ -76,10 +73,10 @@ export default function ProjectOverview() {
       <Gate query={project}>
         {p ? (
           <>
-            <ProjectChip projectId={p.id} name={p.name} />
+            <ProjectHero project={p} right={<IconButton glass label="Project settings" icon={<Settings2 size={20} color="#FFFFFF" />} onPress={() => go('settings')} />} />
+            <View style={{ paddingHorizontal: GUTTER, gap: space.lg }}>
             <OfflineBanner />
             {p.archived_at ? <ArchivedBanner project={p} /> : null}
-            <DetailHero image={coverImage(p)} title={p.name} subtitle={`${TYPE_LABEL[p.type]} · ${p.currency} · ${p.storeys} ${p.storeys === 1 ? 'storey' : 'storeys'}`} height={190} />
             <Gate query={dash} rows={3}>
               {dash.data ? <Figures d={dash.data} onForecast={() => go('forecast')} onEstimate={() => go('estimate')} /> : null}
             </Gate>
@@ -118,6 +115,7 @@ export default function ProjectOverview() {
                 <ActionTile title="Reports" subtitle="PDF and spreadsheet" meaning="documents" icon={(col) => <FileDown size={20} color={col} />} onPress={() => go('exports')} testID="tile-exports" />
                 <ActionTile title="Activity" subtitle="Who changed what" meaning="settings" icon={(col) => <Archive size={20} color={col} />} onPress={() => go('activity')} testID="tile-activity" />
               </TileGrid>
+            </View>
             </View>
           </>
         ) : null}
@@ -177,17 +175,16 @@ function Figures({ d, onForecast, onEstimate }: { d: Dashboard; onForecast: () =
           <CompletenessBanner missingLines={est?.missing_line_count ?? 0} undecided={d.undecided_categories} compact />
         </Pressable>
         {target ? (
-          <View style={{ gap: 6, borderTopWidth: 1, borderTopColor: c.line, paddingTop: 12 }}>
-            <Meter
-              value={Number(totalNow ?? 0)}
-              max={Math.max(Number(target), Number(totalNow ?? 0)) * 1.05}
-              marker={Number(target)}
-              tone={Number(totalNow ?? 0) > Number(target) ? c.danger : undefined}
-              label={confirmed ? 'Forecast against your target' : 'Estimate against your target'}
-              valueLabel={money(totalNow, cur)}
-              maxLabel={money(target, cur)}
+          <View style={{ gap: 8, borderTopWidth: 1, borderTopColor: c.line, paddingTop: 14, alignItems: 'center' }} testID="budget-dial">
+            <BudgetDial
+              value={totalNow ? Number(totalNow) : null}
+              target={Number(target)}
+              valueLabel={moneyShort(totalNow ?? null, cur)}
+              targetLabel={moneyShort(target, cur)}
+              caption={confirmed ? 'Forecast against your target' : 'Known estimate against your target'}
+              incomplete={confirmed && f.complete ? null : confirmed ? 'Forecast incomplete: the needle may move' : 'Not a forecast yet: confirm one to firm this up'}
             />
-            <T v="small">
+            <T v="small" center>
               {Number(totalNow ?? 0) > Number(target)
                 ? `Over the target by ${money((BigInt(totalNow ?? '0') - BigInt(target)).toString(), cur)}.`
                 : `${money((BigInt(target) - BigInt(totalNow ?? '0')).toString(), cur)} below the target. The target is a ceiling, not an estimate.`}

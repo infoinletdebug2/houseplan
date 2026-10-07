@@ -11,7 +11,8 @@ import { EmptyState } from '../../../../src/ui/States';
 import { ConfirmSheet, useToast } from '../../../../src/ui/Sheet';
 import { api, ApiError } from '../../../../src/api/client';
 import { pKey, projectPath } from '../../../../src/api/hooks';
-import { day, fromMinor, money } from '../../../../src/lib/format';
+import { day, fromMinor, money, moneyShort } from '../../../../src/lib/format';
+import { BudgetDial } from '../../../../src/ui/Instruments';
 import { noteSuccess } from '../../../../src/lib/review';
 import { font, radius, space, useColors } from '../../../../src/theme/tokens';
 import { FieldNote, Gate, MoneyField, StatusPill, WarnNote, parseMoney, useConflictRefresh, writeMessage } from '../../../../src/features/money/ui';
@@ -210,6 +211,18 @@ function Summary({ f, currency, paid, actual, committed }: { f: ForecastPreview;
         {f.review_required ? <StatusPill label="Review required: costs changed since" tone="review" /> : null}
         {!f.complete ? <StatusPill label={`${f.missing_inputs} categories still to estimate`} tone="review" /> : <StatusPill label="Every included category estimated" tone="ok" />}
       </View>
+      {variance !== null ? (
+        <Card style={{ alignItems: 'center', paddingVertical: space.lg }}>
+          <BudgetDial
+            value={Number(f.total_minor)}
+            target={Number(BigInt(f.total_minor) + variance)}
+            valueLabel={moneyShort(f.total_minor, currency)}
+            targetLabel={moneyShort((BigInt(f.total_minor) + variance).toString(), currency)}
+            caption="Forecast against your target"
+            incomplete={f.complete ? null : `${f.missing_inputs} ${f.missing_inputs === 1 ? 'category' : 'categories'} still to estimate`}
+          />
+        </Card>
+      ) : null}
       {variance !== null ? (
         <View style={{ padding: space.md, borderRadius: radius.tile, backgroundColor: variance < 0n ? c.dangerTint : c.okTint, flexDirection: 'row', justifyContent: 'space-between' }}>
           <T style={{ fontFamily: font.semibold, fontSize: 14, color: variance < 0n ? c.danger : c.ok }}>{variance < 0n ? 'Over your target budget by' : 'Under your target budget by'}</T>

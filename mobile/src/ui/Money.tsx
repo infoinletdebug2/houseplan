@@ -38,7 +38,7 @@ export function MoneyCard({
         </T>
         {note ? <T style={{ fontFamily: font.body, fontSize: 13, color: 'rgba(255,255,255,0.7)' }}>{note}</T> : null}
       </View>
-      <View style={{ height: 1, backgroundColor: 'rgba(255,255,255,0.16)' }} />
+      <View style={{ height: 2, borderRadius: 1, backgroundColor: '#C4561F' }} />
       <View style={{ flexDirection: 'row' }}>
         {figures.map((f, i) => (
           <View key={f.label} style={{ flex: 1, paddingLeft: i === 0 ? 0 : 10, borderLeftWidth: i === 0 ? 0 : 1, borderLeftColor: 'rgba(255,255,255,0.16)', gap: 3 }}>
