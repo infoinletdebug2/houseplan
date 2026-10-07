@@ -220,7 +220,7 @@ const PRICE_FIELD: Record<CalculatorCode, { field: string; units: string[] }> = 
 
 type Surface = 'floor' | 'walls' | 'ceiling' | 'perimeter';
 
-interface Prepared {
+export interface Prepared {
   code: CalculatorCode;
   input: Record<string, unknown>;
   roomId: string | null;
@@ -230,10 +230,11 @@ interface Prepared {
   result: CalcResult & { provenance: { origin: string; verified_local_benchmark: boolean } };
 }
 
-async function prepare(c: Context, p: ProjectCtx, b: Record<string, unknown>): Promise<Prepared> {
+export async function prepare(c: Context, p: ProjectCtx, b: Record<string, unknown>): Promise<Prepared> {
   const code = oneOf(b.calculator_code, CALCULATOR_CODES, 'calculator_code') as CalculatorCode;
   if (typeof b.input !== 'object' || b.input === null || Array.isArray(b.input)) throw new AppError('VALIDATION_ERROR', 'Send the calculator inputs.', 400, [{ field: 'input', message: 'Required.' }]);
   const input: Record<string, unknown> = { ...(b.input as Record<string, unknown>) };
+  delete input.room_surface;
   if (JSON.stringify(input).length > 20_000) throw new AppError('VALIDATION_ERROR', 'Those inputs are too large.', 400, [{ field: 'input', message: 'Too large.' }]);
   if (typeof input.currency === 'string' && input.currency.toUpperCase() !== p.currency) {
     throw new AppError('CURRENCY_MISMATCH', `This project is in ${p.currency}. Enter prices in ${p.currency}.`, 422, [{ field: 'input.currency', message: 'Currency mismatch.' }]);
@@ -253,6 +254,7 @@ async function prepare(c: Context, p: ProjectCtx, b: Record<string, unknown>): P
     geometryRevision = room.geometry_revision;
     const g = room.geometry;
     const surface = oneOf(b.surface, ['floor', 'walls', 'ceiling', 'perimeter'] as const, 'surface', code === 'paint' ? 'walls' : code === 'skirting' ? 'perimeter' : 'floor') as Surface;
+    input.room_surface = surface;
     const missing = (what: string, fields: string[]) =>
       new AppError('CALCULATION_INPUT_MISSING', `${room.name} has no ${what} yet. Add its measurements first.`, 422, fields.map((field) => ({ field, message: 'Missing measurement.' })));
     const area = surface === 'floor' ? g.floor_area_m2 : surface === 'walls' ? g.net_wall_area_m2 : surface === 'ceiling' ? g.ceiling_area_m2 : null;
