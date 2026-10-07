@@ -273,3 +273,7 @@ Base: `https://houseplan.xenition.com/api/v1`. The worker, this document and the
 - **DRAFT_EXISTS** carries the draft id in `fields.draft_revision_id`.
 - **Rooms, openings, private rates:** changes return `meta.stale_lines`.
 - **Website:** static pages answer `307` to the trailing-slash form (`/admin` → `/admin/`).
+- **Money routes, extra reads:** `GET /suppliers/:supplierId`, `GET /projects/:id/commitments/:commitmentId`, `/costs/:costId`, `/payments/:paymentId`, `/procurement/:itemId`.
+- **Money, extra fields:** cost create/patch `meta.allocation_balanced`; Commitment `adjustments[]`, `stale_terms_reason`; Cost `credits_minor`; Quote `expired`, `line_count`, `accepted_minor`, `attachments`; forecast inputs carry `actual_minor`, `committed_remaining_minor`, `estimate_minor`, plus forecast `suggested_reserve_minor` and `preview`; procurement `phase_name`, `estimate_line_id`, `material_spec`.
+- **Money, extra errors:** `QUOTE_LOCKED`, `ADJUSTMENT_TOO_LARGE`, `NO_PURCHASE_QUANTITY`, `SOURCE_CHANGED` (send `acknowledge_change: true`), forecast `DRAFT_EXISTS` with `fields.forecast_id`. Void preview is a POST, so it needs an Idempotency-Key. Quote comparison without mappings groups lines by category. A new forecast's reserve starts at 0 or copies the last one.
+- **Forecast missing inputs** count only empty categories (a draft value counts until confirmed).
