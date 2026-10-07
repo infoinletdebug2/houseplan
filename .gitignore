@@ -1,0 +1,33 @@
+node_modules/
+.DS_Store
+desktop.ini
+
+# secrets and local config — never committed
+.env
+.env.local
+.dev.vars
+*.p8
+*.pem
+backend/.demo-production
+google-services.json
+GoogleService-Info.plist
+
+# build output
+dist/
+dist-web/
+.expo/
+.wrangler/
+ios/
+android/
+*.tsbuildinfo
+
+# harness
+mobile/harness/shots*/
+mobile/harness/routes-live.mjs
+mobile/harness/.chrome*/
+mobile/harness/.demo.json
+mobile/harness/*.jpg
+
+# raw image generations (large); processed JPEGs are committed
+design/codex/photos/*.png
+design/codex/*.log
