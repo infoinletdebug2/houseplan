@@ -119,7 +119,7 @@ Base: `https://houseplan.xenition.com/api/v1`. The worker, this document and the
 | `POST /projects/:id/rooms` | `{ name, room_type, storey_index?, length_m?, width_m?, height_m?, manual_*?, measurement_source?, note? }` (metres; the app converts imperial) | 201 `Room`; `409 LIMIT_REACHED` |
 | `POST /projects/:id/rooms/:roomId/duplicate` | `{ name? }` | 201 `Room` |
 | `PATCH /projects/:id/rooms/:roomId` | fields + `expected_version` | `Room` + `meta.stale_lines` (dependent draft lines flagged) |
-| `DELETE /projects/:id/rooms/:roomId` | `expected_version` | `{ deleted: true }`; `409 ROOM_IN_USE` if a frozen revision or calculation references it (it is hidden instead) |
+| `DELETE /projects/:id/rooms/:roomId` | `expected_version` | `{ deleted: true, hidden: boolean }`: a room used by a saved line or calculation is hidden and its draft lines go stale |
 | `POST /projects/:id/rooms/:roomId/openings` | `{ opening_type, wall_label?, width_m?, height_m?, floor_cutout_area_m2?, count }` | 201 `Room` |
 | `PATCH /projects/:id/rooms/:roomId/openings/:openingId` | fields + `expected_version` | `Room` |
 | `DELETE /projects/:id/rooms/:roomId/openings/:openingId` | — | `Room` |
@@ -153,14 +153,14 @@ Base: `https://houseplan.xenition.com/api/v1`. The worker, this document and the
 
 | Route | Body | Response |
 |---|---|---|
-| `GET /projects/:id/estimates?kind=current\|scenario` | — | `{ revisions: [Revision], pointers: { baseline_revision_id, current_revision_id, draft_revision_id } }` |
+| `GET /projects/:id/estimates?kind=all|current|scenario` (default all) |\|scenario` | — | `{ revisions: [Revision], pointers: { baseline_revision_id, current_revision_id, draft_revision_id } }` |
 | `POST /projects/:id/estimates` | `{ source_revision_id, title? }` | 201 `Revision` (new draft from a frozen one); `409 DRAFT_EXISTS` (`fields.draft_revision_id`) |
 | `GET /projects/:id/estimates/:revisionId` | — | `RevisionDetail` |
 | `POST /projects/:id/estimates/:revisionId/lines` | `{ category_id, mode, label, unit?, quantity?, net_unit_price?, entered_gross_unit_price?, tax_rate?, extras?, room_id?, phase_id?, calculation_id?, user_rate_id?, benchmark_rate_id?, stale_override?, included?, deferred?, zero_cost_reason?, note?, expected_revision_version? }` — `allowance` takes `quantity: "1"`, `unit: "lump_sum"`, `net_unit_price` = the allowance | 201 `{ line: Line, revision: Revision }` |
 | `PATCH /projects/:id/estimates/:revisionId/lines/:lineId` | same + `expected_version` | `{ line, revision }` |
 | `DELETE /projects/:id/estimates/:revisionId/lines/:lineId` | `expected_version` | `{ revision }` |
 | `PATCH /projects/:id/estimates/:revisionId/settings` | `{ expected_version, contingency_percent?, contingency_codes?, title? }` | `Revision` |
-| `POST /projects/:id/estimates/:revisionId/recalculate` | `{ expected_version, accept: boolean }` | `{ changes: [{ line_id, label, before_gross_minor, after_gross_minor, reason }], revision }` (accept=true applies) |
+| `POST /projects/:id/estimates/:revisionId/recalculate` | `{ expected_version, accept: boolean }` | `{ changes: [{ line_id, label, before_gross_minor, after_gross_minor, reason }], applied: boolean, revision }` (accept=true applies) |
 | `POST /projects/:id/estimates/:revisionId/freeze` | `{ expected_version }` | `Revision`; `409 STALE_LINES` |
 | `POST /projects/:id/estimates/:revisionId/set-current` | — | `{ pointers }` |
 | `POST /projects/:id/estimates/:revisionId/set-baseline` | `{ confirm: true }` | `{ pointers }` (audited) |
