@@ -4,9 +4,10 @@ import { T } from '../../ui/Text';
 import { Card, IconSquare } from '../../ui/Card';
 import { Meter } from '../../ui/Charts';
 import { money } from '../../lib/format';
-import { space, useColors } from '../../theme/tokens';
+import { radius, space, useColors } from '../../theme/tokens';
+import { num } from './data';
 import { StatusPill } from './ui';
-import type { Commitment } from './types';
+import type { Commitment, ProcItem } from './types';
 
 /** A commitment at a glance: still owed, invoiced against the obligation, flags. */
 export function CommitmentCard({ m, currency, onPress }: { m: Commitment; currency: string; onPress?: () => void }) {
@@ -37,3 +38,30 @@ export function CommitmentCard({ m, currency, onPress }: { m: Commitment; curren
     </Card>
   );
 }
+
+/** Needed, ordered and received for a material, on one scale. */
+export function QtyBars({ item }: { item: ProcItem }) {
+  const c = useColors();
+  const target = Math.max(num(item.purchase_qty ?? item.required_qty), num(item.ordered_qty), num(item.received_qty), 0.000001);
+  const bar = (label: string, value: string | null, color: string) => (
+    <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm }}>
+      <T v="small" style={{ width: 70 }}>
+        {label}
+      </T>
+      <View style={{ flex: 1, height: 8, borderRadius: 4, backgroundColor: c.ground2, overflow: 'hidden' }}>
+        <View style={{ width: `${Math.min(100, (num(value) / target) * 100)}%`, height: 8, borderRadius: radius.pill, backgroundColor: color }} />
+      </View>
+      <T v="smallStrong" style={{ width: 76, textAlign: 'right' }} num>
+        {value ?? '—'} {item.unit}
+      </T>
+    </View>
+  );
+  return (
+    <View style={{ gap: 6 }}>
+      {bar('Needed', item.purchase_qty ?? item.required_qty, c.brand)}
+      {bar('Ordered', item.ordered_qty, c.primary)}
+      {bar('Received', item.received_qty, c.ok)}
+    </View>
+  );
+}
+
