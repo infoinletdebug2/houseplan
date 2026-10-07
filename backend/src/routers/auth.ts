@@ -180,7 +180,16 @@ export const authRouter = defineRouter({
       if (password.length < 12 || password.length > 128) throw invalid('Use at least 12 characters for your password.', 'password', 'PASSWORD_TOO_SHORT');
       const name = requiredText(b.display_name, 'display_name', 60);
       if (!ticked(b)) throw invalid('Agree to the Terms and the Privacy Policy to create your account.', 'accept_terms', 'TERMS_REQUIRED');
-      const auth = await sdk(c).auth.register({ email: address, password, name });
+      let auth: AuthResponse;
+      try {
+        auth = await sdk(c).auth.register({ email: address, password, name });
+      } catch (failure) {
+        // Production reports an existing address as CONFLICT, dev as AUTH_EMAIL_EXISTS.
+        if (failure instanceof XenitionError && (failure.code === 'CONFLICT' || failure.code === 'AUTH_EMAIL_EXISTS' || failure.status === 409)) {
+          throw new AppError('AUTH_EMAIL_TAKEN', 'There is already an account with that email. Sign in instead.', 409, [{ field: 'email', message: 'Already registered.' }]);
+        }
+        throw failure;
+      }
       const profile = await ensureProfile(c, auth.user.id, { email: address, name, method: 'password', terms: termsVersion(env(c)) });
       await sdk(c)
         .auth.sendOtp({ email: address, purpose: 'verify_email' })
