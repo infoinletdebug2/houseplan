@@ -1,0 +1,35 @@
+# Image provenance
+
+Every photo is an original generated with the Codex CLI image tool (OpenAI) for HousePlan. None is stock or taken from a search engine. Raw PNGs live in `design/codex/photos/` (gitignored); `design/tools/process-images.mjs` turns them into the progressive JPEGs here (q82; discovery/hero 1080×1440, tiles 720², wide 1600×900, empty states 1200×900).
+
+The prompt suffix (style line) and the per-image descriptions are in `design/codex/gen.sh` and `design/codex/photos.tsv`.
+
+| File | Status | Prompt |
+|---|---|---|
+| discover-budget.jpg | generated | 3:4 portrait. A timber-frame family house under construction at golden hour, pale new wood studs and roof trusses glowing in warm low sun against a clear sky. DISCOVERY |
+| discover-compare.jpg | generated | 3:4 portrait. Two flooring samples side by side on a pale oak plan table, one warm oak plank and one grey stone-look tile, with a fine architectural floor plan sheet underneath (no readable text). DISCOVERY |
+| discover-finish.jpg | generated | 3:4 portrait. A nearly finished bright modern living room interior, fresh plastered walls, new oak floor, large window with soft daylight, a stepladder and paint tray in a corner. DISCOVERY |
+| discover-quotes.jpg | generated | 3:4 portrait. A neat desk with rolled architectural drawings, a closed folder of papers, a steel tape measure and a pencil, all paper completely blank, warm desk lamp light. DISCOVERY |
+| discover-progress.jpg | generated | 3:4 portrait. A residential building site in early morning mist: freshly poured concrete foundation slab, neat stacks of bricks and timber, a small excavator softly out of focus. DISCOVERY |
+| discover-rooms.jpg | generated | 3:4 portrait. An empty freshly plastered room with afternoon sunlight raking across the bare screed floor, a yellow steel tape measure extended along the floor. DISCOVERY |
+| type-new-build.jpg | generated | 1:1 square. A modern new-build family house exterior, clean render and timber cladding, freshly landscaped front, soft daylight. HERO |
+| type-extension.jpg | generated | 1:1 square. A bright single-storey glass and timber rear extension on a brick house, garden in front, soft daylight. HERO |
+| type-renovation.jpg | generated | 1:1 square. An older brick house interior mid-renovation: exposed brick wall, new plaster patches, dust sheets on the floor, warm window light. HERO |
+| tier-economical.jpg | generated | 1:1 square. Still life of practical building finishes: a laminate flooring plank, a white ceramic tile and a small tin of white paint on pale plaster. HERO |
+| tier-standard.jpg | generated | 1:1 square. Still life of mid-range finishes: an engineered oak plank, a matte porcelain tile and a sage-green paint swatch on warm plaster. HERO |
+| tier-premium.jpg | generated | 1:1 square. Still life of premium finishes: a wide solid oak plank, a honed marble tile and a brushed brass handle on warm plaster. HERO |
+| calc-flooring.jpg | generated | 1:1 square. Overhead view of oak floor planks being laid in a row with spacers, warm light. HERO |
+| calc-paint.jpg | **placeholder** (`placeholder.jpg`) until Codex credits return | 1:1 square. A paint roller resting on a tray of soft sage-green paint next to a freshly painted wall, warm light. HERO |
+| calc-skirting.jpg | **placeholder** (`placeholder.jpg`) until Codex credits return | 1:1 square. A white painted timber skirting board fitted along a fresh wall corner above an oak floor, warm light. HERO |
+| calc-wallpaper.jpg | **placeholder** (`placeholder.jpg`) until Codex credits return | 1:1 square. A roll of plain textured linen wallpaper partly unrolled on a pasting table, warm light. HERO |
+| calc-openings.jpg | **placeholder** (`placeholder.jpg`) until Codex credits return | 1:1 square. A new timber-framed window installed in a fresh plaster wall with soft daylight coming through. HERO |
+| calc-general.jpg | **placeholder** (`placeholder.jpg`) until Codex credits return | 1:1 square. A neat stack of building materials: bags of plaster, timber battens and a box of screws on a clean site floor. HERO |
+| empty-projects.jpg | **placeholder** (`placeholder.jpg`) until Codex credits return | 4:3 landscape. A rolled architectural drawing tied with string, a pencil and a small wooden house model on pale oak. HERO |
+| empty-rooms.jpg | **placeholder** (`placeholder.jpg`) until Codex credits return | 4:3 landscape. A folded steel tape measure, a carpenter pencil and a small spirit level resting on warm plaster. HERO |
+| empty-quotes.jpg | **placeholder** (`placeholder.jpg`) until Codex credits return | 4:3 landscape. A closed manila folder, a fountain pen and a brass paperclip on pale oak, all paper blank. HERO |
+| empty-costs.jpg | **placeholder** (`placeholder.jpg`) until Codex credits return | 4:3 landscape. A neat stack of blank paper receipts held by a brass clip beside a small ceramic dish of coins on warm plaster. HERO |
+| empty-procurement.jpg | **placeholder** (`placeholder.jpg`) until Codex credits return | 4:3 landscape. Two stacked cardboard boxes of floor tiles and a roll of underlay on a clean garage floor, soft daylight. HERO |
+| home-header.jpg | **placeholder** (`placeholder.jpg`) until Codex credits return | 16:9 landscape. A contemporary family house at dusk with warm interior lights, render and dark timber cladding, landscaped garden, subject in the upper 60%. HERO |
+| paywall-header.jpg | **placeholder** (`placeholder.jpg`) until Codex credits return | 16:9 landscape. Architectural drawings, a steel tape measure and oak flooring samples arranged on a pale oak desk in soft window light, paper blank. HERO |
+| signin-hero.jpg | **placeholder** (`placeholder.jpg`) until Codex credits return | 3:4 portrait. A warm modern kitchen-dining space in a newly finished house, pale oak, plaster walls, soft morning light. HERO |
+| placeholder.jpg | crop of type-new-build | The one stand-in for every slot not generated yet (blueprint image rule). |

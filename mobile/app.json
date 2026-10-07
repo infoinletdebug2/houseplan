@@ -1,0 +1,87 @@
+{
+  "expo": {
+    "name": "HousePlan",
+    "slug": "houseplan",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "houseplan",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "backgroundColor": "#F4EFE7",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "backgroundColor": "#17332E",
+      "resizeMode": "contain"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.xenition.houseplan",
+      "buildNumber": "1",
+      "usesAppleSignIn": true,
+      "associatedDomains": [
+        "applinks:houseplan.xenition.com"
+      ],
+      "infoPlist": {
+        "NSCameraUsageDescription": "HousePlan uses the camera only when you choose to photograph a receipt, a quote or site progress.",
+        "NSPhotoLibraryUsageDescription": "HousePlan lets you attach receipt, quote and progress photos you choose.",
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "package": "com.xenition.houseplan",
+      "versionCode": 1,
+      "edgeToEdgeEnabled": true,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#17332E"
+      },
+      "permissions": [
+        "POST_NOTIFICATIONS"
+      ],
+      "softwareKeyboardLayoutMode": "resize"
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "single",
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-font",
+      "expo-secure-store",
+      "expo-apple-authentication",
+      "expo-web-browser",
+      [
+        "expo-notifications",
+        {
+          "color": "#2C7A69",
+          "defaultChannel": "default"
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "cameraPermission": "HousePlan uses the camera only when you choose to photograph a receipt, a quote or site progress.",
+          "photosPermission": "HousePlan lets you attach receipt, quote and progress photos you choose."
+        }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 160,
+          "backgroundColor": "#17332E",
+          "dark": {
+            "image": "./assets/splash-icon.png",
+            "backgroundColor": "#0B1A17"
+          }
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": false
+    },
+    "extra": {}
+  }
+}
