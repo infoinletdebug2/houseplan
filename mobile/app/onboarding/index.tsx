@@ -1,50 +1,37 @@
 import { useState } from 'react';
-import { View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { StepShell } from '../../src/onboarding/Shell';
 import { saveOnboarding } from '../../src/onboarding/save';
-import { PhotoTile, ChoiceTile, TileGrid } from '../../src/ui/Tiles';
-import { T } from '../../src/ui/Text';
+import { PRIORITIES } from '../../src/onboarding/options';
+import { PhotoTile, TileGrid } from '../../src/ui/Tiles';
 import { useAuth } from '../../src/auth/context';
 import { messageOf } from '../../src/api/client';
 import { firstName } from '../../src/lib/format';
-import { space, useColors } from '../../src/theme/tokens';
-import type { BuildType, RoleHint } from '../../src/types';
+import type { Priority } from '../../src/types';
 
 /**
- * Onboarding step 1 of 3, after sign-in, tap-only (blueprint B3): what are
- * you building, and who are you. Personal ("Welcome, Maya"); never asks for
- * the name the account already has. Answers save to the account.
+ * Onboarding step 1 of 3, after sign-in, tap-only (blueprint B3): a
+ * two-column photo tile grid, multi-select: what HousePlan should help with.
+ * Personal ("Welcome, Maya"); never asks for the name the account already
+ * has. Answers save straight to the account.
  */
-const BUILDS: Array<{ value: BuildType; label: string; hint: string; image: 'type-new-build' | 'type-extension' | 'type-renovation' }> = [
-  { value: 'new_build', label: 'New house', hint: 'From the plot up', image: 'type-new-build' },
-  { value: 'extension', label: 'Extension', hint: 'More room on a home', image: 'type-extension' },
-  { value: 'renovation', label: 'Renovation', hint: 'Rework what is there', image: 'type-renovation' },
-];
-
-const ROLES: Array<{ value: RoleHint; label: string }> = [
-  { value: 'homeowner', label: 'Homeowner' },
-  { value: 'self_builder', label: 'Self-builder' },
-  { value: 'builder', label: 'Builder' },
-];
-
-export default function OnboardingBuild() {
+export default function OnboardingHelp() {
   const router = useRouter();
-  const c = useColors();
   const { me, refresh } = useAuth();
-  const [build, setBuild] = useState<BuildType | null>(me?.onboarding.build_type ?? null);
-  const [role, setRole] = useState<RoleHint | null>(me?.onboarding.role_hint ?? null);
+  const [picked, setPicked] = useState<Priority[]>(me?.onboarding.priorities ?? []);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const toggle = (p: Priority) => setPicked((list) => (list.includes(p) ? list.filter((x) => x !== p) : [...list, p]));
+
   const next = async () => {
-    if (!me || !build || !role) return;
+    if (!me || picked.length === 0) return;
     setBusy(true);
     setError(null);
     try {
-      await saveOnboarding(me, { build_type: build, role_hint: role, step: 'priorities' }, refresh);
+      await saveOnboarding(me, { priorities: picked, step: 'build' }, refresh);
       await refresh();
-      router.push('/onboarding/priorities');
+      router.push('/onboarding/build');
     } catch (e) {
       setError(messageOf(e));
     } finally {
@@ -58,29 +45,19 @@ export default function OnboardingBuild() {
       of={3}
       back={false}
       title={`Welcome, ${firstName(me?.user.display_name)}`}
-      subtitle="What are you building? We shape your first budget around it."
+      subtitle="What should HousePlan help you with? Pick any."
       primary="Continue"
       onPrimary={() => void next()}
-      primaryDisabled={!build || !role}
-      primaryBlockedReason={!build ? 'Choose what you are building.' : 'Choose who you are.'}
+      primaryDisabled={picked.length === 0}
+      primaryBlockedReason="Pick at least one."
       loading={busy}
       note={error ?? undefined}
     >
-      <TileGrid columns={3}>
-        {BUILDS.map((b) => (
-          <PhotoTile key={b.value} columns={3} image={b.image} label={b.label} hint={b.hint} selected={build === b.value} onPress={() => setBuild(b.value)} testID={`build-${b.value}`} />
+      <TileGrid columns={2}>
+        {PRIORITIES.map((p) => (
+          <PhotoTile key={p.value} multi columns={2} image={p.image} label={p.label} hint={p.hint} selected={picked.includes(p.value)} onPress={() => toggle(p.value)} testID={`priority-${p.value}`} />
         ))}
       </TileGrid>
-      <View style={{ gap: space.sm }}>
-        <T v="label" color={c.muted}>
-          You are
-        </T>
-        <TileGrid>
-          {ROLES.map((r) => (
-            <ChoiceTile key={r.value} label={r.label} selected={role === r.value} onPress={() => setRole(r.value)} testID={`role-${r.value}`} />
-          ))}
-        </TileGrid>
-      </View>
     </StepShell>
   );
 }

@@ -38,8 +38,8 @@ export const PALETTES = [
 ];
 
 const rgb = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)).join(',');
-const SCREENS = ['01-discover', '12-onboarding-build', '20-paywall-list-price', '33-settings'];
-const LABELS = { '01-discover': 'Discovery', '12-onboarding-build': 'Onboarding', '20-paywall-list-price': 'Paywall', '33-settings': 'Settings' };
+const SCREENS = ['01-discover', '12-onboarding-help', '20-paywall-list-price', '33-settings'];
+const LABELS = { '01-discover': 'Discovery', '12-onboarding-help': 'Onboarding', '20-paywall-list-price': 'Paywall', '33-settings': 'Settings' };
 
 function walk(d, out = []) {
   for (const n of readdirSync(d)) {

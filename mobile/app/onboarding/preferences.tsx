@@ -5,7 +5,8 @@ import { Clock, Coins, Globe2, Receipt, Ruler } from 'lucide-react-native';
 import { StepShell } from '../../src/onboarding/Shell';
 import { saveOnboarding } from '../../src/onboarding/save';
 import { COUNTRIES, CURRENCIES, UNIT_LABEL, countryName, currencyName, suggest } from '../../src/onboarding/regions';
-import { ChoiceRow, Section } from '../../src/ui/Tiles';
+import { ChoiceRow, ChoiceTile, PhotoTile, Section, TileGrid } from '../../src/ui/Tiles';
+import { PRIORITIES, ROLES } from '../../src/onboarding/options';
 import { PickerSheet, timeZones } from '../../src/ui/PickerSheet';
 import { Mark } from '../../src/ui/Mark';
 import { T } from '../../src/ui/Text';
@@ -13,7 +14,7 @@ import { useAuth } from '../../src/auth/context';
 import { api, messageOf, TIMEZONE } from '../../src/api/client';
 import { currencySymbol, firstName } from '../../src/lib/format';
 import { font, radius, space, useColors } from '../../src/theme/tokens';
-import type { Me, UnitSystem } from '../../src/types';
+import type { Me, Priority, RoleHint, UnitSystem } from '../../src/types';
 
 /**
  * Onboarding step 3 of 3: preferences (BRD §6.1 / S08), with a LIVE preview
@@ -36,6 +37,9 @@ export default function OnboardingPreferences() {
   const [units, setUnits] = useState<UnitSystem>(touched ? (prefs?.unit_system ?? s.unit_system) : s.unit_system);
   const [tax, setTax] = useState<'exclusive' | 'inclusive'>(prefs?.price_entry ?? 'exclusive');
   const [tz, setTz] = useState(prefs && prefs.timezone !== 'UTC' ? prefs.timezone : TIMEZONE);
+  const [role, setRole] = useState<RoleHint>(me?.onboarding.role_hint ?? 'homeowner');
+  const [picked, setPicked] = useState<Priority[]>(me?.onboarding.priorities ?? []);
+  const toggle = (v: Priority) => setPicked((list) => (list.includes(v) ? list.filter((x) => x !== v) : [...list, v]));
   const [open, setOpen] = useState<Picker>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -47,7 +51,7 @@ export default function OnboardingPreferences() {
     try {
       const next = await api.patch<Me>('/me', { country_code: country, default_currency: currency, unit_system: units, price_entry: tax, timezone: tz });
       setMe(next);
-      await saveOnboarding(next, { step: 'done', complete: true }, refresh);
+      await saveOnboarding(next, { role_hint: role, priorities: picked.length ? picked : next.onboarding.priorities, step: 'done', complete: true }, refresh);
       await refresh();
       router.replace('/');
     } catch (e) {
@@ -69,6 +73,21 @@ export default function OnboardingPreferences() {
         <ChoiceRow label="Units" value={UNIT_LABEL[units]} meaning="estimate" icon={(col) => <Ruler size={18} color={col} />} onPress={() => setOpen('units')} testID="pref-units" />
         <ChoiceRow label="Prices you enter" value={tax === 'exclusive' ? 'Before tax' : 'Including tax'} meaning="documents" icon={(col) => <Receipt size={18} color={col} />} onPress={() => setOpen('tax')} testID="pref-tax" />
         <ChoiceRow label="Time zone" value={tz.replace(/_/g, ' ')} meaning="services" icon={(col) => <Clock size={18} color={col} />} onPress={() => setOpen('tz')} testID="pref-tz" last />
+      </Section>
+
+      <Section title="You are">
+        <TileGrid>
+          {ROLES.map((r) => (
+            <ChoiceTile key={r.value} label={r.label} selected={role === r.value} onPress={() => setRole(r.value)} testID={"role-" + r.value} />
+          ))}
+        </TileGrid>
+      </Section>
+      <Section title="HousePlan will help with" footnote="Tap to change. This decides what your project overview shows first.">
+        <TileGrid columns={2}>
+          {PRIORITIES.map((x) => (
+            <PhotoTile key={x.value} multi columns={2} image={x.image} label={x.label} selected={picked.includes(x.value)} onPress={() => toggle(x.value)} testID={"review-" + x.value} />
+          ))}
+        </TileGrid>
       </Section>
 
       <PickerSheet visible={open === 'country'} onClose={() => setOpen(null)} title="Country" subtitle="Where you are building. It does not change your currency." options={COUNTRIES.map((x) => ({ value: x.code, label: x.name }))} value={country} onPick={setCountry} />

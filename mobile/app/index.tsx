@@ -71,7 +71,7 @@ export default function Index() {
         <ActivityIndicator color={c.primary} />
       </View>
     );
-  // No project yet: the projects tab shows the arched empty state whose one action opens the wizard.
-  if (projects === 'none') return <Redirect href="/(tabs)/projects" />;
+  // No project yet: straight into the new-project wizard (BRD 5.1: preferences → project creation → dashboard).
+  if (projects === 'none') return <Redirect href="/project/new" />;
   return <Redirect href="/(tabs)/projects" />;
 }

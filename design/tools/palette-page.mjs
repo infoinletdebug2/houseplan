@@ -10,7 +10,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '../..');
 const DIR = join(ROOT, 'design/palettes');
 const SCREENS = [
   ['01-discover', 'Discovery'],
-  ['12-onboarding-build', 'Onboarding'],
+  ['12-onboarding-help', 'Onboarding'],
   ['20-paywall-list-price', 'Paywall'],
   ['33-settings', 'Settings'],
 ];
