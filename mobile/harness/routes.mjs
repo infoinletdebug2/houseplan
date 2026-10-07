@@ -1,0 +1,43 @@
+/**
+ * The shell's screens (Fork M1). `expect` names words only the WORKING screen
+ * has; `mode` is the stub account state (serve.mjs). Feature screens add
+ * theirs in routes-a.mjs / routes-b.mjs.
+ */
+export default [
+  { path: '/discover', name: '01-discover', anonymous: true, expect: ['Plan the full', 'Sample'] },
+  { path: '/discover?slide=2', name: '01b-discover-compare', anonymous: true, expect: ['Compare materials'] },
+  { path: '/discover?slide=3', name: '01c-discover-finish', anonymous: true, expect: ['No free trial'] },
+  { path: '/discover?slide=4', name: '01d-discover-quotes', anonymous: true, expect: ['Quotes, invoices'] },
+  { path: '/discover?slide=5', name: '01e-discover-rooms', anonymous: true, expect: ['Packs'] },
+  { path: '/discover?slide=6', name: '01f-discover-start', anonymous: true, expect: ['Get started'] },
+  { path: '/sign-in', name: '02-sign-in', anonymous: true, expect: ['Continue with Apple', 'Continue with email'] },
+  { path: '/sign-in/email', name: '03-sign-in-email', anonymous: true, expect: ['Forgot password'] },
+  { path: '/register', name: '04-register', anonymous: true, expect: ['Your name', 'Create account'] },
+  { path: '/forgot-password', name: '05-forgot', anonymous: true, expect: ['code'] },
+  { path: '/legal/terms', name: '06-terms', anonymous: true, expect: ['In short'] },
+  { path: '/legal/privacy', name: '07-privacy', anonymous: true, expect: ['In short'] },
+  { path: '/verify-email', name: '10-verify-email', mode: 'unverified', expect: ['Check your email', 'maya.byrne@example.com'] },
+  { path: '/legal/accept', name: '11-accept-terms', mode: 'terms', expect: ['Our terms changed'] },
+  { path: '/onboarding', name: '12-onboarding-build', mode: 'onboarding', expect: ['Welcome, Maya', 'New house'] },
+  { path: '/onboarding/priorities', name: '13-onboarding-priorities', mode: 'onboarding', expect: ['What matters most'] },
+  { path: '/onboarding/preferences', name: '14-onboarding-preferences', mode: 'onboarding', expect: ['house plan', 'Time zone'] },
+  { path: '/paywall', name: '20-paywall-list-price', mode: 'unpaid', expect: ['Every cost of your house', 'no free trial'] },
+  { path: '/paywall', name: '21-paywall-store', mode: 'unpaid', storage: { 'houseplan.harnessStore': '1' }, expect: ['Yearly', '$99.99'] },
+  { path: '/purchase-status?state=pending', name: '22-purchase-pending', mode: 'unpaid', expect: ['Waiting for approval'] },
+  { path: '/settings', name: '23-settings-unpaid', mode: 'unpaid', height: 1700, expect: ['Delete my account', 'No subscription'] },
+  { path: '/', name: '30-projects-empty', mode: 'paid-empty', expect: ['Start your first project'] },
+  { path: '/calculators', name: '31-calculators', mode: 'paid-empty', expect: ['Flooring, paint'] },
+  { path: '/advisor', name: '32-advisor', mode: 'paid-empty', expect: ['Plain-English'] },
+  { path: '/settings', name: '33-settings', mode: 'paid-empty', height: 1700, expect: ['Subscription', 'Delete my account'] },
+  { path: '/settings/subscription', name: '34-subscription', mode: 'paid-empty', expect: ['App Store'] },
+  { path: '/settings/notifications', name: '35-notifications', mode: 'paid-empty', expect: ['Build phases'] },
+  { path: '/settings/ai', name: '36-ai', mode: 'paid-empty', expect: ['What is sent'] },
+  { path: '/settings/support', name: '37-support', mode: 'paid-empty', expect: ['euros'] },
+  { path: '/settings/export-account', name: '38-export', mode: 'paid-empty', expect: ['Yours, free'] },
+  { path: '/settings/delete-account', name: '39-delete', mode: 'paid-empty', expect: ['cannot be undone'] },
+  { path: '/settings/preferences', name: '40-preferences', mode: 'paid-empty', expect: ['Imperial'] },
+  { path: '/settings/profile', name: '41-profile', mode: 'paid-empty', expect: ['Your name'] },
+  { path: '/settings/about', name: '42-about', mode: 'paid-empty', expect: ['build'] },
+  { path: '/settings/privacy', name: '43-privacy-ads', mode: 'paid-empty', expect: ['never sold'] },
+  { path: '/settings/change-password', name: '44-change-password', mode: 'paid-empty', expect: ['Current password'] },
+];

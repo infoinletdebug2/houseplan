@@ -146,6 +146,7 @@ export default function Paywall() {
             <Benefit meaning="rooms" icon={(col) => <BarChart3 size={17} color={col} />} text="Compare finishes and track cost to finish" />
             <Benefit meaning="estimate" icon={(col) => <FileText size={17} color={col} />} text="Quotes, invoices, payments and exports" />
           </View>
+          {height >= 820 ? <SampleReport /> : null}
         </View>
 
         <View style={{ gap: 10 }}>
@@ -201,6 +202,32 @@ function Benefit({ meaning, icon, text }: { meaning: Meaning; icon: (c: string) 
     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
       <View style={{ width: 34, height: 34, borderRadius: 17, backgroundColor: fg, alignItems: 'center', justifyContent: 'center' }}>{icon(c.scheme === 'dark' ? '#10241F' : '#FFFFFF')}</View>
       <T style={{ fontFamily: font.medium, fontSize: 15.5, color: c.ink, flex: 1 }}>{text}</T>
+    </View>
+  );
+}
+
+/** BRD §5.1: a compact sample-report preview, labelled illustrative, never a local quote. */
+function SampleReport() {
+  const c = useColors();
+  const rows: Array<[string, string, string]> = [
+    ['Structure', '$182,000', '#2E5A51'],
+    ['Kitchen', 'Price missing', ''],
+  ];
+  return (
+    <View style={{ marginTop: 2, paddingVertical: 10, paddingHorizontal: 14, borderRadius: radius.card, backgroundColor: c.surface, borderWidth: 1, borderColor: c.line, gap: 6 }} accessible accessibilityLabel="Sample report preview with illustrative numbers">
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+        <T style={{ fontFamily: font.display, fontSize: 16, color: c.brand }}>Sample report</T>
+        <T v="caption">Illustrative numbers</T>
+      </View>
+      {rows.map(([k, v, tone]) => (
+        <View key={k} style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+          <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: tone || c.warn }} />
+          <T v="small" style={{ flex: 1, color: c.ink }}>
+            {k}
+          </T>
+          <T style={{ fontFamily: font.semibold, fontSize: 13, color: tone ? c.ink : c.warn }}>{v}</T>
+        </View>
+      ))}
     </View>
   );
 }

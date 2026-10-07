@@ -80,7 +80,7 @@ export default function SignIn() {
           <View style={{ gap: 8 }}>
             <T style={{ fontFamily: font.semibold, fontSize: 12, letterSpacing: 1.4, color: '#7FD1BC' }}>WELCOME</T>
             <T accessibilityRole="header" style={{ fontFamily: font.display, fontSize: 38, lineHeight: 42, color: '#F4EFE7', letterSpacing: -0.6 }}>
-              Your vehicles,{'\n'}all in one place.
+              Every cost of your{'\n'}house, in one plan.
             </T>
             <T style={{ fontFamily: font.body, fontSize: 15.5, lineHeight: 22, color: '#A9BDB6' }}>Budgets, calculators, quotes and payments for the house you are building.</T>
           </View>

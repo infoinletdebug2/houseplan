@@ -101,7 +101,7 @@ export function SettingsRoot({ bottomPad = 0, tab }: { bottomPad?: number; tab?:
       <Section title="Notifications and privacy">
         <ChoiceRow label="Notifications" value="Quotes, phases, materials, budget" meaning="services" icon={(col) => <Bell size={18} color={col} />} onPress={() => router.push('/settings/notifications')} />
         <ChoiceRow label="AI advisor" value={me?.ai_consent?.granted ? 'On' : 'Off'} meaning="documents" icon={(col) => <BrainCircuit size={18} color={col} />} onPress={() => router.push('/settings/ai')} testID="set-ai" />
-        <ChoiceRow label="Privacy and ads" value="Ad measurement is off unless you allow it" meaning="alerts" icon={(col) => <Megaphone size={18} color={col} />} onPress={() => router.push('/settings/privacy')} />
+        <ChoiceRow label="Privacy and ads" value="Ad measurement, off unless you allow it" meaning="alerts" icon={(col) => <Megaphone size={18} color={col} />} onPress={() => router.push('/settings/privacy')} />
         <ChoiceRow label="Download my data" value="A copy of everything, in JSON and CSV" meaning="materials" icon={(col) => <Download size={18} color={col} />} onPress={() => router.push('/settings/export-account')} testID="set-export" last />
       </Section>
 

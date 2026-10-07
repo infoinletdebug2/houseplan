@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { View } from 'react-native';
 import { useRouter } from 'expo-router';
-import { HardHat, Home, Wrench } from 'lucide-react-native';
 import { StepShell } from '../../src/onboarding/Shell';
 import { saveOnboarding } from '../../src/onboarding/save';
 import { PhotoTile, ChoiceTile, TileGrid } from '../../src/ui/Tiles';
@@ -18,15 +17,15 @@ import type { BuildType, RoleHint } from '../../src/types';
  * the name the account already has. Answers save to the account.
  */
 const BUILDS: Array<{ value: BuildType; label: string; hint: string; image: 'type-new-build' | 'type-extension' | 'type-renovation' }> = [
-  { value: 'new_build', label: 'A new house', hint: 'From the plot up', image: 'type-new-build' },
-  { value: 'extension', label: 'An extension', hint: 'More room on a home', image: 'type-extension' },
-  { value: 'renovation', label: 'A renovation', hint: 'Rework what is there', image: 'type-renovation' },
+  { value: 'new_build', label: 'New house', hint: 'From the plot up', image: 'type-new-build' },
+  { value: 'extension', label: 'Extension', hint: 'More room on a home', image: 'type-extension' },
+  { value: 'renovation', label: 'Renovation', hint: 'Rework what is there', image: 'type-renovation' },
 ];
 
-const ROLES: Array<{ value: RoleHint; label: string; icon: (c: string) => React.ReactNode }> = [
-  { value: 'homeowner', label: 'Homeowner', icon: (c) => <Home size={18} color={c} /> },
-  { value: 'self_builder', label: 'Self-builder', icon: (c) => <Wrench size={18} color={c} /> },
-  { value: 'builder', label: 'Builder', icon: (c) => <HardHat size={18} color={c} /> },
+const ROLES: Array<{ value: RoleHint; label: string }> = [
+  { value: 'homeowner', label: 'Homeowner' },
+  { value: 'self_builder', label: 'Self-builder' },
+  { value: 'builder', label: 'Builder' },
 ];
 
 export default function OnboardingBuild() {
@@ -67,9 +66,9 @@ export default function OnboardingBuild() {
       loading={busy}
       note={error ?? undefined}
     >
-      <TileGrid columns={2}>
+      <TileGrid columns={3}>
         {BUILDS.map((b) => (
-          <PhotoTile key={b.value} image={b.image} label={b.label} hint={b.hint} selected={build === b.value} onPress={() => setBuild(b.value)} testID={`build-${b.value}`} />
+          <PhotoTile key={b.value} columns={3} image={b.image} label={b.label} hint={b.hint} selected={build === b.value} onPress={() => setBuild(b.value)} testID={`build-${b.value}`} />
         ))}
       </TileGrid>
       <View style={{ gap: space.sm }}>
@@ -78,7 +77,7 @@ export default function OnboardingBuild() {
         </T>
         <TileGrid>
           {ROLES.map((r) => (
-            <ChoiceTile key={r.value} label={r.label} icon={r.icon} meaning="rooms" selected={role === r.value} onPress={() => setRole(r.value)} testID={`role-${r.value}`} />
+            <ChoiceTile key={r.value} label={r.label} selected={role === r.value} onPress={() => setRole(r.value)} testID={`role-${r.value}`} />
           ))}
         </TileGrid>
       </View>

@@ -187,7 +187,7 @@ export function RoomPreview({ t }: { t: number }) {
   const c = useColors();
   return (
     <Frame title="Living room · flooring">
-      <FloorPlan lengthM={5} widthM={4} height={120} fill="planks" idPrefix="disc" openings={[{ opening_type: 'door', width_m: 0.9 }, { opening_type: 'window', width_m: 1.4 }]} />
+      <FloorPlan lengthM={5} widthM={4} height={150} fill="planks" idPrefix="disc" openings={[{ opening_type: 'door', width_m: 0.9 }, { opening_type: 'window', width_m: 1.4 }]} />
       <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
         {[
           ['Net area', '20 m²'],

@@ -55,7 +55,7 @@ const CLOSING: Slide = {
   chip: 'HousePlan subscription',
   icon: (c) => <Calculator size={14} color={c} />,
   headline: 'What you get',
-  sub: 'Everything below, for every house project you run.',
+  sub: 'All of it, for every house project you run.',
   note: 'Subscription required. No free trial.',
 };
 const ALL = [...SLIDES, CLOSING];
@@ -71,6 +71,8 @@ export default function Discover() {
   const [index, setIndex] = useState(initial);
   const [reduce, setReduce] = useState(false);
   const [visited, setVisited] = useState<Set<number>>(() => new Set([initial]));
+  // Until the pager has scrolled to ?slide=N, its first scroll events report x=0: ignore them.
+  const positioned = useRef(initial === 0);
 
   useEffect(() => {
     void AccessibilityInfo.isReduceMotionEnabled().then(setReduce).catch(() => undefined);
@@ -91,6 +93,10 @@ export default function Discover() {
 
   const onScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
     const i = Math.round(e.nativeEvent.contentOffset.x / Math.max(1, width));
+    if (!positioned.current) {
+      if (i !== initial) return;
+      positioned.current = true;
+    }
     if (i >= 0 && i <= LAST && i !== index) settle(i);
   };
 
@@ -221,10 +227,10 @@ function IncludedCard() {
   );
   return (
     <View style={{ backgroundColor: 'rgba(23,51,46,0.94)', borderRadius: 22, padding: 18, gap: 12, borderWidth: 1, borderColor: 'rgba(127,209,188,0.3)' }}>
-      {row('Whole-house budget with every category')}
-      {row('Flooring, paint, tiling and skirting calculators')}
-      {row('Revisions, baseline and side-by-side comparisons')}
-      {row('Quotes, invoices, payments and cost to finish')}
+      {row('A whole-house budget, every category')}
+      {row('Flooring, paint, tile and skirting maths')}
+      {row('Saved revisions and side-by-side choices')}
+      {row('Quotes, invoices, payments, cost to finish')}
       {row('PDF and spreadsheet exports')}
     </View>
   );

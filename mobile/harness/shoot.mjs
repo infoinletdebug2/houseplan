@@ -19,8 +19,8 @@ import { fileURLToPath } from 'node:url';
 const HERE = fileURLToPath(new URL('.', import.meta.url));
 const SHOTS = join(HERE, process.env.HARNESS_SHOTS ?? (process.argv.includes('--dark') ? 'shots-dark' : 'shots'));
 const PROFILE = join(HERE, process.env.HARNESS_PROFILE ?? '.chrome-profile');
-const WEB = `http://localhost:${process.env.HARNESS_WEB_PORT ?? 8080}`;
-const PORT = Number(process.env.HARNESS_CDP_PORT ?? 9222);
+const WEB = `http://localhost:${process.env.HARNESS_WEB_PORT ?? 8093}`;
+const PORT = Number(process.env.HARNESS_CDP_PORT ?? 9233);
 
 /** A phone, not a desktop. The layout only means anything at this width. */
 const VIEWPORT = { width: 393, height: 852, deviceScaleFactor: 2 };
@@ -30,56 +30,25 @@ const CHROME =
   'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
 
 /**
- * The session the app restores on launch — a REAL one, from the demo account
- * `backend/scripts/seed-demo.mjs` created on the deployed worker (gitignored
- * `harness/.demo.json`). HARNESS_ROLE=driver shoots as the driver.
- *
- * Seeding `localStorage` rather than typing into the sign-in form: the form is
- * shot separately. On web, `auth/storage.ts` falls back to `localStorage`
- * under this exact key.
+ * The session the app restores on launch. Against the stub any token works;
+ * the stub's MODE decides who the account is. For a live run, put a real
+ * session in harness/.demo.json ({ token, refresh, email }) and use
+ * serve.mjs --web-only.
  */
-const DEMO = JSON.parse(readFileSync(join(HERE, '.demo.json'), 'utf8'));
-const ROLE = process.env.HARNESS_ROLE === 'driver' ? 'driver' : 'owner';
-const who = DEMO[ROLE];
+let DEMO = { token: 'harness-token', refresh: 'harness-refresh', email: 'maya.byrne@example.com' };
+try {
+  DEMO = { ...DEMO, ...JSON.parse(readFileSync(join(HERE, '.demo.json'), 'utf8')) };
+} catch {
+  /* stub run */
+}
 const SESSION = {
-  access_token: who.token,
-  refresh_token: who.refresh,
+  access_token: DEMO.token,
+  refresh_token: DEMO.refresh,
   expires_at: Date.now() + 3000_000,
-  user: { id: 'harness', email: who.email, email_verified: true, display_name: ROLE === 'owner' ? 'Daniel Reyes' : 'Marcus Hill' },
+  user: { id: 'u-demo', email: DEMO.email, email_verified: true, display_name: 'Maya Byrne' },
 };
-const V = DEMO.vehicles;
-
-/** `expect` names words only the WORKING screen has — seeded data, not titles. */
-const OWNER = [
-  { path: '/discover', name: '01-discover', anonymous: true, expect: ['Mileward'] },
-  { path: '/sign-in', name: '02-sign-in', anonymous: true, expect: ['Apple'] },
-  { path: '/(owner)/home', name: '10-home', expect: ['Silver Camry'] },
-  { path: '/(owner)/vehicles', name: '11-vehicles', expect: ['Transit Van'] },
-  { path: '/(owner)/review', name: '12-review', expect: ['Marcus'] },
-  { path: '/(owner)/more', name: '13-more', expect: ['Drivers'] },
-  { path: `/vehicle/${V.camry}`, name: '20-vehicle', height: 2000, expect: ['7KXR214'] },
-  { path: '/record/fuel', name: '21-add-fuel', expect: ['Silver Camry'] },
-  { path: '/record/expense', name: '22-add-expense', expect: ['Parking'] },
-  { path: '/record/maintenance', name: '23-add-service', expect: ['Engine oil'] },
-  { path: `/record/${DEMO.waiting[1]}`, name: '24-record', height: 1600, expect: ['Marcus'] },
-  { path: '/money', name: '30-money', expect: ['Marcus'] },
-  { path: '/drivers', name: '31-drivers', expect: ['Marcus'] },
-  { path: '/reminders', name: '32-reminders', expect: ['Engine oil'] },
-  { path: '/documents', name: '33-documents', expect: ['Insurance'] },
-  { path: '/maintenance', name: '34-service-history', expect: ['brake'] },
-  { path: '/problems', name: '35-problems', expect: ['Transit Van'] },
-  { path: '/reports', name: '36-reports', expect: ['Fuel'] },
-  { path: '/settings', name: '40-settings', expect: ['Profile'] },
-  { path: '/offer', name: '05-offer', expect: ['7'] },
-];
-const DRIVER = [
-  { path: '/(driver)/today', name: '50-today', expect: ['Silver Camry'] },
-  { path: '/(driver)/history', name: '51-history', expect: ['Silver Camry'] },
-  { path: '/(driver)/cash', name: '52-cash', expect: ['$'] },
-  { path: '/(driver)/more', name: '53-more', expect: ['Marcus'] },
-  { path: '/problem/new', name: '54-problem', expect: ['Silver Camry'] },
-];
-const SCREENS = ROLE === 'owner' ? OWNER : DRIVER;
+const API = `http://localhost:${process.env.HARNESS_API_PORT ?? 8795}`;
+const SCREENS = [...(await import(new URL('routes.mjs', import.meta.url))).default];
 
 /** Screen tracks add their routes in routes-a.mjs / routes-b.mjs (`export default [...]`). */
 for (const name of ['routes-a.mjs', 'routes-b.mjs']) {
@@ -196,15 +165,16 @@ async function main() {
   for (const screen of SCREENS.filter((x) => ONLY.length === 0 || ONLY.includes(x.name))) {
     // The session is written BEFORE the app boots, so `loadSession()` finds it
     // on the first render rather than after a redirect to the welcome screen.
+    if (screen.mode) await fetch(`${API}/__mode`, { method: 'POST', body: JSON.stringify({ mode: screen.mode }) }).catch(() => undefined);
     await page('Page.navigate', { url: `${WEB}/` });
     await wait(300);
     await page('Runtime.evaluate', {
       expression: screen.anonymous
-        ? `localStorage.removeItem('mileward.session')`
-        : `localStorage.setItem('mileward.session', ${JSON.stringify(JSON.stringify(SESSION))})`,
+        ? `localStorage.removeItem('houseplan.session')`
+        : `localStorage.setItem('houseplan.session', ${JSON.stringify(JSON.stringify(SESSION))})`,
     });
     await page('Runtime.evaluate', {
-      expression: `localStorage.removeItem('mileward.harnessStore');localStorage.setItem('mileward.onboarding.seenDiscovery','1');${Object.entries(screen.storage ?? {})
+      expression: `localStorage.removeItem('houseplan.harnessStore');${Object.entries(screen.storage ?? {})
         .map(([k, v]) => `localStorage.setItem(${JSON.stringify(k)}, ${JSON.stringify(v)});`)
         .join('')}`,
     });
@@ -229,7 +199,7 @@ async function main() {
     for (;;) {
       const probe = await page('Runtime.evaluate', {
         expression: `JSON.stringify({
-          len: document.body.innerText.replace(/Home|Vehicles|Review|More|Today|History|Cash/g, '').trim().length,
+          len: document.body.innerText.replace(/Projects|Calculators|Advisor|Settings/g, '').trim().length,
           has: ${JSON.stringify(screen.expect ?? [])}.every((t) => document.body.innerText.includes(t)),
         })`,
         returnByValue: true,

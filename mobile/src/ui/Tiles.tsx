@@ -93,7 +93,7 @@ export function ChoiceTile({
 }
 
 /** A two-column photo tile: the photo fills the top, the label sits on plaster below. */
-export function PhotoTile({ image, label, hint, selected, onPress, testID, multi }: { image: ImageKey; label: string; hint?: string; selected?: boolean; onPress?: () => void; testID?: string; multi?: boolean }) {
+export function PhotoTile({ image, label, hint, selected, onPress, testID, multi, columns = 2 }: { image: ImageKey; label: string; hint?: string; selected?: boolean; onPress?: () => void; testID?: string; multi?: boolean; columns?: 2 | 3 }) {
   const c = useColors();
   return (
     <Pressable
@@ -106,7 +106,7 @@ export function PhotoTile({ image, label, hint, selected, onPress, testID, multi
         onPress?.();
       }}
       style={({ pressed }) => ({
-        width: '48%',
+        width: columns === 3 ? '30.8%' : '48%',
         borderRadius: radius.card,
         overflow: 'hidden',
         borderWidth: selected ? 2.5 : 1,
@@ -115,9 +115,9 @@ export function PhotoTile({ image, label, hint, selected, onPress, testID, multi
         opacity: pressed ? 0.9 : 1,
       })}
     >
-      <Image source={IMAGES[image]} style={{ width: '100%', aspectRatio: 1.15 }} contentFit="cover" />
-      <View style={{ padding: 12, gap: 2, minHeight: hint ? 72 : 48 }}>
-        <T style={{ fontFamily: font.semibold, fontSize: 15, color: c.ink }} numberOfLines={1}>
+      <Image source={IMAGES[image]} style={{ width: '100%', aspectRatio: columns === 3 ? 0.95 : 1.15 }} contentFit="cover" contentPosition={{ top: '0%', left: '50%' }} />
+      <View style={{ padding: columns === 3 ? 10 : 12, gap: 2, minHeight: hint ? 64 : 44 }}>
+        <T style={{ fontFamily: font.semibold, fontSize: columns === 3 ? 14 : 15, color: c.ink }} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.85}>
           {label}
         </T>
         {hint ? (
@@ -209,7 +209,7 @@ export function ChoiceRow({ label, value, icon, meaning = 'settings', onPress, t
           {label}
         </T>
         {value ? (
-          <T v="small" numberOfLines={1}>
+          <T v="small" numberOfLines={2}>
             {value}
           </T>
         ) : null}
