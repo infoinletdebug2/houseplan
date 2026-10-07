@@ -1015,6 +1015,25 @@ ON CONFLICT (code) DO NOTHING`,
   ADD COLUMN IF NOT EXISTS entitlement_verified_at timestamptz,
   ADD COLUMN IF NOT EXISTS entitlement_snapshot jsonb`,
   ],
+  ['fin_forecast_one_draft', `CREATE UNIQUE INDEX IF NOT EXISTS hp__forecast_one_draft ON hp__forecast_version (project_id) WHERE status = 'draft'`],
+  ['fin_payment_commitment', `CREATE INDEX IF NOT EXISTS hp__payment_commitment ON hp__payment (commitment_id) WHERE commitment_id IS NOT NULL`],
+  ['fin_payment_allocation_cost', `CREATE INDEX IF NOT EXISTS hp__payment_allocation_cost ON hp__payment_allocation (cost_record_id)`],
+  [
+    'ops_benchmark_batch',
+    `CREATE TABLE IF NOT EXISTS hp__benchmark_batch (
+  id uuid PRIMARY KEY,
+  label varchar(200) NOT NULL,
+  status text NOT NULL DEFAULT 'draft' CHECK (status IN ('draft','validated','published','rolled_back')),
+  row_count integer NOT NULL DEFAULT 0,
+  content_hash varchar(128),
+  validated_at timestamptz,
+  published_at timestamptz,
+  rolled_back_at timestamptz,
+  ${created},
+  ${updated}
+)`,
+  ],
+  ['ops_benchmark_retired_by', `ALTER TABLE hp__benchmark_rate ADD COLUMN IF NOT EXISTS retired_by_batch uuid`],
 ];
 
 export const APP_MIGRATIONS: Migration[] = [
