@@ -44,7 +44,15 @@ import { priceLine } from '../logic/calc';
  * database (trigger); voids keep the evidence.
  */
 
+/** numeric(18,6)::text → '45' rather than '45.000000'. */
+const trimDec = (v: unknown): string | null => {
+  if (v === null || v === undefined) return null;
+  const s = String(v);
+  return s.includes('.') ? s.replace(/0+$/, '').replace(/\.$/, '') : s;
+};
+
 /** jsonb selected as ::text under a name lib.ts does not auto-parse. */
+
 function parseJ<T>(v: unknown, fallback: T): T {
   if (typeof v !== 'string') return (v as T) ?? fallback;
   try {
@@ -516,7 +524,12 @@ export const financeRouter = defineRouter({
 
     async function quoteDetail(c: Context, id: string) {
       const q = await quoteById(c, id);
-      const lines = await sql(c, `${LINE_SELECT} WHERE l.project_id = $1::uuid AND l.quote_id = $2::uuid ORDER BY l.sort_index`, [proj(c).id, id]);
+      const lines = (await sql<Row>(c, `${LINE_SELECT} WHERE l.project_id = $1::uuid AND l.quote_id = $2::uuid ORDER BY l.sort_index`, [proj(c).id, id])).map((l) => ({
+        ...l,
+        quantity: trimDec(l.quantity),
+        net_unit_price: trimDec(l.net_unit_price),
+        tax_rate: trimDec(l.tax_rate),
+      }));
       const attachments = await sql(
         c,
         `SELECT a.id, a.mime, a.size_bytes, a.original_name, a.attachment_type, a.created_at::text AS created_at FROM hp__attachment_link al

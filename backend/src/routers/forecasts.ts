@@ -43,6 +43,13 @@ import { idempotency, requireActive, requirePaid, requireProject, requireVerifie
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Row = Record<string, any>;
 
+/** numeric(18,6)::text → '45' rather than '45.000000'. */
+const trimDec = (v: unknown): string | null => {
+  if (v === null || v === undefined) return null;
+  const s = String(v);
+  return s.includes('.') ? s.replace(/0+$/, '').replace(/\.$/, '') : s;
+};
+
 function parseJ<T>(v: unknown, fallback: T): T {
   if (typeof v !== 'string') return (v as T) ?? fallback;
   try {
@@ -114,7 +121,8 @@ const ITEM_SELECT = `SELECT i.id, i.label, i.unit, i.required_qty::text AS requi
   FROM hp__procurement_item i LEFT JOIN hp__supplier s ON s.id = i.supplier_id LEFT JOIN hp__phase ph ON ph.id = i.phase_id`;
 
 function mapItem(r: Row): Row {
-  return { ...r, deliveries: parseJ(r.deliveries, []), material_spec: parseJ(r.material_spec, {}) };
+  const deliveries = parseJ<Row[]>(r.deliveries, []).map((d) => ({ ...d, quantity: trimDec(d.quantity) }));
+  return { ...r, required_qty: trimDec(r.required_qty), purchase_qty: trimDec(r.purchase_qty), ordered_qty: trimDec(r.ordered_qty), received_qty: trimDec(r.received_qty), deliveries, material_spec: parseJ(r.material_spec, {}) };
 }
 
 async function itemById(c: Context, id: string): Promise<Row> {
