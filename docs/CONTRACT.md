@@ -153,7 +153,7 @@ Base: `https://houseplan.xenition.com/api/v1`. The worker, this document and the
 
 | Route | Body | Response |
 |---|---|---|
-| `GET /projects/:id/estimates?kind=all|current|scenario` (default all) |\|scenario` | — | `{ revisions: [Revision], pointers: { baseline_revision_id, current_revision_id, draft_revision_id } }` |
+| `GET /projects/:id/estimates?kind=all|current|scenario` (default all) | — | `{ revisions: [Revision], pointers: { baseline_revision_id, current_revision_id, draft_revision_id } }` |
 | `POST /projects/:id/estimates` | `{ source_revision_id, title? }` | 201 `Revision` (new draft from a frozen one); `409 DRAFT_EXISTS` (`fields.draft_revision_id`) |
 | `GET /projects/:id/estimates/:revisionId` | — | `RevisionDetail` |
 | `POST /projects/:id/estimates/:revisionId/lines` | `{ category_id, mode, label, unit?, quantity?, net_unit_price?, entered_gross_unit_price?, tax_rate?, extras?, room_id?, phase_id?, calculation_id?, user_rate_id?, benchmark_rate_id?, stale_override?, included?, deferred?, zero_cost_reason?, note?, expected_revision_version? }` — `allowance` takes `quantity: "1"`, `unit: "lump_sum"`, `net_unit_price` = the allowance | 201 `{ line: Line, revision: Revision }` |
