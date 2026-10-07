@@ -65,7 +65,7 @@ function parseJsonColumns(row: Record<string, unknown>): Record<string, unknown>
 /** Raw SQL, rows snake_cased (the gateway camelCases `/raw` rows). */
 export async function sql<T>(c: Context, text: string, params: unknown[] = []): Promise<T[]> {
   try {
-    const result = await withRetry(() => sdk(c).query.raw<Record<string, unknown>>(text, params));
+    const result = await withRetry(() => sdk(c).query.raw<Record<string, unknown>>(text, params), isReadOnly(text));
     return (snakeRows(result.data ?? []) as Record<string, unknown>[]).map(parseJsonColumns) as T[];
   } catch (error) {
     throw engineError(error);
@@ -77,13 +77,26 @@ export async function sqlOne<T>(c: Context, text: string, params: unknown[] = []
   return rows[0] ?? null;
 }
 
-/** Retry deadlocks/serialisation failures at most three times (BRD §9.7). */
-async function withRetry<T>(work: () => Promise<T>): Promise<T> {
+/** A plain read: safe to send again if the gateway dropped it. Engine calls (`SELECT hp_…`) write, so they never qualify. */
+function isReadOnly(text: string): boolean {
+  const t = text.trim().toUpperCase();
+  return (t.startsWith('SELECT') || t.startsWith('WITH')) && !/\b(INSERT|UPDATE|DELETE)\b|SELECT\s+HP_/.test(t);
+}
+
+/**
+ * Retry deadlocks/serialisation failures at most three times (BRD §9.7), and
+ * a read once more when the gateway answers a transient 502.
+ */
+async function withRetry<T>(work: () => Promise<T>, readOnly = false): Promise<T> {
   for (let attempt = 0; ; attempt++) {
     try {
       return await work();
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
+      if (readOnly && attempt < 2 && /status code 50[234]|SERVER_ERROR/.test(message)) {
+        await new Promise((r) => setTimeout(r, 150 * (attempt + 1)));
+        continue;
+      }
       if (attempt < 3 && /deadlock detected|could not serialize|40P01|40001/.test(message)) {
         await new Promise((r) => setTimeout(r, 40 + Math.random() * 120 * (attempt + 1)));
         continue;

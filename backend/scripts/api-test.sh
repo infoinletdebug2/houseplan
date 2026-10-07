@@ -16,6 +16,13 @@ for f in "$DIR"/api-test/[0-9][0-9]-*.sh; do
   name="$(basename "$f" .sh)"
   if [ -n "${ONLY:-}" ] && [ "$name" != "00-setup" ] && [[ ",$ONLY," != *",$name,"* ]]; then continue; fi
   echo; echo "── $name"
+  # Product sections get their own paid owner, so project limits and searches never leak between sections.
+  # 20 → 30 → 40 are one chain (rooms and estimates build on the project made in 20); 50 onwards stand alone.
+  if [[ "$name" == 20-* ]] || { [[ "$name" > "49" ]] && [[ "$name" < "90" ]]; }; then
+    OWNER_EMAIL="apitest+${name%%-*}owner${STAMP}@houseplan.test"
+    OWNER_TOKEN="$(paid "$OWNER_EMAIL" "Maya Owner")"; ACCOUNTS+=("$OWNER_TOKEN")
+  fi
+  TOKEN="${OWNER_TOKEN:-}"
   source "$f"
 done
 summary

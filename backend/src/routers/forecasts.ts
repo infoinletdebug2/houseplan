@@ -162,16 +162,16 @@ export const forecastsRouter = defineRouter({
       const pid = proj(c).id;
       const actions: Array<{ key: string; title: string; route: string }> = [];
       const est = d.estimate as Row | null;
-      if (!counts?.rooms) actions.push({ key: 'add_rooms', title: 'Add your rooms to calculate floors and walls', route: `/projects/${pid}/rooms` });
-      if (Number(d.undecided_categories) > 0) actions.push({ key: 'decide_scope', title: `Decide ${d.undecided_categories} undecided categories`, route: `/projects/${pid}/scope` });
-      if (est && Number(est.missing_line_count) > 0) actions.push({ key: 'price_lines', title: `Price ${est.missing_line_count} lines that have no price`, route: `/projects/${pid}/estimate` });
-      if (!d.current_revision_id) actions.push({ key: 'save_estimate', title: 'Save your first estimate revision', route: `/projects/${pid}/estimate` });
-      else if (!d.baseline_revision_id) actions.push({ key: 'set_baseline', title: 'Set a baseline to track changes against', route: `/projects/${pid}/revisions` });
-      if (d.forecast?.status === 'none') actions.push({ key: 'forecast', title: 'Set up your forecast to finish', route: `/projects/${pid}/forecast` });
-      else if (d.forecast?.review_required) actions.push({ key: 'review_forecast', title: 'Costs changed since your forecast. Review it.', route: `/projects/${pid}/forecast` });
-      if (counts?.quotes_expiring) actions.push({ key: 'quotes_expiring', title: `${counts.quotes_expiring} quotes expire within a week`, route: `/projects/${pid}/quotes` });
-      if (counts?.draft_costs) actions.push({ key: 'post_costs', title: `${counts.draft_costs} draft invoices are not posted yet`, route: `/projects/${pid}/costs` });
-      if (counts?.stale_orders) actions.push({ key: 'stale_orders', title: 'A calculation changed after you ordered. Check quantities.', route: `/projects/${pid}/procurement` });
+      if (!counts?.rooms) actions.push({ key: 'add_rooms', title: 'Add your rooms to calculate floors and walls', route: `/project/${pid}/rooms` });
+      if (Number(d.undecided_categories) > 0) actions.push({ key: 'decide_scope', title: Number(d.undecided_categories) === 1 ? "Decide 1 undecided category" : `Decide ${d.undecided_categories} undecided categories`, route: `/project/${pid}/scope` });
+      if (est && Number(est.missing_line_count) > 0) actions.push({ key: 'price_lines', title: Number(est.missing_line_count) === 1 ? "Price 1 line that has no price" : `Price ${est.missing_line_count} lines that have no price`, route: `/project/${pid}/estimate` });
+      if (!d.current_revision_id) actions.push({ key: 'save_estimate', title: 'Save your first estimate revision', route: `/project/${pid}/estimate` });
+      else if (!d.baseline_revision_id) actions.push({ key: 'set_baseline', title: 'Set a baseline to track changes against', route: `/project/${pid}/revisions` });
+      if (d.forecast?.status === 'none') actions.push({ key: 'forecast', title: 'Set up your forecast to finish', route: `/project/${pid}/forecast` });
+      else if (d.forecast?.review_required) actions.push({ key: 'review_forecast', title: 'Costs changed since your forecast. Review it.', route: `/project/${pid}/forecast` });
+      if (counts?.quotes_expiring) actions.push({ key: 'quotes_expiring', title: Number(counts.quotes_expiring) === 1 ? "1 quote expires within a week" : `${counts.quotes_expiring} quotes expire within a week`, route: `/project/${pid}/quotes` });
+      if (counts?.draft_costs) actions.push({ key: 'post_costs', title: Number(counts.draft_costs) === 1 ? "1 draft invoice is not posted yet" : `${counts.draft_costs} draft invoices are not posted yet`, route: `/project/${pid}/costs` });
+      if (counts?.stale_orders) actions.push({ key: 'stale_orders', title: 'A calculation changed after you ordered. Check quantities.', route: `/project/${pid}/procurement` });
       return ok(c, { ...d, phases, next_actions: actions.slice(0, 6) });
     });
 

@@ -33,3 +33,5 @@ design/codex/photos/*.png
 design/codex/*.log
 mobile/harness/*.log
 design/tools/contact.jpg
+mobile/harness/.demo*.json
+mobile/dist-web*/

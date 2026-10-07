@@ -186,7 +186,7 @@ export default function CostScreen() {
                 ) : null}
                 {x.status === 'posted' ? (
                   <>
-                    {x.type !== 'credit' ? <Button title="Add a credit note against it" kind="outline" onPress={() => router.push(`/project/${pid}/costs/new` as never)} /> : null}
+                    {x.type !== 'credit' ? <Button title="Add a credit note against it" kind="outline" onPress={() => router.push(`/project/${pid}/costs/new?credit_for=${x.id}` as never)} /> : null}
                     <Button title="Void this record" kind="ghost" onPress={() => void previewVoid()} />
                   </>
                 ) : null}

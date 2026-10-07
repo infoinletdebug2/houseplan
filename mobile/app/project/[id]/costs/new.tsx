@@ -41,7 +41,7 @@ export default function CostEntry() {
   const toast = useToast();
   const c = useColors();
   const pid = useProjectId();
-  const { edit, commitment: commitmentParam } = useLocalSearchParams<{ edit?: string; commitment?: string }>();
+  const { edit, commitment: commitmentParam, credit_for: creditFor } = useLocalSearchParams<{ edit?: string; commitment?: string; credit_for?: string }>();
   const project = useProjectLite(pid);
   const cats = useCategories(pid);
   const commitments = useCommitments(pid);
@@ -76,6 +76,16 @@ export default function CostEntry() {
     setNote(x.note ?? '');
     setRows(x.allocations.length ? x.allocations.map((a) => ({ key: `a${++seq}`, category_id: a.category_id, commitment_id: a.commitment_id, amount: fromMinor(absMinor(a.amount_gross_minor), cur), effect: a.credit_effect })) : [row()]);
   }, [existing.data, cur]);
+
+  // Opened from an invoice's "Add a credit note against it": a credit, against that invoice, from the same supplier.
+  useEffect(() => {
+    if (edit || !creditFor) return;
+    const inv = (posted.data ?? []).find((x) => x.id === creditFor);
+    if (!inv) return;
+    setType('credit');
+    setOriginal(inv.id);
+    setSupplier(inv.supplier_id);
+  }, [creditFor, edit, posted.data]);
 
   const credit = type === 'credit';
   const grossMinor = parseMoney(gross, cur);
