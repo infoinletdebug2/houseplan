@@ -7,11 +7,11 @@ discover-rooms	3:4 portrait	An empty freshly plastered room with afternoon sunli
 type-new-build	1:1 square	A modern new-build family house exterior, clean render and timber cladding, freshly landscaped front, soft daylight. HERO
 type-extension	1:1 square	A bright single-storey glass and timber rear extension on a brick house, garden in front, soft daylight. HERO
 type-renovation	1:1 square	An older brick house interior mid-renovation: exposed brick wall, new plaster patches, dust sheets on the floor, warm window light. HERO
-tier-economical	1:1 square	Still life of practical building finishes: a laminate flooring plank, a white ceramic tile and a small tin of white paint on pale plaster. HERO
-tier-standard	1:1 square	Still life of mid-range finishes: an engineered oak plank, a matte porcelain tile and a sage-green paint swatch on warm plaster. HERO
+tier-economical	1:1 square	Still life of practical building finishes: a laminate flooring plank, a white ceramic tile and a small tin of white paint on warm cream. HERO
+tier-standard	1:1 square	Still life of mid-range finishes: an engineered oak plank, a matte porcelain tile and a warm terracotta paint swatch on warm cream. HERO
 tier-premium	1:1 square	Still life of premium finishes: a wide solid oak plank, a honed marble tile and a brushed brass handle on warm plaster. HERO
 calc-flooring	1:1 square	Overhead view of oak floor planks being laid in a row with spacers, warm light. HERO
-calc-paint	1:1 square	A paint roller resting on a tray of soft sage-green paint next to a freshly painted wall, warm light. HERO
+calc-paint	1:1 square	A paint roller resting on a tray of warm terracotta paint next to a freshly painted cream wall, warm light. HERO
 calc-skirting	1:1 square	A white painted timber skirting board fitted along a fresh wall corner above an oak floor, warm light. HERO
 calc-wallpaper	1:1 square	A roll of plain textured linen wallpaper partly unrolled on a pasting table, warm light. HERO
 calc-openings	1:1 square	A new timber-framed window installed in a fresh plaster wall with soft daylight coming through. HERO

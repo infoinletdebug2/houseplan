@@ -6,7 +6,7 @@ export const IMAGES = {
   'discover-budget': require('../../assets/images/discover-budget.jpg'),
   'discover-compare': require('../../assets/images/discover-compare.jpg'),
   'discover-finish': require('../../assets/images/discover-finish.jpg'),
-  'discover-quotes': require('../../assets/images/discover-quotes.jpg'),
+  'discover-quotes': require('../../assets/images/placeholder.jpg'), // placeholder until Codex makes it
   'discover-progress': require('../../assets/images/discover-progress.jpg'),
   'discover-rooms': require('../../assets/images/discover-rooms.jpg'),
   'type-new-build': require('../../assets/images/type-new-build.jpg'),
@@ -16,21 +16,21 @@ export const IMAGES = {
   'tier-standard': require('../../assets/images/tier-standard.jpg'),
   'tier-premium': require('../../assets/images/tier-premium.jpg'),
   'calc-flooring': require('../../assets/images/calc-flooring.jpg'),
-  'calc-paint': require('../../assets/images/placeholder.jpg'), // placeholder until Codex makes it
-  'calc-skirting': require('../../assets/images/placeholder.jpg'), // placeholder until Codex makes it
-  'calc-wallpaper': require('../../assets/images/placeholder.jpg'), // placeholder until Codex makes it
-  'calc-openings': require('../../assets/images/placeholder.jpg'), // placeholder until Codex makes it
-  'calc-general': require('../../assets/images/placeholder.jpg'), // placeholder until Codex makes it
-  'empty-projects': require('../../assets/images/placeholder.jpg'), // placeholder until Codex makes it
-  'empty-rooms': require('../../assets/images/placeholder.jpg'), // placeholder until Codex makes it
-  'empty-quotes': require('../../assets/images/placeholder.jpg'), // placeholder until Codex makes it
-  'empty-costs': require('../../assets/images/placeholder.jpg'), // placeholder until Codex makes it
-  'empty-procurement': require('../../assets/images/placeholder.jpg'), // placeholder until Codex makes it
-  'home-header': require('../../assets/images/placeholder.jpg'), // placeholder until Codex makes it
+  'calc-paint': require('../../assets/images/calc-paint.jpg'),
+  'calc-skirting': require('../../assets/images/calc-skirting.jpg'),
+  'calc-wallpaper': require('../../assets/images/calc-wallpaper.jpg'),
+  'calc-openings': require('../../assets/images/calc-openings.jpg'),
+  'calc-general': require('../../assets/images/calc-general.jpg'),
+  'empty-projects': require('../../assets/images/empty-projects.jpg'),
+  'empty-rooms': require('../../assets/images/empty-rooms.jpg'),
+  'empty-quotes': require('../../assets/images/empty-quotes.jpg'),
+  'empty-costs': require('../../assets/images/empty-costs.jpg'),
+  'empty-procurement': require('../../assets/images/empty-procurement.jpg'),
+  'home-header': require('../../assets/images/home-header.jpg'),
   'paywall-header': require('../../assets/images/placeholder.jpg'), // placeholder until Codex makes it
   'signin-hero': require('../../assets/images/placeholder.jpg'), // placeholder until Codex makes it
   placeholder: require('../../assets/images/placeholder.jpg'),
 } as const;
 
 export type ImageKey = keyof typeof IMAGES;
-export const PLACEHOLDER_KEYS: ImageKey[] = ['calc-paint', 'calc-skirting', 'calc-wallpaper', 'calc-openings', 'calc-general', 'empty-projects', 'empty-rooms', 'empty-quotes', 'empty-costs', 'empty-procurement', 'home-header', 'paywall-header', 'signin-hero'];
+export const PLACEHOLDER_KEYS: ImageKey[] = ['discover-quotes', 'paywall-header', 'signin-hero'];
