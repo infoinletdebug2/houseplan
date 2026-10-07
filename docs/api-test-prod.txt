@@ -1,0 +1,1072 @@
+
+── 00-setup
+API → https://houseplan.xenition.com/api/v1
+    ✓ health (200)
+  ✓ three accounts (owner + outsider paid, one unpaid and unverified)
+
+── 05-public
+  ✓ GET    /bootstrap                                                             200
+    ✓ all 19 budget categories
+    ✓ BRD 1.3: no free trial configured
+    ✓ list prices are labelled; product ids match the store
+    ✓ BRD 2.2 limits
+    ✓ currencies carry their minor digits
+    ✓ no prices or private rates in public config
+  ✓ GET    /legal/terms                                                           200
+    ✓ terms version, url and hash
+  ✓ GET    /legal/privacy                                                         200
+    ✓ privacy version
+  ✓ GET    /legal/cookies                                                         400
+
+── 10-auth
+  ✓ GET    /auth/social/providers                                                 200
+    ✓ Apple and Google both offered
+  ✓ POST   /auth/login                                                            401
+    ✓ wrong password is 401 in our envelope
+  ✓ POST   /auth/register                                                         400
+    ✓ passwords need 12+ characters
+  ✓ POST   /auth/register                                                         400
+    ✓ Terms tick required (TERMS_REQUIRED)
+  ✓ POST   /auth/register                                                         400
+    ✓ create account asks for a name
+  ✓ POST   /auth/register                                                         409
+    ✓ duplicate email is 409
+  ✓ POST   /auth/password/reset-request                                           200
+    ✓ reset request answers the same for unknown emails
+  ✓ POST   /auth/password/reset-confirm                                           400
+    ✓ wrong reset code is 400, never 5xx
+  ✓ GET    /me                                                                    401
+  email verification (required for email accounts)
+  ✓ GET    /me                                                                    200
+    ✓ a new email account needs verification
+    ✓ the Terms tick on register was recorded
+    ✓ no plan: locked (hard paywall)
+  ✓ POST   /auth/email/verify                                                     400
+    ✓ a wrong code is refused
+  ✓ POST   /auth/email/send-code                                                  200
+    ✓ a new code can be sent
+  ✓ GET    /projects                                                              403
+    ✓ AC01 product routes refuse an unverified account
+  sessions
+  ✓ POST   /auth/login                                                            200
+    ✓ the verified owner does not need verification
+  ✓ POST   /auth/refresh                                                          200
+    ✓ refresh rotates the session
+  ✓ POST   /auth/refresh                                                          401
+  the caller
+  ✓ GET    /me                                                                    200
+    ✓ the name from sign-up is kept
+    ✓ USD is the default currency
+    ✓ the review grant gives access
+  ✓ PATCH  /me                                                                    200
+    ✓ preferences save
+  ✓ PATCH  /me                                                                    400
+    ✓ unknown fields are refused (no escalation fields)
+  ✓ PATCH  /me                                                                    400
+  ✓ PATCH  /me                                                                    200
+  ✓ PUT    /me/onboarding                                                         409
+    ✓ onboarding is version-checked
+  ✓ PUT    /me/onboarding                                                         200
+    ✓ tap-only answers save
+  ✓ PUT    /me/onboarding                                                         200
+    ✓ onboarding completes
+  ✓ PUT    /me/onboarding                                                         400
+  ✓ POST   /me/terms                                                              409
+    ✓ a stale Terms version is 409
+  ✓ POST   /me/terms                                                              400
+  ✓ POST   /me/paywall-seen                                                       200
+    ✓ paywall marked seen
+  consents
+  ✓ GET    /me/consents                                                           200
+    ✓ AI consent starts empty (off)
+  ✓ POST   /me/consents                                                           200
+    ✓ AI opt-in recorded
+  ✓ GET    /me/consents                                                           200
+    ✓ latest AI consent is on
+  ✓ POST   /me/consents                                                           400
+  ✓ POST   /me/review-prompts                                                     200
+    ✓ review attempt recorded
+  ✓ POST   /me/review-prompts                                                     200
+    ✓ AC28 120-day cooldown holds across versions
+  notifications and support
+  ✓ GET    /notification-preferences                                              200
+    ✓ six categories, push off until enabled
+  ✓ PUT    /notification-preferences                                              200
+    ✓ a category can be enabled
+  ✓ GET    /notifications                                                         200
+  ✓ GET    /notifications/unread-count                                            200
+  ✓ POST   /support                                                               201
+  ✓ GET    /support                                                               200
+    ✓ my support requests are listed
+  ✓ POST   /support                                                               201
+  ✓ POST   /support                                                               400
+  re-authentication
+  ✓ POST   /auth/reauth                                                           400
+    ✓ wrong password is 400, not 401
+  ✓ POST   /auth/reauth                                                           200
+    ✓ a 5-minute action token
+  ✓ POST   /auth/password/change                                                  400
+    ✓ change: wrong current password is 400
+
+── 15-billing
+  ✓ GET    /billing/status                                                        200
+    ✓ AC01 unpaid: locked, no offline lease
+    ✓ product ids
+  ✓ POST   /billing/reconcile                                                     200
+    ✓ login reconcile keeps an unpaid account locked
+  ✓ POST   /billing/reconcile                                                     503
+    ✓ AC03 a purchase claim without server verification never unlocks
+  ✓ GET    /billing/status                                                        200
+    ✓ still locked after an unverifiable purchase
+  ✓ POST   /billing/reconcile                                                     503
+  ✓ POST   /billing/reconcile                                                     400
+  ✓ POST   /billing/reconcile                                                     400
+    ✓ a client cannot claim it is paid
+  ✓ POST   /billing/trial                                                         409
+    ✓ AC02 no trial eligibility
+  ✓ GET    /billing/status                                                        200
+    ✓ review grant gives access
+    ✓ a paid device gets a signed offline lease
+    ✓ AC26 the lease lasts at most 24 hours
+  ✓ GET    /billing/status?fresh=1                                                200
+    ✓ fresh status is re-verified
+
+── 20-projects
+  ✓ GET    /projects                                                              403
+    ✓ AC01 unverified account cannot list projects
+  ✓ GET    /projects                                                              200
+    ✓ project list with the 5-project limit
+  create
+  ✓ POST   /projects                                                              400
+  ✓ POST   /projects                                                              400
+  ✓ POST   /projects                                                              400
+  ✓ POST   /projects                                                              400
+    ✓ zero storeys is invalid for a house
+  ✓ POST   /projects                                                              400
+  ✓ POST   /projects                                                              400
+    ✓ a caller-provided owner is refused
+  ✓ POST   /projects                                                              201
+    ✓ project saved with decimal and money strings
+    ✓ the private address is returned to its owner
+    ✓ a new build starts with three unpriced allowance lines, never zero cost
+    ✓ land, fees and outside works start undecided
+  ✓ POST   /projects                                                              201
+    ✓ AC29 same Idempotency-Key replays the same project
+  ✓ POST   /projects                                                              409
+    ✓ same key with a different body is 409
+  ✓ POST   /projects                                                              201
+    ✓ a renovation starts with demolition and disposal allowances
+  read and isolation
+  ✓ GET    /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b                         200
+    ✓ project detail
+  ✓ GET    /projects                                                              200
+    ✓ listed; the list never carries the address
+  ✓ GET    /projects?q=willow                                                     200
+    ✓ search by name
+  ✓ GET    /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b                         404
+    ✓ AC08 another account gets 404 on my project
+  ✓ PATCH  /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b                         404
+  ✓ GET    /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/categories              404
+  ✓ GET    /projects/not-a-uuid                                                   404
+  update
+  ✓ PATCH  /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b                         409
+    ✓ stale version is 409
+  ✓ PATCH  /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b                         400
+  ✓ PATCH  /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b                         200
+    ✓ update returns the new version
+  ✓ PATCH  /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b                         200
+    ✓ If-Match works as the version
+  ✓ PATCH  /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b                         400
+    ✓ money must be whole minor units
+  scope checklist
+  ✓ GET    /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/categories              200
+    ✓ all 19 budget categories
+    ✓ each category explains itself
+  ✓ PATCH  /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/categories              409
+  ✓ PATCH  /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/categories              400
+  ✓ PATCH  /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/categories              200
+    ✓ inclusion and notes saved
+  ✓ GET    /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b                         200
+    ✓ deciding categories updates the estimate completeness
+  ✓ PATCH  /projects/25040891-3baa-4e18-a87d-50469f31db37/categories              404
+    ✓ a category id from another project is refused
+  phases
+  ✓ GET    /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/phases                  200
+    ✓ ten planned build phases
+  ✓ PATCH  /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/phases/7b6d09b8-6d9a-40 200
+    ✓ progress is a user report
+  ✓ PATCH  /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/phases/7b6d09b8-6d9a-40 400
+  ✓ PATCH  /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/phases/7b6d09b8-6d9a-40 409
+  ✓ POST   /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/phases                  201
+    ✓ a custom phase goes last
+  ✓ POST   /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/phases                  400
+  archive, duplicate, delete and recover
+  ✓ POST   /projects/25040891-3baa-4e18-a87d-50469f31db37/archive                 200
+    ✓ archived
+  ✓ PATCH  /projects/25040891-3baa-4e18-a87d-50469f31db37                         409
+    ✓ an archived project is read-only
+  ✓ GET    /projects?status=archived                                              200
+    ✓ listed under archived
+  ✓ POST   /projects/25040891-3baa-4e18-a87d-50469f31db37/archive                 200
+    ✓ unarchived
+  ✓ POST   /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/duplicate               201
+    ✓ duplicate into a new currency carries no money
+  ✓ GET    /projects/285d881e-7df9-4dd0-a061-3bb4ed03f95f/categories              200
+    ✓ the copy keeps the scope checklist
+  ✓ DELETE /projects/285d881e-7df9-4dd0-a061-3bb4ed03f95f                         403
+    ✓ deleting needs a fresh confirmation
+  ✓ POST   /auth/reauth                                                           200
+  ✓ DELETE /projects/285d881e-7df9-4dd0-a061-3bb4ed03f95f                         200
+    ✓ deleted with a 7-day recovery window
+  ✓ GET    /projects/285d881e-7df9-4dd0-a061-3bb4ed03f95f                         404
+  ✓ GET    /projects?status=deleted                                               200
+    ✓ listed as recoverable
+  ✓ POST   /projects/285d881e-7df9-4dd0-a061-3bb4ed03f95f/restore                 200
+    ✓ recovered within 7 days
+  ✓ POST   /projects/285d881e-7df9-4dd0-a061-3bb4ed03f95f/restore                 404
+  limits
+  ✓ POST   /projects                                                              201
+  ✓ POST   /projects                                                              201
+  ✓ POST   /projects                                                              409
+    ✓ the sixth active project is refused
+  ✓ POST   /projects/fd8c4d65-2d8f-4c64-8e17-878fe38e457b/archive                 200
+  ✓ POST   /projects                                                              201
+    ✓ archived projects do not count toward the limit
+  ✓ POST   /projects/fd8c4d65-2d8f-4c64-8e17-878fe38e457b/archive                 409
+    ✓ unarchiving respects the limit
+  ✓ POST   /auth/reauth                                                           200
+  ✓ DELETE /projects/22feff26-6966-4d4c-b95f-25741dafb1cd                         200
+  ✓ GET    /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/activity                200
+    ✓ project actions are audited
+
+── 30-rooms-rates-calcs
+  rooms
+  ✓ POST   /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/rooms                   400
+    ✓ negative dimensions are refused
+  ✓ POST   /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/rooms                   400
+    ✓ implausible dimensions are refused
+  ✓ POST   /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/rooms                   400
+  ✓ POST   /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/rooms                   201
+    ✓ geometry from measurements
+    ✓ measured and complete
+  ✓ POST   /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/rooms/bb9b61c7-fe3d-45f 201
+  ✓ POST   /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/rooms/bb9b61c7-fe3d-45f 201
+    ✓ openings come off the walls, doors off the skirting
+    ✓ each opening change bumps the geometry revision
+  ✓ POST   /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/rooms/bb9b61c7-fe3d-45f 422
+    ✓ openings larger than the walls are refused
+  ✓ POST   /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/rooms/bb9b61c7-fe3d-45f 400
+  ✓ PATCH  /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/rooms/bb9b61c7-fe3d-45f 200
+    ✓ an opening edit recomputes
+  ✓ POST   /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/rooms                   201
+    ✓ a missing height leaves walls incomplete, not zero
+  ✓ POST   /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/rooms                   201
+    ✓ irregular rooms take manual areas with a warning
+  ✓ POST   /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/rooms/bb9b61c7-fe3d-45f 201
+    ✓ duplicate copies measurements and openings
+  ✓ PATCH  /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/rooms/d8961e47-83ac-401 200
+    ✓ resizing recomputes
+  ✓ PATCH  /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/rooms/d8961e47-83ac-401 409
+  ✓ GET    /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/rooms                   200
+    ✓ four rooms listed
+  ✓ GET    /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/rooms                   404
+  ✓ PATCH  /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/rooms/bb9b61c7-fe3d-45f 404
+    ✓ AC08 another account cannot touch my rooms
+  ✓ DELETE /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/rooms/9ebf73d7-ce51-41c 200
+    ✓ an unused room is removed
+  rate book
+  ✓ GET    /catalogue                                                             200
+    ✓ calculator specifications in the catalogue
+  ✓ GET    /regions?country=IE                                                    200
+  ✓ POST   /suppliers                                                             201
+  ✓ POST   /rates/private                                                         400
+  ✓ POST   /rates/private                                                         400
+  ✓ POST   /rates/private                                                         400
+  ✓ POST   /rates/private                                                         201
+    ✓ a private rate
+  ✓ POST   /rates/private                                                         201
+    ✓ a tax-inclusive price converts to net with its own rate and keeps the original
+  ✓ POST   /rates/private                                                         201
+  ✓ POST   /rates/private                                                         201
+  ✓ GET    /rates/private?category=FLOORING                                       200
+    ✓ filtered by category
+  ✓ GET    /rates/private                                                         200
+    ✓ AC08 rate books are private
+  ✓ PATCH  /rates/private/b57b7343-0bc6-4533-8097-e6bef6acbf75                    404
+  calculators
+  ✓ GET    /calculators                                                           200
+    ✓ seven versioned calculators
+  ✓ POST   /calculations/preview                                                  200
+    ✓ AC09 flooring fixture: 10 packs, €540 net
+    ✓ provenance says user entered, not a local benchmark
+  ✓ POST   /calculations/preview                                                  200
+    ✓ AC09 paint fixture: 17.6 L, 4 cans, 20 L
+    ✓ AC11 no price: quantities shown, cost null, incomplete
+  ✓ POST   /calculations/preview                                                  200
+    ✓ the room fills the area and the chosen rate fills the price
+  ✓ POST   /calculations/preview                                                  200
+    ✓ AC20 a fitted rate adds no labour
+  ✓ POST   /calculations/preview                                                  422
+    ✓ AC20 labour on top of a fitted rate is refused
+  ✓ POST   /calculations/preview                                                  422
+    ✓ AC12 a rate in another currency is never converted
+  ✓ POST   /calculations/preview                                                  422
+    ✓ AC12 a rate in the wrong unit is refused
+  ✓ POST   /calculations/preview                                                  422
+    ✓ missing required data is 422 with the field
+  ✓ POST   /calculations/preview                                                  422
+    ✓ prices in another currency are refused
+  ✓ POST   /calculations/preview                                                  200
+    ✓ skirting from the room perimeter minus the door
+  ✓ POST   /calculations/preview                                                  200
+    ✓ wallpaper walls come from the room
+  ✓ POST   /calculations/preview                                                  200
+    ✓ paint uses the net wall area
+  ✓ POST   /calculations/preview                                                  404
+    ✓ AC08 cannot preview against another account project
+  saved calculations
+  ✓ POST   /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/calculations            201
+    ✓ a saved, immutable calculation
+  ✓ POST   /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/calculations            201
+    ✓ a calculation can be saved without prices
+  ✓ GET    /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/calculations            200
+    ✓ listed
+  ✓ GET    /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/calculations/fc0620b9-9 200
+  ✓ GET    /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/calculations/fc0620b9-9 404
+  stale rates and room changes
+  ✓ PATCH  /rates/private/b57b7343-0bc6-4533-8097-e6bef6acbf75                    200
+    ✓ a rate update
+  ✓ PATCH  /rates/private/b57b7343-0bc6-4533-8097-e6bef6acbf75                    409
+  ✓ GET    /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/calculations/fc0620b9-9 200
+    ✓ a saved calculation keeps its rate snapshot
+  ✓ PATCH  /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/rooms/bb9b61c7-fe3d-45f 200
+  ✓ GET    /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/calculations/fc0620b9-9 200
+    ✓ the room changed: the calculation says so and is never rewritten
+  ✓ PATCH  /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/rooms/bb9b61c7-fe3d-45f 200
+  benchmarks (exact matches only)
+  ✓ GET    /rates/benchmarks?country=ZZ                                           200
+    ✓ unsupported region: honest message, no invented prices
+  ✓ GET    /rates/benchmarks                                                      400
+  ✓ ADMIN  POST /admin/regions                                                    201
+  ✓ ADMIN  POST /admin/sources                                                    201
+  ✓ ADMIN  POST /admin/benchmarks                                                 201
+  ✓ ADMIN  POST /admin/benchmarks                                                 201
+  ✓ ADMIN  POST /admin/benchmarks/validate                                        200
+  ✓ ADMIN  POST /admin/benchmarks/publish                                         200
+  ✓ GET    /rates/benchmarks?country=IE&region_id=b0cb1aa0-a3f1-49d4-87fd-ffac796 200
+    ✓ published local benchmarks for the region
+    ✓ 90-day review and expiry are flagged
+  ✓ POST   /calculations/preview                                                  422
+    ✓ AC12 a regional benchmark never applies to a project outside that region
+  ✓ GET    /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b                         200
+  ✓ PATCH  /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b                         200
+  ✓ POST   /calculations/preview                                                  200
+    ✓ an exact regional benchmark prices the calculation
+  ✓ POST   /calculations/preview                                                  422
+    ✓ AC12 an expired benchmark is never used automatically
+  ✓ POST   /calculations/preview                                                  200
+    ✓ AC12 an explicit stale override is allowed
+
+── 40-estimates
+  the first draft
+  ✓ GET    /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/estimates               200
+    ✓ a new project has one draft and no current revision
+  ✓ GET    /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/estimates/c71afd54-7de0 200
+    ✓ starter allowances are unpriced: missing, not zero
+    ✓ a missing price is flagged on the line
+  lines
+  ✓ POST   /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/estimates/c71afd54-7de0 400
+  ✓ POST   /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/estimates/c71afd54-7de0 404
+  ✓ POST   /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/estimates/c71afd54-7de0 201
+    ✓ a calculation becomes a line with its own result
+  ✓ POST   /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/estimates/c71afd54-7de0 201
+    ✓ tax-inclusive entry: net from its explicit rate, tax recomputed
+    ✓ the entered gross price is kept
+  ✓ POST   /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/estimates/c71afd54-7de0 400
+    ✓ a zero-cost line needs a reason
+  ✓ POST   /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/estimates/c71afd54-7de0 201
+    ✓ an allowance is one lump sum
+  ✓ POST   /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/estimates/c71afd54-7de0 422
+    ✓ a per-pack rate cannot price metres
+  ✓ POST   /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/estimates/c71afd54-7de0 201
+    ✓ a private rate prices quantity plus itemised extras
+  ✓ POST   /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/estimates/c71afd54-7de0 201
+    ✓ excluded categories never count toward the known total
+  ✓ POST   /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/estimates/c71afd54-7de0 201
+    ✓ a quantity without a price is missing, never zero (AC11)
+  editing a draft
+  ✓ PATCH  /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/estimates/c71afd54-7de0 200
+    ✓ pricing the site allowance
+  ✓ PATCH  /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/estimates/c71afd54-7de0 200
+    ✓ allowance with tax
+  ✓ PATCH  /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/estimates/c71afd54-7de0 200
+  ✓ PATCH  /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/estimates/c71afd54-7de0 409
+    ✓ stale line version is 409
+  ✓ PATCH  /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/estimates/c71afd54-7de0 200
+    ✓ If-Match on lines; pricing clears the missing count
+  ✓ PATCH  /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/estimates/c71afd54-7de0 200
+    ✓ a deferred line is delayed, reported separately
+  ✓ PATCH  /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/estimates/c71afd54-7de0 200
+  ✓ POST   /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/estimates/c71afd54-7de0 201
+  ✓ DELETE /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/estimates/c71afd54-7de0 200
+    ✓ a draft line can be removed
+  ✓ PATCH  /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/estimates/c71afd54-7de0 400
+    ✓ contingency is limited to 0–30%
+  ✓ GET    /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/estimates/c71afd54-7de0 200
+  ✓ PATCH  /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/estimates/c71afd54-7de0 200
+    ✓ the reserve is 10% of the selected priced categories, applied once
+    ✓ total with reserve is labelled separately
+  ✓ GET    /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/estimates/c71afd54-7de0 404
+  ✓ PATCH  /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/estimates/c71afd54-7de0 404
+    ✓ AC08 another account cannot read or edit my estimate
+  save, current and baseline
+  ✓ POST   /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/estimates/c71afd54-7de0 409
+    ✓ freezing checks the version
+  ✓ GET    /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/estimates/c71afd54-7de0 200
+    ✓ calculation line is fresh
+  ✓ POST   /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/estimates/c71afd54-7de0 200
+    ✓ saved: the revision is frozen
+  ✓ PATCH  /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/estimates/c71afd54-7de0 409
+    ✓ a saved revision cannot change
+  ✓ POST   /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/estimates/c71afd54-7de0 409
+  ✓ POST   /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/estimates/c71afd54-7de0 400
+    ✓ baseline needs explicit confirmation
+  ✓ POST   /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/estimates/c71afd54-7de0 200
+    ✓ baseline pinned
+  ✓ POST   /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/estimates/c71afd54-7de0 200
+    ✓ current set; no draft
+  a second draft and AC13
+  ✓ POST   /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/estimates               201
+    ✓ a new draft forks from the saved revision with the same totals
+  ✓ POST   /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/estimates               409
+    ✓ one draft at a time; the error names it
+  ✓ POST   /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/estimates               409
+  ✓ GET    /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/rooms                   200
+  ✓ PATCH  /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/rooms/bb9b61c7-fe3d-45f 200
+    ✓ AC13 changing the room flags dependent draft lines
+  ✓ GET    /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/estimates/c71afd54-7de0 200
+    ✓ AC13 the saved baseline is unchanged
+  ✓ GET    /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/estimates/fdad458a-a356 200
+    ✓ the draft line is stale
+  ✓ POST   /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/estimates/fdad458a-a356 409
+    ✓ a draft with stale lines cannot be saved
+  ✓ POST   /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/estimates/fdad458a-a356 200
+    ✓ recalculation previews the new amount first
+  ✓ POST   /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/estimates/fdad458a-a356 200
+    ✓ accepted
+  ✓ GET    /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/estimates/fdad458a-a356 200
+    ✓ the recomputed draft has a new total and no stale lines
+  ✓ GET    /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/estimate-diff?from=c71a 200
+    ✓ revision diff by category and line
+  ✓ POST   /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/estimates/fdad458a-a356 200
+  ✓ POST   /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/estimates/fdad458a-a356 200
+    ✓ current moves; baseline never changes implicitly
+  scenarios
+  ✓ POST   /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/scenarios               400
+  ✓ POST   /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/scenarios               201
+    ✓ an independent scenario draft
+  ✓ GET    /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/estimates               200
+    ✓ a scenario draft is not the project draft
+  ✓ GET    /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/estimates/63688208-a404 200
+  ✓ PATCH  /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/estimates/63688208-a404 200
+    ✓ a scenario line changes the finish
+  ✓ GET    /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/scenarios/f01f7cbb-3fe2 200
+    ✓ a priced, same-scope scenario shows a saving
+    ✓ cheaper, and no accepted obligations conflict
+  ✓ POST   /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/scenarios/f01f7cbb-3fe2 409
+    ✓ an unsaved scenario cannot be adopted
+  ✓ GET    /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/estimates/63688208-a404 200
+  ✓ POST   /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/estimates/63688208-a404 200
+  ✓ POST   /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/estimates/63688208-a404 409
+    ✓ a scenario becomes current only by adoption
+  ✓ PATCH  /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/scenarios/f01f7cbb-3fe2 200
+  ✓ POST   /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/scenarios/f01f7cbb-3fe2 201
+    ✓ AC14 adoption creates a new frozen current revision
+    ✓ AC14 the baseline is untouched
+  ✓ POST   /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/scenarios/f01f7cbb-3fe2 409
+    ✓ a scenario is adopted once
+  ✓ GET    /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/scenarios               200
+    ✓ listed as adopted
+  ✓ GET    /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/estimates?kind=current  200
+    ✓ revision history: three saved estimate revisions
+  ✓ GET    /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/estimate-diff?from=c71a 200
+    ✓ the history diff shows the adopted change
+  ✓ GET    /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/scenarios/f01f7cbb-3fe2 404
+  ✓ POST   /projects/c4f3f562-aa98-4e8c-a3a4-88e27fcb730b/scenarios/f01f7cbb-3fe2 404
+
+── 50-finance
+  a project to spend money on
+  ✓ POST   /projects                                                              201
+  ✓ GET    /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/categories              200
+  suppliers
+  ✓ POST   /suppliers                                                             201
+  ✓ POST   /suppliers                                                             201
+  ✓ POST   /suppliers                                                             400
+  ✓ POST   /suppliers                                                             400
+    ✓ unknown supplier fields refused
+  ✓ PATCH  /suppliers/17ea101d-519d-4946-8a62-1d470d69f32e                        200
+    ✓ supplier updated
+  ✓ PATCH  /suppliers/17ea101d-519d-4946-8a62-1d470d69f32e                        409
+    ✓ stale supplier version is 409
+  ✓ GET    /suppliers?q=oak                                                       200
+    ✓ supplier search
+  quotes (BRD 6.8)
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/quotes                  422
+    ✓ a quote must use the project currency
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/quotes                  400
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/quotes                  201
+    ✓ quote total counts included lines only (excluded scope stays visible)
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/quotes                  201
+    ✓ tax rounds per line (13.5% of 72,000)
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/quote-comparison        200
+    ✓ comparison shows missing scope, not a winner
+    ✓ excluded scope stays visible in the comparison
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/quote-comparison        400
+  ✓ GET    /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/quotes                  200
+    ✓ quotes listed
+  accepting creates an obligation, not money
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/quotes/036a64eb-f550-4d 400
+    ✓ an excluded line cannot be accepted
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/quotes/036a64eb-f550-4d 400
+    ✓ cannot approve more than the quoted line
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/quotes/036a64eb-f550-4d 201
+    ✓ partial approval: one line → part accepted
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/quotes/036a64eb-f550-4d 409
+    ✓ a line is accepted once
+  ✓ GET    /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/costs                   200
+    ✓ accepting a quote created no cost
+  ✓ GET    /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/payments                200
+    ✓ accepting a quote created no payment
+  ✓ PATCH  /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/quotes/036a64eb-f550-4d 409
+    ✓ an accepted quote is immutable
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/quotes                  201
+    ✓ an amendment is a new quote linked to its parent
+  ✓ GET    /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/quotes/036a64eb-f550-4d 200
+    ✓ the accepted source is preserved
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/quotes                  201
+    ✓ an expired quote is flagged
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/quotes/69c69807-61f7-47 409
+    ✓ an expired quote needs the stale terms confirmed
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/quotes/69c69807-61f7-47 201
+    ✓ stale terms recorded on the commitment
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/commitments/fbd07d73-aa 200
+    ✓ a cancelled commitment owes nothing
+  ✓ PATCH  /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/quotes/522ddb2e-fbc8-40 200
+    ✓ a quote can be rejected
+  manual commitments and adjustments
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/commitments             201
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/commitments/995d3e99-59 422
+    ✓ a reduction cannot exceed what is agreed
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/commitments/995d3e99-59 201
+    ✓ an append-only adjustment takes the obligation to zero
+  ✓ GET    /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/commitments/995d3e99-59 200
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/commitments/995d3e99-59 200
+  invoices: split must add up before posting
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/costs                   422
+    ✓ costs use the project currency
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/costs                   400
+    ✓ net + tax must equal gross
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/costs                   201
+    ✓ draft saved; the split does not add up yet
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/costs/1ac837e5-f466-4df 422
+    ✓ cannot post until allocations equal gross
+  ✓ PATCH  /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/costs/1ac837e5-f466-4df 200
+    ✓ the split adds up
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/costs/1ac837e5-f466-4df 200
+    ✓ invoice posted, unpaid
+  ✓ PATCH  /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/costs/1ac837e5-f466-4df 409
+    ✓ a posted invoice cannot be edited
+  ✓ DELETE /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/costs/1ac837e5-f466-4df 409
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/costs                   201
+    ✓ a repeated reference is flagged (advisory)
+  ✓ DELETE /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/costs/f5a644a9-7615-4f2 200
+    ✓ a draft can be deleted
+  payments: a deposit is cash, not a cost (AC15)
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/payments                201
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/payments/e2a19b43-a3ec- 200
+    ✓ deposit posted as an unallocated advance
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/payments                201
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/payments/e6431c56-a742- 409
+    ✓ cannot allocate more than the payment
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/payments/e6431c56-a742- 200
+  ✓ GET    /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/costs/1ac837e5-f466-4df 200
+    ✓ invoice partly paid: 20k open
+  ✓ GET    /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/commitments/6b48f96d-57 200
+    ✓ commitment: 20k still owed, 10k advance held
+  forecast: AC18 exactly
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/forecasts               201
+    ✓ AC19 uncommitted work starts unknown, never zero
+    ✓ AC19 an empty forecast is visibly incomplete
+  ✓ PATCH  /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/forecasts/40956001-5e12 200
+    ✓ preview: 50k + 20k + 25k + 5k = 100k
+  ✓ PATCH  /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/forecasts/40956001-5e12 409
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/forecasts/40956001-5e12 200
+    ✓ confirmed with a historical snapshot
+  ✓ GET    /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/dashboard               200
+    ✓ AC18 A = 50k actual
+    ✓ AC18 C = 20k remaining commitment
+    ✓ AC18 U = 25k, reserve 5k
+    ✓ AC18 forecast = 100k
+    ✓ AC18 40k paid → 60k cash still needed
+    ✓ AC15 the 10k deposit increased paid but is not an invoice
+    ✓ variance against the 120k target; no review needed yet
+    ✓ next actions and phase summary
+  the deposit meets its invoice without new cash (AC15)
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/payments/e2a19b43-a3ec- 200
+    ✓ deposit allocated
+  ✓ GET    /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/dashboard               200
+    ✓ AC15 no double count: same actual, same paid
+  ✓ GET    /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/payments                200
+    ✓ no extra payment was created
+  concurrent payments cannot over-allocate (AC16)
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/costs                   201
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/costs/d8fd64db-ddc1-449 200
+  ✓ GET    /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/dashboard               200
+    ✓ ledger changed after confirmation → Review required
+    ✓ the expense is an actual cost
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/payments                201
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/payments                201
+    ✓ AC16 two concurrent posts: one succeeds, one is refused (409 200)
+  ✓ GET    /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/costs/d8fd64db-ddc1-449 200
+    ✓ AC16 the invoice is paid once, never over
+  retries never duplicate money (AC29)
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/payments                201
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/payments/531cd112-dba6- 200
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/payments/531cd112-dba6- 200
+    ✓ AC29 the same key replays the original answer
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/payments/531cd112-dba6- 409
+    ✓ the same key with a different body is 409
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/payments/531cd112-dba6- 409
+    ✓ a fresh retry of an already-posted payment is refused
+  ✓ GET    /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/dashboard               200
+    ✓ AC29 paid counts each payment once (40k + 8k + 0.5k)
+  credits and refunds (AC17)
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/costs                   201
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/costs/3adc1ff3-48df-4bf 422
+    ✓ a credit cannot take an invoice below zero
+  ✓ DELETE /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/costs/3adc1ff3-48df-4bf 200
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/costs                   400
+    ✓ a credit is negative
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/costs                   201
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/costs/631d9c88-6671-4c5 200
+  ✓ GET    /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/dashboard               200
+    ✓ AC17 a credit lowers actual cost, cash is unchanged
+  ✓ GET    /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/costs/d8fd64db-ddc1-449 200
+    ✓ credit + payment settle the expense
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/costs                   201
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/costs/cb5aa7b9-00a8-4c9 400
+    ✓ a credit on a commitment must say what it means for the work
+  ✓ PATCH  /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/costs/cb5aa7b9-00a8-4c9 200
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/costs/cb5aa7b9-00a8-4c9 200
+  ✓ GET    /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/commitments/6b48f96d-57 200
+    ✓ AC17 work still owed: the credit reopens 5k of the obligation
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/payments                201
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/payments/954ec8f9-bbde- 422
+    ✓ refunds cannot exceed the original payment
+  ✓ DELETE /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/payments/954ec8f9-bbde- 200
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/payments                400
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/payments                201
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/payments/767979b9-b212- 200
+  ✓ GET    /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/dashboard               200
+    ✓ AC17 a refund lowers cash paid, separately from costs
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/payments/e6431c56-a742- 409
+    ✓ a refunded payment cannot be voided first
+  voids keep the evidence
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/costs/d8fd64db-ddc1-449 200
+    ✓ preview: credits must be voided first
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/costs/631d9c88-6671-4c5 200
+    ✓ credit voided
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/costs/d8fd64db-ddc1-449 200
+    ✓ preview shows 8k going back to advances
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/costs/d8fd64db-ddc1-449 400
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/costs/d8fd64db-ddc1-449 200
+    ✓ voided, never deleted
+  ✓ GET    /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/payments/17e1f3e7-a8cb- 200
+    ✓ the payment became an unallocated advance
+  ✓ GET    /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/costs?status=void       200
+    ✓ void records stay listed
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/costs/d8fd64db-ddc1-449 409
+  privacy and gates (AC08, AC01)
+  ✓ GET    /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/quotes                  404
+  ✓ GET    /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/quotes/036a64eb-f550-4d 404
+  ✓ GET    /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/commitments             404
+  ✓ GET    /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/costs                   404
+  ✓ GET    /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/costs/1ac837e5-f466-4df 404
+  ✓ GET    /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/payments                404
+  ✓ GET    /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/payments/e6431c56-a742- 404
+  ✓ GET    /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/dashboard               404
+  ✓ GET    /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/forecasts               404
+  ✓ GET    /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/forecasts/40956001-5e12 404
+  ✓ GET    /suppliers/17ea101d-519d-4946-8a62-1d470d69f32e                        404
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/payments/b3dd0286-7051- 404
+  ✓ POST   /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/costs/1ac837e5-f466-4df 404
+  ✓ PATCH  /suppliers/17ea101d-519d-4946-8a62-1d470d69f32e                        404
+  ✓ GET    /suppliers                                                             200
+    ✓ AC08 suppliers are private to their owner
+  ✓ GET    /suppliers                                                             403
+  ✓ GET    /projects/73017f86-cb45-4d41-a6cf-ea4a7fd66e5a/costs                   403
+
+── 60-forecast-procurement
+  ✓ POST   /projects                                                              201
+  ✓ GET    /projects/a25f2907-7a63-4470-8693-4ecaebd52cf8/categories              200
+  dashboard before any money
+  ✓ GET    /projects/a25f2907-7a63-4470-8693-4ecaebd52cf8/dashboard               200
+    ✓ empty ledger: no forecast, nothing spent
+    ✓ undecided scope is a next action
+    ✓ set up the forecast and add rooms are suggested
+    ✓ all 19 categories appear
+  forecast drafts and confirmation
+  ✓ POST   /projects/a25f2907-7a63-4470-8693-4ecaebd52cf8/forecasts               201
+    ✓ first draft
+  ✓ POST   /projects/a25f2907-7a63-4470-8693-4ecaebd52cf8/forecasts               409
+    ✓ one draft at a time
+  ✓ PATCH  /projects/a25f2907-7a63-4470-8693-4ecaebd52cf8/forecasts/8ecb20a0-18b5 400
+  ✓ PATCH  /projects/a25f2907-7a63-4470-8693-4ecaebd52cf8/forecasts/8ecb20a0-18b5 400
+  ✓ PATCH  /projects/a25f2907-7a63-4470-8693-4ecaebd52cf8/forecasts/8ecb20a0-18b5 200
+    ✓ an uncommitted amount is entered per category
+    ✓ AC19 other included categories are still unknown: incomplete
+    ✓ preview sums only what is known, labelled incomplete
+  ✓ POST   /projects/a25f2907-7a63-4470-8693-4ecaebd52cf8/forecasts/8ecb20a0-18b5 200
+    ✓ an incomplete forecast can be confirmed, and stays labelled incomplete
+  ✓ PATCH  /projects/a25f2907-7a63-4470-8693-4ecaebd52cf8/forecasts/8ecb20a0-18b5 409
+    ✓ a confirmed forecast is a historical snapshot
+  ✓ POST   /projects/a25f2907-7a63-4470-8693-4ecaebd52cf8/forecasts/8ecb20a0-18b5 409
+  ✓ POST   /projects/a25f2907-7a63-4470-8693-4ecaebd52cf8/forecasts               201
+    ✓ a new draft copies the last inputs
+  ✓ PATCH  /projects/a25f2907-7a63-4470-8693-4ecaebd52cf8/forecasts/55b72609-f1af 200
+    ✓ every included category has an amount
+  ✓ GET    /projects/a25f2907-7a63-4470-8693-4ecaebd52cf8/dashboard               200
+    ✓ the dashboard uses the last CONFIRMED forecast, not the draft
+  ✓ POST   /projects/a25f2907-7a63-4470-8693-4ecaebd52cf8/forecasts/55b72609-f1af 200
+  ✓ GET    /projects/a25f2907-7a63-4470-8693-4ecaebd52cf8/dashboard               200
+    ✓ the newly confirmed forecast is live
+  ✓ GET    /projects/a25f2907-7a63-4470-8693-4ecaebd52cf8/forecasts/8ecb20a0-18b5 200
+    ✓ the old snapshot is unchanged
+  ✓ GET    /projects/a25f2907-7a63-4470-8693-4ecaebd52cf8/forecasts               200
+    ✓ forecast history
+  purchase preparation
+  ✓ POST   /projects/a25f2907-7a63-4470-8693-4ecaebd52cf8/procurement             400
+  ✓ POST   /projects/a25f2907-7a63-4470-8693-4ecaebd52cf8/procurement             201
+    ✓ a manual purchase item
+  ✓ PATCH  /projects/a25f2907-7a63-4470-8693-4ecaebd52cf8/procurement/4834d3a8-7b 400
+    ✓ ordering needs the ordered quantity
+  ✓ PATCH  /projects/a25f2907-7a63-4470-8693-4ecaebd52cf8/procurement/4834d3a8-7b 200
+  ✓ POST   /projects/a25f2907-7a63-4470-8693-4ecaebd52cf8/procurement/4834d3a8-7b 400
+  ✓ POST   /projects/a25f2907-7a63-4470-8693-4ecaebd52cf8/procurement/4834d3a8-7b 201
+    ✓ part received
+  ✓ POST   /projects/a25f2907-7a63-4470-8693-4ecaebd52cf8/procurement/4834d3a8-7b 201
+    ✓ fully received
+  ✓ GET    /projects/a25f2907-7a63-4470-8693-4ecaebd52cf8/costs                   200
+    ✓ a delivery never creates an expense
+  ✓ GET    /projects/a25f2907-7a63-4470-8693-4ecaebd52cf8/procurement/4834d3a8-7b 200
+  ✓ PATCH  /projects/a25f2907-7a63-4470-8693-4ecaebd52cf8/procurement/4834d3a8-7b 400
+  ✓ PATCH  /projects/a25f2907-7a63-4470-8693-4ecaebd52cf8/procurement/4834d3a8-7b 409
+    ✓ stale item version is 409
+  from a calculation: the calculation changes, the order does not
+  ✓ POST   /projects/a25f2907-7a63-4470-8693-4ecaebd52cf8/rooms                   201
+  ✓ POST   /projects/a25f2907-7a63-4470-8693-4ecaebd52cf8/calculations            201
+  ✓ POST   /projects/a25f2907-7a63-4470-8693-4ecaebd52cf8/procurement             201
+    ✓ quantities copied from the calculation (10 packs, €300 of material)
+  ✓ PATCH  /projects/a25f2907-7a63-4470-8693-4ecaebd52cf8/procurement/2095965b-5e 200
+  ✓ PATCH  /projects/a25f2907-7a63-4470-8693-4ecaebd52cf8/rooms/224b8d5c-8ee2-4a8 200
+  ✓ GET    /projects/a25f2907-7a63-4470-8693-4ecaebd52cf8/procurement/2095965b-5e 200
+    ✓ room changed after ordering: flagged, ordered quantity untouched
+  ✓ PATCH  /projects/a25f2907-7a63-4470-8693-4ecaebd52cf8/procurement/2095965b-5e 409
+    ✓ the change must be acknowledged before editing the order
+  ✓ PATCH  /projects/a25f2907-7a63-4470-8693-4ecaebd52cf8/procurement/2095965b-5e 200
+    ✓ acknowledged and changed by the person, explicitly
+  ✓ GET    /projects/a25f2907-7a63-4470-8693-4ecaebd52cf8/dashboard               200
+    ✓ next actions follow the project state
+  AC14: estimate revisions never move money
+  ✓ POST   /projects/a25f2907-7a63-4470-8693-4ecaebd52cf8/commitments             201
+  ✓ POST   /projects/a25f2907-7a63-4470-8693-4ecaebd52cf8/payments                201
+  ✓ POST   /projects/a25f2907-7a63-4470-8693-4ecaebd52cf8/payments/7f34b54a-d330- 200
+  ✓ GET    /projects/a25f2907-7a63-4470-8693-4ecaebd52cf8/estimates               200
+  ✓ POST   /projects/a25f2907-7a63-4470-8693-4ecaebd52cf8/estimates/a49048cd-a512 200
+  ✓ POST   /projects/a25f2907-7a63-4470-8693-4ecaebd52cf8/scenarios               201
+    ✓ AC14 actual, committed and paid are unchanged by revision work (0|400000|100000)
+  privacy
+  ✓ GET    /projects/a25f2907-7a63-4470-8693-4ecaebd52cf8/procurement             404
+  ✓ GET    /projects/a25f2907-7a63-4470-8693-4ecaebd52cf8/procurement/4834d3a8-7b 404
+  ✓ POST   /projects/a25f2907-7a63-4470-8693-4ecaebd52cf8/procurement/4834d3a8-7b 404
+  ✓ POST   /projects/a25f2907-7a63-4470-8693-4ecaebd52cf8/forecasts               404
+  ✓ PATCH  /projects/a25f2907-7a63-4470-8693-4ecaebd52cf8/forecasts/55b72609-f1af 404
+
+── 70-files
+  ✓ POST   /projects                                                              201
+  ✓ GET    /projects/73ec200b-caaf-45b5-bc9a-888d65af70e5/phases                  200
+  ✓ UPLOAD photo.jpg;type=image/jpeg                                              201
+    ✓ photo stored, linked to the phase
+  ✓ UPLOAD quote.pdf;type=application/pdf                                         201
+  ✓ UPLOAD real.png;type=application/octet-stream                                 201
+    ✓ the bytes decide the type, not the client
+  ✓ UPLOAD real.png;type=image/jpeg                                               422
+    ✓ AC24 forged MIME refused
+  ✓ UPLOAD script.pdf;type=application/pdf                                        422
+    ✓ AC24 PDF with JavaScript refused
+  ✓ UPLOAD gps.jpg;type=image/jpeg                                                422
+    ✓ a photo still carrying GPS is refused
+  ✓ UPLOAD notes.txt;type=text/plain                                              415
+    ✓ unsupported type refused
+  ✓ UPLOAD big.pdf;type=application/pdf                                           413
+    ✓ AC24 over 20 MB refused
+  ✓ UPLOAD photo.jpg;type=image/jpeg                                              400
+  ✓ GET    /attachments?target_type=phase&target_id=9303bef0-528d-40aa-8d59-63565 200
+    ✓ files listed for the phase
+  ✓ POST   /attachments/6c325f49-2344-4464-ad6c-c7883051fc79/links                200
+  ✓ GET    /attachments/5a3be384-f981-408c-a412-8b401f04e651/download-url         200
+    ✓ AC23 a 10-minute signed link on our own worker
+    ✓ the signed link returns the original bytes (decrypted)
+    ✓ AC23 a forged signature fails
+    ✓ AC23 an unsigned link fails
+    ✓ AC23 an expired link fails
+  isolation (AC08)
+  ✓ GET    /attachments/5a3be384-f981-408c-a412-8b401f04e651/download-url         404
+  ✓ DELETE /attachments/5a3be384-f981-408c-a412-8b401f04e651                      404
+  ✓ POST   /attachments/5a3be384-f981-408c-a412-8b401f04e651/links                404
+  ✓ UPLOAD photo.jpg;type=image/jpeg                                              404
+    ✓ AC24 a cross-owner link fails
+  ✓ GET    /attachments?target_type=phase&target_id=9303bef0-528d-40aa-8d59-63565 404
+  ✓ UPLOAD photo.jpg;type=image/jpeg                                              403
+  evidence lock
+  ✓ DELETE /attachments/6c325f49-2344-4464-ad6c-c7883051fc79                      200
+    ✓ an unlinked-to-posted file can be deleted
+  ✓ GET    /attachments/6c325f49-2344-4464-ad6c-c7883051fc79/download-url         404
+
+── 80-advisor
+  ✓ POST   /projects                                                              201
+  consent first
+  ✓ POST   /me/consents                                                           200
+  ✓ POST   /projects/620f9b3d-eacf-498c-accb-29defd2ef80c/advice                  403
+    ✓ AC22 no advice without opt-in
+  ✓ POST   /calculations/preview                                                  200
+    ✓ AC22 declining the advisor keeps calculations working
+  ✓ GET    /advisor/quota                                                         200
+    ✓ quota shown before use, consent off
+  ✓ POST   /me/consents                                                           200
+  a request
+  ✓ POST   /projects/620f9b3d-eacf-498c-accb-29defd2ef80c/advice                  400
+  ✓ POST   /projects/620f9b3d-eacf-498c-accb-29defd2ef80c/advice                  404
+  ✓ POST   /projects/620f9b3d-eacf-498c-accb-29defd2ef80c/advice                  400
+  ✓ POST   /projects/620f9b3d-eacf-498c-accb-29defd2ef80c/advice                  202
+    ✓ accepted as an async job (202)
+  ✓ GET    /projects/620f9b3d-eacf-498c-accb-29defd2ef80c/advice/1b1dc1c1-a201-47 200
+    ✓ a validated answer (or the automatic fallback) with limitations
+    ✓ the address never reaches the advisor
+    ✓ AC21 no saving without a server-computed scenario
+    ✓ AC21 no invented local price in the summary
+  ✓ GET    /projects/620f9b3d-eacf-498c-accb-29defd2ef80c/advice                  200
+    ✓ history lists the request
+  ✓ GET    /advisor/quota                                                         200
+    ✓ quota counts
+  isolation and the paywall
+  ✓ GET    /projects/620f9b3d-eacf-498c-accb-29defd2ef80c/advice/1b1dc1c1-a201-47 404
+  ✓ POST   /projects/620f9b3d-eacf-498c-accb-29defd2ef80c/advice                  404
+  ✓ GET    /advisor/quota                                                         403
+  ✓ POST   /projects/620f9b3d-eacf-498c-accb-29defd2ef80c/advice                  403
+  AC22 concurrent requests obey the quota
+  ✓ GET    /advisor/quota                                                         200
+  ✓ ADMIN  GET /admin/config                                                      200
+  ✓ ADMIN  PATCH /admin/config                                                    200
+    … waiting 61s for the per-minute AI rate limit window
+    codes: 429 429 202 429 
+    ✓ four at once with one left: exactly one accepted, three refused (429)
+  ✓ POST   /projects/620f9b3d-eacf-498c-accb-29defd2ef80c/advice                  429
+    ✓ over quota is 429 AI_QUOTA_EXCEEDED
+  ✓ ADMIN  PATCH /admin/config                                                    200
+  history deletion
+  ✓ DELETE /me/advice-history                                                     200
+    ✓ advice history deleted
+  ✓ GET    /projects/620f9b3d-eacf-498c-accb-29defd2ef80c/advice                  200
+    ✓ nothing left
+
+── 85-exports
+  ✓ POST   /projects                                                              201
+  ✓ POST   /projects/98ffac8e-f37a-4884-98b9-e40aa58198bb/exports                 202
+    ✓ a PDF export is ready
+  ✓ GET    /exports/a2fe2391-d2ee-401e-80be-74c116bc2d94                          200
+    ✓ AC23 a 10-minute signed link
+    ✓ AC23 self-contained report: known subtotal, exclusions first, unpriced lines shown, address omitted, no remote fonts
+  ✓ POST   /projects/98ffac8e-f37a-4884-98b9-e40aa58198bb/exports                 202
+  ✓ GET    /exports/dcf16b6a-0186-4fae-9969-0ea4d6e78a46                          200
+    ✓ the address appears only when asked for
+  ✓ POST   /projects/98ffac8e-f37a-4884-98b9-e40aa58198bb/exports                 202
+  ✓ GET    /exports/b40cb856-288a-4c10-a780-4a6519d25c1b                          200
+    ✓ CSV with SI and display units and a summary
+  signed links (AC23)
+    ✓ a forged signature fails
+    ✓ an unsigned link fails
+    ✓ an expired link fails
+  ✓ POST   /projects/98ffac8e-f37a-4884-98b9-e40aa58198bb/exports                 400
+  ✓ POST   /projects/98ffac8e-f37a-4884-98b9-e40aa58198bb/exports                 400
+  ✓ POST   /projects/98ffac8e-f37a-4884-98b9-e40aa58198bb/exports                 404
+  ✓ GET    /exports                                                               200
+    ✓ my exports are listed
+  isolation and the paywall (AC01, AC08)
+  ✓ GET    /exports/a2fe2391-d2ee-401e-80be-74c116bc2d94                          404
+  ✓ POST   /projects/98ffac8e-f37a-4884-98b9-e40aa58198bb/exports                 404
+  ✓ POST   /projects/98ffac8e-f37a-4884-98b9-e40aa58198bb/exports                 403
+  ✓ GET    /exports                                                               200
+    ✓ an unpaid account still sees its export list
+  portability (no paywall)
+  ✓ POST   /me/portability-export                                                 403
+    ✓ portability needs a fresh re-authentication
+  ✓ POST   /auth/reauth                                                           200
+  ✓ POST   /me/portability-export                                                 202
+  ✓ GET    /exports/dd00c7a6-b009-4d54-8efa-394e3148ca6f                          200
+    ✓ AC01 an unpaid account downloads its archive
+    ✓ machine-readable archive of own records
+  ✓ POST   /auth/reauth                                                           200
+  ✓ POST   /me/portability-export                                                 202
+  ✓ GET    /exports/91d4d246-5eda-4387-ab76-c5c5baec1fea                          200
+    ✓ the archive carries projects and estimates, never storage keys
+
+── 90-admin
+  ✓ admin refuses a missing token (403)
+  ✓ admin refuses a wrong token (403)
+  ✓ GET    /admin/jobs                                                            403
+    ✓ a signed-in user is not an operator
+  config
+  ✓ ADMIN  GET /admin/config                                                      200
+    ✓ default limits listed
+  ✓ ADMIN  PATCH /admin/config                                                    400
+    ✓ secret-looking keys refused
+  ✓ ADMIN  PATCH /admin/config                                                    400
+    ✓ unknown limits refused
+  ✓ ADMIN  PATCH /admin/config                                                    200
+    ✓ config saved (version 1)
+  ✓ ADMIN  PATCH /admin/config                                                    409
+    ✓ stale config version is 409
+  reference data
+  ✓ ADMIN  POST /admin/regions                                                    201
+  ✓ ADMIN  POST /admin/regions                                                    400
+  ✓ ADMIN  GET /admin/regions?country=IE                                          200
+    ✓ region listed under its country
+  ✓ ADMIN  GET /admin/catalogue                                                   200
+    ✓ catalogue seeded
+  ✓ ADMIN  POST /admin/catalogue                                                  201
+  ✓ ADMIN  PATCH /admin/catalogue/d3de2f03-ee7a-4990-854e-9ca9a85d2061            200
+    ✓ catalogue item deactivated
+  ✓ ADMIN  POST /admin/sources                                                    400
+  ✓ ADMIN  POST /admin/sources                                                    201
+  ✓ ADMIN  POST /admin/sources                                                    201
+  benchmark import validation (every bad-row kind)
+  ✓ ADMIN  POST /admin/benchmarks/import                                          422
+    ✓ a file with bad rows is refused whole
+    ✓ caught UNKNOWN_CURRENCY
+    ✓ caught UNKNOWN_UNIT
+    ✓ caught NEGATIVE_RATE
+    ✓ caught FUTURE_EFFECTIVE
+    ✓ caught SOURCE_NOT_PUBLISHABLE
+    ✓ caught SPEC_MISMATCH
+    ✓ caught DUPLICATE_VERSION
+    ✓ caught UNKNOWN_ITEM
+    ✓ the first of the duplicate pair is fine; only its twin is flagged
+  import → validate → publish → rollback
+  ✓ ADMIN  POST /admin/benchmarks/import                                          201
+    ✓ one draft rate imported
+  ✓ ADMIN  POST /admin/benchmarks/publish                                         409
+    ✓ publish refuses an unvalidated batch
+  ✓ ADMIN  POST /admin/benchmarks/validate                                        200
+    ✓ batch validated
+  ✓ ADMIN  GET /admin/benchmarks?batch_id=365f1758-6e35-4ba7-833f-23ac10b8e72     200
+  ✓ ADMIN  PATCH /admin/benchmarks/a14016e6-9ca8-4511-a298-d4ca7d9018dc           200
+  ✓ ADMIN  POST /admin/benchmarks/publish                                         409
+    ✓ an edit after validation forces validation again
+  ✓ ADMIN  POST /admin/benchmarks/validate                                        200
+  ✓ ADMIN  POST /admin/benchmarks/publish                                         200
+    ✓ batch 1 published
+  ✓ ADMIN  PATCH /admin/benchmarks/a14016e6-9ca8-4511-a298-d4ca7d9018dc           409
+    ✓ a published rate cannot be edited
+  ✓ ADMIN  POST /admin/benchmarks/import                                          422
+    ✓ the same version again is a duplicate of an active rate
+  ✓ ADMIN  POST /admin/benchmarks/import                                          201
+  ✓ ADMIN  POST /admin/benchmarks/validate                                        200
+  ✓ ADMIN  POST /admin/benchmarks/publish                                         200
+    ✓ batch 2 retires batch 1
+  ✓ ADMIN  GET /admin/benchmarks?batch_id=365f1758-6e35-4ba7-833f-23ac10b8e72     200
+    ✓ batch 1 rate is retired
+  ✓ GET    /rates/benchmarks?country=IE&region_id=8a7ea1ad-daa4-4151-8b2c-d90b52c 200
+    ✓ users see only the newly published rate for the exact region
+  ✓ GET    /rates/benchmarks?country=IE&item_code=floor-finish-pack&currency=EUR  200
+    ✓ country-wide query answered (region rates are not silently interpolated)
+  ✓ ADMIN  POST /admin/benchmarks/rollback                                        200
+    ✓ rollback retires batch 2 and restores batch 1
+  ✓ ADMIN  GET /admin/benchmarks?batch_id=365f1758-6e35-4ba7-833f-23ac10b8e72     200
+    ✓ batch 1 rate is live again
+  ✓ ADMIN  POST /admin/benchmarks/retire                                          200
+    ✓ rate retired by hand
+  ✓ ADMIN  POST /admin/benchmarks/rollback                                        409
+  ✓ ADMIN  GET /admin/benchmarks/batches                                          200
+    ✓ batch history kept
+  ✓ ADMIN  PATCH /admin/regions/8a7ea1ad-daa4-4151-8b2c-d90b52c5b693              200
+    ✓ test region hidden again
+  support, audit, subscriptions, jobs
+  ✓ ADMIN  GET /admin/support                                                     200
+  ✓ ADMIN  PATCH /admin/support/edc2a3a6-e485-4259-bac5-799c662ad2ef              200
+    ✓ ticket answered
+  ✓ ADMIN  PATCH /admin/support/edc2a3a6-e485-4259-bac5-799c662ad2ef              404
+  ✓ ADMIN  GET /admin/audit?actor=admin&action=benchmark.                         200
+    ✓ publish and rollback are audited
+  ✓ ADMIN  GET /admin/subscriptions/af0d555f-443f-4c19-a2af-72c7d8d8951b          200
+    ✓ diagnostics show the grant and the platform check
+    ✓ diagnostics carry no project contents
+  ✓ ADMIN  POST /admin/subscriptions/af0d555f-443f-4c19-a2af-72c7d8d8951b/reco    200
+    ✓ reconcile forces a fresh check
+  ✓ ADMIN  GET /admin/subscriptions/nobody-here                                   404
+  ✓ ADMIN  GET /admin/jobs                                                        200
+    ✓ job health counts
+  review grants
+  ✓ ADMIN  POST /admin/review-grants                                              400
+    ✓ grants are at most 30 days
+  ✓ ADMIN  POST /admin/review-grants                                              404
+  ✓ ADMIN  GET /admin/review-grants                                               200
+    ✓ grants are listed
+  ✓ ADMIN  POST /admin/review-grants/788f38f5-274b-4b66-a924-9754d5fc053d/revo    200
+    ✓ grant revoked
+  ✓ GET    /me                                                                    200
+    ✓ a revoked grant locks the account again
+  ✓ ADMIN  POST /admin/review-grants/788f38f5-274b-4b66-a924-9754d5fc053d/revo    404
+  ✓ ADMIN  POST /admin/review-grants                                              201
+
+── 92-site
+  ✓ GET    /                                        200  landing
+  ✓ GET    /                                        200  landing is honest about the paywall
+  ✓ GET    /                                        200  sample figures are labelled
+  ✓ GET    /privacy                                 200  privacy policy
+  ✓ GET    /privacy                                 200  privacy marked as a draft
+  ✓ GET    /privacy                                 200  privacy says how agreement is recorded
+  ✓ GET    /terms                                   200  terms: no trial
+  ✓ GET    /terms                                   200  terms: auto-renewal
+  ✓ GET    /support                                 200  support form
+  ✓ GET    /delete-account                          200  deletion page warns about store billing
+  ✓ GET    /admin                                   200  operator console
+  ✓ GET    /.well-known/apple-app-site-association  200  Apple app links
+  ✓ GET    /.well-known/assetlinks.json             200  Android app links
+  ✓ landing has no invented ratings or user counts
+
+── 95-deletion
+  ✓ POST   /projects                                                              201
+  ✓ POST   /me/deletion                                                           403
+    ✓ deletion needs a fresh re-authentication
+  ✓ POST   /auth/reauth                                                           200
+  ✓ POST   /me/deletion                                                           400
+    ✓ an explicit confirmation is required
+  ✓ POST   /me/deletion                                                           200
+    ✓ a deletion receipt
+  ✓ POST   /auth/login                                                            401
+    ✓ the account can no longer sign in
+  ✓ GET    /me                                                                    403
+  ✓ GET    /projects/415be84d-373d-4dec-98a0-c036a2a1e631                         403
+    ✓ a still-valid token is refused (no profile is recreated)
+  AC25 an unpaid, unverified account can delete itself
+  ✓ GET    /billing/status                                                        200
+    ✓ no subscription
+  ✓ POST   /auth/reauth                                                           200
+  ✓ POST   /me/deletion                                                           200
+  ✓ POST   /auth/login                                                            401
+  jobs
+    ✓ scheduled jobs run by hand with the job secret
+    ✓ a wrong job secret is refused
+
+ALL GREEN: 978 passed
